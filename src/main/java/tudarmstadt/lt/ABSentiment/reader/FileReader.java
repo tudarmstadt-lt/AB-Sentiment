@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.aspecttermclassification.train;
+package tudarmstadt.lt.ABSentiment.reader;
 
 import de.bwaldvogel.liblinear.*;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;

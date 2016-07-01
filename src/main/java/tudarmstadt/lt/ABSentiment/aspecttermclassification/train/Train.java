@@ -1,6 +1,7 @@
 package tudarmstadt.lt.ABSentiment.aspecttermclassification.train;
 
 import org.apache.uima.UIMAException;
+import tudarmstadt.lt.ABSentiment.reader.FileReader;
 
 /**
  * Created by eugen on 5/16/16.
