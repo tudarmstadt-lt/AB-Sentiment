@@ -7,10 +7,12 @@ import java.util.Iterator;
 /**
  * Created by eugen on 7/1/16.
  */
-public interface InputReader {
+public interface InputReader extends Iterable<Document>, Iterator<Document> {
 
-    void openDocument(String filename);
+    boolean hasNext();
 
-    String getDocumentText();
+    Document next();
+
+
 
 }
