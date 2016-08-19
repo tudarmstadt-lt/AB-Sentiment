@@ -92,25 +92,25 @@ public class GoldAspectTarget extends Annotation {
  
     
   //*--------------*
-  //* Feature: NamedEntityType
+  //* Feature: AspectTargetType
 
-  /** getter for NamedEntityType - gets 
+  /** getter for AspectTargetType - gets 
    * @generated
    * @return value of the feature 
    */
-  public String getNamedEntityType() {
-    if (GoldAspectTarget_Type.featOkTst && ((GoldAspectTarget_Type)jcasType).casFeat_NamedEntityType == null)
-      jcasType.jcas.throwFeatMissing("NamedEntityType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((GoldAspectTarget_Type)jcasType).casFeatCode_NamedEntityType);}
+  public String getAspectTargetType() {
+    if (GoldAspectTarget_Type.featOkTst && ((GoldAspectTarget_Type)jcasType).casFeat_AspectTargetType == null)
+      jcasType.jcas.throwFeatMissing("AspectTargetType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((GoldAspectTarget_Type)jcasType).casFeatCode_AspectTargetType);}
     
-  /** setter for NamedEntityType - sets  
+  /** setter for AspectTargetType - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setNamedEntityType(String v) {
-    if (GoldAspectTarget_Type.featOkTst && ((GoldAspectTarget_Type)jcasType).casFeat_NamedEntityType == null)
-      jcasType.jcas.throwFeatMissing("NamedEntityType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
-    jcasType.ll_cas.ll_setStringValue(addr, ((GoldAspectTarget_Type)jcasType).casFeatCode_NamedEntityType, v);}
+  public void setAspectTargetType(String v) {
+    if (GoldAspectTarget_Type.featOkTst && ((GoldAspectTarget_Type)jcasType).casFeat_AspectTargetType == null)
+      jcasType.jcas.throwFeatMissing("AspectTargetType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
+    jcasType.ll_cas.ll_setStringValue(addr, ((GoldAspectTarget_Type)jcasType).casFeatCode_AspectTargetType, v);}
   }
 
     

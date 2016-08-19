@@ -63,26 +63,26 @@ public class GoldAspectTarget_Type extends Annotation_Type {
   public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
  
   /** @generated */
-  final Feature casFeat_NamedEntityType;
+  final Feature casFeat_AspectTargetType;
   /** @generated */
-  final int     casFeatCode_NamedEntityType;
+  final int     casFeatCode_AspectTargetType;
   /** @generated
    * @param addr low level Feature Structure reference
    * @return the feature value 
    */ 
-  public String getNamedEntityType(int addr) {
-        if (featOkTst && casFeat_NamedEntityType == null)
-      jcas.throwFeatMissing("NamedEntityType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_NamedEntityType);
+  public String getAspectTargetType(int addr) {
+        if (featOkTst && casFeat_AspectTargetType == null)
+      jcas.throwFeatMissing("AspectTargetType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_AspectTargetType);
   }
   /** @generated
    * @param addr low level Feature Structure reference
    * @param v value to set 
    */    
-  public void setNamedEntityType(int addr, String v) {
-        if (featOkTst && casFeat_NamedEntityType == null)
-      jcas.throwFeatMissing("NamedEntityType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
-    ll_cas.ll_setStringValue(addr, casFeatCode_NamedEntityType, v);}
+  public void setAspectTargetType(int addr, String v) {
+        if (featOkTst && casFeat_AspectTargetType == null)
+      jcas.throwFeatMissing("AspectTargetType", "de.tu.darmstadt.lt.ner.types.GoldAspectTarget");
+    ll_cas.ll_setStringValue(addr, casFeatCode_AspectTargetType, v);}
     
   
 
@@ -98,8 +98,8 @@ public class GoldAspectTarget_Type extends Annotation_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 
  
-    casFeat_NamedEntityType = jcas.getRequiredFeatureDE(casType, "NamedEntityType", "uima.cas.String", featOkTst);
-    casFeatCode_NamedEntityType  = (null == casFeat_NamedEntityType) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_NamedEntityType).getCode();
+    casFeat_AspectTargetType = jcas.getRequiredFeatureDE(casType, "AspectTargetType", "uima.cas.String", featOkTst);
+    casFeatCode_AspectTargetType  = (null == casFeat_AspectTargetType) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_AspectTargetType).getCode();
 
   }
 }
