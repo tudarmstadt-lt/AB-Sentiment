@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by eugen on 4/12/16.
- */
 public class DictionaryAspectExtractor {
 
     HashSet<String> wordList;
@@ -17,7 +14,7 @@ public class DictionaryAspectExtractor {
     public DictionaryAspectExtractor() {
 
 
-        String filename = "/aspects";
+        String filename = "/dictionaries/aspects";
 
         wordList = loadWordList(filename);
 
