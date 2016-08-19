@@ -5,14 +5,14 @@ import tudarmstadt.lt.ABSentiment.type.Document;
 import java.util.Iterator;
 
 /**
- * Created by eugen on 7/1/16.
+ * Interface for input readers.
  */
 public interface InputReader extends Iterable<Document>, Iterator<Document> {
 
+    @Override
     boolean hasNext();
 
+    @Override
     Document next();
-
-
 
 }

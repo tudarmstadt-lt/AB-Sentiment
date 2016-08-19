@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 /**
- * Created by eugen on 7/1/16.
+ * TSV input reader for tab separated input files.
  */
 public class TsvReader implements InputReader {
 
@@ -24,7 +24,7 @@ public class TsvReader implements InputReader {
     public TsvReader(String filename) {
         try {
             reader = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(filename)));
+                    new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
 
         } catch(Exception e) {
             System.err.println("File could not be opened: " +filename );
@@ -33,8 +33,6 @@ public class TsvReader implements InputReader {
         }
 
     }
-
-
 
     @Override
     public Document next() {
@@ -75,7 +73,7 @@ public class TsvReader implements InputReader {
         doc.addSentence(new Sentence(documentFields[1]));
 
         if (documentFields.length == 3) {
-            doc.setLabel(documentFields[2]);
+            doc.setLabels(documentFields[2]);
         }
         return doc;
 

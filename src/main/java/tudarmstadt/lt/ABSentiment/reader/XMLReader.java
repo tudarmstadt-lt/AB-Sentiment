@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 /**
- * Created by eugen on 7/22/16.
+ * XML input reader to read SemEval sentiment XML format.
  */
 public class XMLReader implements InputReader {
 
@@ -43,7 +43,7 @@ public class XMLReader implements InputReader {
             e.printStackTrace();
         }
         try {
-            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename));
+            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
