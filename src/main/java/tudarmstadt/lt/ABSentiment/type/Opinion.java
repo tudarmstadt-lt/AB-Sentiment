@@ -24,6 +24,9 @@ public class Opinion {
     }
 
     private String extractCoarseCategory(String categoryFine) {
+        if (categoryFine.indexOf(categorySep) == -1) {
+            return categoryFine;
+        }
         return categoryFine.substring(0, categoryFine.indexOf(categorySep));
     }
 
