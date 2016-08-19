@@ -1,28 +1,28 @@
-package tudarmstadt.lt.ABSentiment.aspecttermclassification;
+package tudarmstadt.lt.ABSentiment.classifier.aspectclass;
+
+import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.classifier.Classifier;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
 /**
- * Created by eugen on 4/13/16.
+ * Baseline aspect classifier using a dictionary of aspect expressions.
  */
-public class DictionaryAspectClassifier {
+public class DictionaryAspectClassifier implements Classifier {
 
     HashMap<String, String> wordList;
 
     public DictionaryAspectClassifier() {
-
-
-        String filename = "/aspect_categories";
+        String filename = "/dictionaries/aspect_categories";
 
         wordList = loadWordList(filename);
-
-
     }
 
-    public String getCategory(String text) {
+    public String getLabel(String text) {
 
         return wordList.get(text);
     }
@@ -34,10 +34,10 @@ public class DictionaryAspectClassifier {
      * @return HashSet containing the words
      */
     private HashMap<String, String> loadWordList(String fileName) {
-        HashMap<String, String> set = new HashMap<String, String>();
+        HashMap<String, String> set = new HashMap<>();
         try {
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -54,8 +54,32 @@ public class DictionaryAspectClassifier {
         } catch (IOException e) {
             //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
-            //return null;
         }
         return set;
+    }
+
+    @Override
+    public String getLabel(JCas cas) {
+        return null;
+    }
+
+    @Override
+    public double getScore() {
+        return 1.0;
+    }
+
+    @Override
+    public double getScore(int i) {
+        return 1.0;
+    }
+
+    @Override
+    public String[] getLabels() {
+        return new String[0];
+    }
+
+    @Override
+    public double[] getScores() {
+        return new double[0];
     }
 }

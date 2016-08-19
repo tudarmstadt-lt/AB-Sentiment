@@ -1,43 +1,38 @@
-package tudarmstadt.lt.ABSentiment.aspecttermclassification;
+package tudarmstadt.lt.ABSentiment.classifier.aspectclass;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import tudarmstadt.lt.ABSentiment.uimahelper.Tokenizer;
+import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.classifier.Classifier;
+import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
-/**
- * Created by eugen on 4/10/16.
- */
-public class LinearAspectClassifier {
+public class LinearAspectClassifier implements Classifier {
 
 
-    HashMap<Integer, Double> termIdf = new HashMap<>();
+    private HashMap<Integer, Double> termIdf = new HashMap<>();
+    private HashMap<String, Integer> tokenIds = new HashMap<>();
 
-    HashMap<String, Integer> tokenIds = new HashMap<>();
+    private HashMap<Integer, String> categoryMappings = new HashMap<>();
 
+    private int maxTokenId;
 
-    HashMap<Integer, String> categoryMappings = new HashMap<>();
+    private Model model;
+    private Preprocessor preprocessor;
 
-    Tokenizer tokenizer = new Tokenizer();
-    int maxTokenId;
+    private double[] probEstimates;
+    private Vector<Double> predictions;
+    private double score;
 
-    Model model;
+    public LinearAspectClassifier(String modelFile) {
+        preprocessor = new Preprocessor();
 
-    public LinearAspectClassifier() {
-
-        String modelFile = "categories-model.svm";
-        String tfIdfMappingFile = "/categories-tf-idf.tsv";
-        String categoryMappingFile = "/categories-mappings.tsv";
+        String tfIdfMappingFile = "idfmap.tsv";
+        String categoryMappingFile = "aspect-label-mappings.tsv";
 
         try {
             model = Linear.loadModel(new File(modelFile));
@@ -50,12 +45,12 @@ public class LinearAspectClassifier {
 
     }
 
-    public String getCategory(String text) {
+    public String getLabel(JCas cas) {
+        predictions = new Vector<>();
 
         HashMap<Integer, Integer> tokenCounts = new HashMap<>();
 
-        tokenizer.tokenizeString(text);
-        Collection<String> documentText = tokenizer.getTokens();
+        Collection<String> documentText = preprocessor.getTokenStrings(cas);
         for (String token : documentText) {
             if (token == null) {
                 continue;
@@ -85,7 +80,6 @@ public class LinearAspectClassifier {
             idf = termIdf.get(tokenID);
             weight = count * idf;
 
-
             if (weight > 0.0) {
                 norm += Math.pow(weight, 2);
                 termWeights.put(tokenID, weight);
@@ -96,7 +90,7 @@ public class LinearAspectClassifier {
         Feature[] instance = new Feature[maxTokenId];
         ArrayList<Integer> list = new ArrayList<>(termWeights.keySet());
         Collections.sort(list);
-        Double w = 0.0;
+        Double w;
         for (int i = 0; i < maxTokenId; i++) {
 
             w = termWeights.get(i);
@@ -105,24 +99,43 @@ public class LinearAspectClassifier {
             }
             normalizedWeight = w / norm;
             instance[i] = new FeatureNode(i + 1, normalizedWeight);
-            //System.out.println(i + 1 + "\t" + normalizedWeight);
         }
+        probEstimates = new double[model.getNrClass()];
+        double prediction = Linear.predictProbability(model, instance, probEstimates);
 
-        Linear.enableDebugOutput();
-        Double prediction = Linear.predict(model, instance);
-        return categoryMappings.get(prediction.intValue());
+        predictions.setSize(model.getNrClass());
+        for (int j = 0; j < model.getNrClass(); j++) {
+            if (probEstimates[j]*model.getNrClass() > 1.0) {
+                predictions.add(j, probEstimates[j]);
+            }
+        }
+        score = probEstimates[Double.valueOf(prediction).intValue()];
+
+        return categoryMappings.get(Double.valueOf(prediction).intValue());
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public String getAspectLabel(int i) {
+        return categoryMappings.get(i);
+    }
+
+    public Vector<Double> getPredictions() {
+        return predictions;
     }
 
     /**
-     * Loads a word list with TF*IDF scores
+     * Loads a word list
      *
-     * @param fileName the path and filename of the wordlist
+     * @param fileName the path and filename of the
      */
     private void loadWordList(String fileName) {
         maxTokenId = 0;
         try {
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -136,21 +149,36 @@ public class LinearAspectClassifier {
             }
             br.close();
         } catch (IOException e) {
-            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
         }
+    }
+
+
+
+    @Override
+    public double getScore(int i) {
+        return probEstimates[i];
+    }
+
+    @Override
+    public String[] getLabels() {
+        return new String[0];
+    }
+
+    @Override
+    public double[] getScores() {
+        return probEstimates;
     }
 
     /**
      * Loads a word list with category mappings
      *
-     * @param fileName the path and filename of the wordlist
+     * @param fileName the path and filename of the cat
      */
     private void loadCategoryMappings(String fileName) {
         try {
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
-
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] catLine = line.split("\\t");
@@ -159,7 +187,6 @@ public class LinearAspectClassifier {
             }
             br.close();
         } catch (IOException e) {
-            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.relevancescoring;
+package tudarmstadt.lt.ABSentiment.classifier.relevance;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,13 +8,13 @@ import java.util.HashSet;
 /**
  * Created by eugen on 4/10/16.
  */
-public class DictionaryRelevanceScorer {
+public class DictionaryRelevanceClassifier {
 
     private HashSet<String> wordList;
 
-    public DictionaryRelevanceScorer() {
+    public DictionaryRelevanceClassifier() {
 
-        String filename = "/non-relevant";
+        String filename = "/dictionaries/non-relevant";
 
         wordList = loadWordList(filename);
 
@@ -27,9 +27,7 @@ public class DictionaryRelevanceScorer {
                 return -1.0;
             }
         }
-
         return 1.0;
-
     }
 
     /**

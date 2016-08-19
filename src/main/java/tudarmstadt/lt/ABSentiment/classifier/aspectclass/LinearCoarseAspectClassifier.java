@@ -1,39 +1,38 @@
-package tudarmstadt.lt.ABSentiment.relevancescoring;
+package tudarmstadt.lt.ABSentiment.classifier.aspectclass;
 
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.FeatureNode;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import tudarmstadt.lt.ABSentiment.uimahelper.Tokenizer;
+import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.io.*;
+import java.util.*;
 
-/**
- * Created by eugen on 4/10/16.
- */
-public class LinearRelevanceScorer {
+public class LinearCoarseAspectClassifier {
 
 
     HashMap<Integer, Double> termIdf = new HashMap<>();
 
     HashMap<String, Integer> tokenIds = new HashMap<>();
 
-    Tokenizer tokenizer = new Tokenizer();
+
+    HashMap<Integer, String> categoryMappings = new HashMap<>();
+
+    Preprocessor preprocessor;
     int maxTokenId;
 
     Model model;
+    private double[] prob_estimates;
+    private Vector<Double> predictions;
 
-    public LinearRelevanceScorer() {
+    private double score;
 
-        String modelFile = "relevance-model.svm";
-        String tfIdfMapping = "/relevance-tf-idf.tsv";
+    public LinearCoarseAspectClassifier() {
+
+        String modelFile = "aspect-coarse-model.svm";
+        String tfIdfMappingFile = "idfmap.tsv";
+        String categoryMappingFile = "aspect-coarse-label-mappings.tsv";
 
         try {
             model = Linear.loadModel(new File(modelFile));
@@ -41,16 +40,18 @@ public class LinearRelevanceScorer {
             e.printStackTrace();
         }
 
-        loadWordList(tfIdfMapping);
+        loadWordList(tfIdfMappingFile);
+        loadCategoryMappings(categoryMappingFile);
 
     }
 
-    public double getScore(String text) {
+    public String getCategory(String text) {
+        predictions = new Vector<>();
 
         HashMap<Integer, Integer> tokenCounts = new HashMap<>();
 
-        tokenizer.tokenizeString(text);
-        Collection<String> documentText = tokenizer.getTokens();
+        preprocessor = new Preprocessor(text);
+        Collection<String> documentText = preprocessor.getTokenStrings();
         for (String token : documentText) {
             if (token == null) {
                 continue;
@@ -102,10 +103,22 @@ public class LinearRelevanceScorer {
             instance[i] = new FeatureNode(i + 1, normalizedWeight);
             //System.out.println(i + 1 + "\t" + normalizedWeight);
         }
+        prob_estimates = new double[model.getNrClass()];
+        double prediction = Linear.predictProbability(model, instance, prob_estimates);
 
-        Linear.enableDebugOutput();
-        double prediction = Linear.predict(model, instance);
-        return prediction;
+        predictions.setSize(model.getNrClass());
+        for (int j = 0; j < model.getNrClass(); j++) {
+            if (prob_estimates[j]*model.getNrClass() > 1.0) {
+                predictions.add(j, prob_estimates[j]);
+
+                // System.out.println(categoryMappings.get(Double.parseDouble(model.getLabels()[j] + "")) + "\t" + (prob_estimates[j]*model.getLabels().length));
+                // System.out.println(j + "\t" + (prob_estimates[j] * model.getNrClass()));
+
+            }
+        }
+        score = prob_estimates[Double.valueOf(prediction).intValue()];
+
+        return categoryMappings.get(Double.valueOf(prediction).intValue());
     }
 
     /**
@@ -117,8 +130,7 @@ public class LinearRelevanceScorer {
         maxTokenId = 0;
         try {
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
-
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokenLine = line.split("\\t");
@@ -134,5 +146,39 @@ public class LinearRelevanceScorer {
             //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Loads a word list with category mappings
+     *
+     * @param fileName the path and filename of the wordlist
+     */
+    private void loadCategoryMappings(String fileName) {
+        try {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] catLine = line.split("\\t");
+                int categoryId = Integer.parseInt(catLine[0]);
+                categoryMappings.put(categoryId, catLine[1]);
+            }
+            br.close();
+        } catch (IOException e) {
+            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
+            e.printStackTrace();
+        }
+    }
+
+    public double getScore(int i) {
+        return prob_estimates[i];
+    }
+
+    public String getAspectLabel(int i) {
+        return categoryMappings.get(i);
+    }
+
+    public Vector<Double> getPredictions() {
+        return predictions;
     }
 }

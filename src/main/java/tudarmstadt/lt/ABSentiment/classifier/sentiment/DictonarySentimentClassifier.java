@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.sentimentclassification;
+package tudarmstadt.lt.ABSentiment.classifier.sentiment;
 
 
 import java.io.BufferedReader;
@@ -17,8 +17,8 @@ public class DictonarySentimentClassifier {
 
     public DictonarySentimentClassifier() {
 
-        String filename_p = "/positive";
-        String filename_n = "/negative";
+        String filename_p = "/dictionaries/positive";
+        String filename_n = "/dictionaries/negative";
 
         wordList_p = loadWordList(filename_p);
         wordList_n = loadWordList(filename_n);
@@ -41,10 +41,10 @@ public class DictonarySentimentClassifier {
         }
 
         if (pos > neg) {
-            return "positive";
+            return "dictionaries/positive";
         }
         if (neg > pos) {
-            return "negative";
+            return "dictionaries/negative";
         }
 
         return "neutral";
