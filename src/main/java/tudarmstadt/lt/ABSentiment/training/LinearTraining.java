@@ -25,6 +25,7 @@ public class LinearTraining {
 
     private static Integer maxLabelId = -1;
     private static int featureCount = 0;
+    protected static boolean useCoarseLabels = false;
 
     protected static String idfFile = "idfmap.tsv";
     private static HashMap<String, Integer> labelMappings = new HashMap<>();
@@ -67,7 +68,13 @@ public class LinearTraining {
             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
 
             // creates a training instance for each document label (multi-label training)
-            for (String l : d.getLabels()) {
+            String[] documentLabels;
+            if (useCoarseLabels) {
+                documentLabels = d.getLabelsCoarse();
+            } else {
+                 documentLabels = d.getLabels();
+            }
+            for (String l : documentLabels) {
                 Double label = getLabelId(l);
                 labels.add(label);
                 // combine feature vectors for one instance

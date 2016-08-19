@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.training.relevance;
+package tudarmstadt.lt.ABSentiment.training.sentiment;
 
 import de.bwaldvogel.liblinear.Model;
 import org.apache.uima.UIMAException;
@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.Vector;
 
 /**
- * Relevance Model Tester
+ * Sentiment Model Tester
  */
 public class Test extends LinearTesting {
 
     public static void main(String[] args) throws UIMAException, InterruptedException, IOException {
 
-        loadLabelMappings("relevance-label-mappings.tsv");
+        loadLabelMappings("sentiment-label-mappings.tsv");
 
-        String modelFile = "relevance-model.svm";
-        String inputFile = "/relevance-test.tsv";
-        String predictionFile = "relevance-test_predictions.tsv";
+        String modelFile = "sentiment-model.svm";
+        String inputFile = "/sentiment-test.tsv";
+        String predictionFile = "sentiment-test_predictions.tsv";
 
         if (args.length == 3) {
             inputFile = args[0];

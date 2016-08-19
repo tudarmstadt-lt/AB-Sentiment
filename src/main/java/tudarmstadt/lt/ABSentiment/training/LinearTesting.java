@@ -20,8 +20,6 @@ import java.util.Vector;
  */
 public class LinearTesting extends LinearTraining {
 
-    protected static Model model;
-
     private static HashMap<Double, String> labelMappings = new HashMap<>();
 
     /**
@@ -72,9 +70,16 @@ public class LinearTesting extends LinearTraining {
                 System.out.println(labelMappings.get(Double.parseDouble(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
             }
 
-            System.out.println(d.getLabelsString() + "\t" + labelMappings.get(prediction));
             try {
-                out.append(d.getLabelsString());
+                if (useCoarseLabels) {
+                    out.append(d.getLabelsCoarseString());
+                    System.out.println(d.getLabelsCoarseString() + "\t" + labelMappings.get(prediction));
+
+                } else {
+                    out.append(d.getLabelsString());
+                    System.out.println(d.getLabelsString() + "\t" + labelMappings.get(prediction));
+
+                }
                 out.append("\t").append(labelMappings.get(prediction)).append("\n");
             } catch (IOException e) {
                 e.printStackTrace();
