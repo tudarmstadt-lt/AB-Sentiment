@@ -7,86 +7,84 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tudarmstadt.lt.ABSentiment.aspecttermextraction.CrfAspectExtractor;
+import tudarmstadt.lt.ABSentiment.classifier.LinearClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.aspectclass.LinearAspectClassifier;
-import tudarmstadt.lt.ABSentiment.classifier.aspectclass.LinearCoarseAspectClassifier;
-import tudarmstadt.lt.ABSentiment.aspecttermextraction.DictionaryAspectExtractor;
 import tudarmstadt.lt.ABSentiment.classifier.relevance.LinearRelevanceClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.sentiment.LinearSentimentClassifer;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Vector;
 
 @RestController
 @EnableAutoConfiguration
 public class ApplicationController {
 
+    private StringBuilder sb;
+    private NumberFormat formatter = new DecimalFormat("#0.000");
+
     @RequestMapping("/")
     String home(@RequestParam(value = "text", defaultValue = "") String text) {
 
-        LinearRelevanceClassifier rel = new LinearRelevanceClassifier();
+        // initialize classifiers
+        LinearClassifier relevanceClassifier = new LinearRelevanceClassifier("relevance-model.svm");
+        LinearClassifier aspectClassifier = new LinearAspectClassifier("aspect-model.svm");
+        LinearClassifier coarseAspectClassifier = new LinearAspectClassifier("aspect-coarse-model.svm", "aspect-coarse-label-mappings.tsv");
+        LinearClassifier sentimentClassifier = new LinearSentimentClassifer("sentiment-model.svm");
 
-
-        DictionaryAspectExtractor aspectExtractor = new DictionaryAspectExtractor();
-        LinearAspectClassifier aspectClassifier = new LinearAspectClassifier("aspect-model.svm");
-        LinearCoarseAspectClassifier coarseAspectClassifier = new LinearCoarseAspectClassifier();
-        LinearSentimentClassifer sentimentClassifier = new LinearSentimentClassifer();
-
-        NumberFormat formatter = new DecimalFormat("#0.000");
-
-
+        // process input
         Preprocessor nlpPipeline = new Preprocessor(text);
         JCas cas = nlpPipeline.getCas();
 
+        // classify input
+        String sentimentLabel = sentimentClassifier.getLabel(cas);
+        double sentimentScore = sentimentClassifier.getScore();
+        String relevanceLabel = relevanceClassifier.getLabel(cas);
+        double relevanceScore = relevanceClassifier.getScore();
+        String aspectLabel = aspectClassifier.getLabel(cas);
+        double aspectScore = aspectClassifier.getScore();
+        String aspectCoarseLabel = coarseAspectClassifier.getLabel(cas);
+        double aspectCoarseScore = coarseAspectClassifier.getScore();
 
-        List<String> aspectTerms = aspectExtractor.getTerms(text);
+        sb = new StringBuilder();
 
-        String ret = "<style>margin-bottom:0;</style>" +
-                "<h3>Input</h3>\t" + text;
-        ret += "<h3>Relevance</h3>\tLabel: " + rel.getCategory(text) + ",\tConfidence: " + formatter.format(rel.getScore());
+        sb.append("<style>margin-bottom:0;.pos {background:green;}.neg {background:red;}</style>");
 
-       // ret += "<h3>Fine-grained Category:</h3> " + aspectClassifier.getLabel(text) ;
-        ret += "<p />options: <ul>";
-        Vector<Double> predictions = aspectClassifier.getPredictions();
-        if (predictions != null) {
-            for (int i = 0; i < predictions.size(); i++) {
-                if (predictions.get(i) != null) {
-                    ret += "<li>" + formatter.format(aspectClassifier.getScore(i)) + " " + aspectClassifier.getAspectLabel(i);
-                }
-            }
-        }
-        ret += " </ul>";
+        addHeading("Input");
+        addText(text, sentimentLabel);
 
+        addHeading("Relevance");
+        addResult(relevanceLabel, relevanceScore);
 
-        ret += "<h3>Coarse-grained Category:</h3>" + coarseAspectClassifier.getCategory(text);
-        ret += "<p />options: <ul>";
-        predictions = coarseAspectClassifier.getPredictions();
-        for (int i = 0; i<predictions.size(); i++) {
-            if (predictions.get(i) != null) {
-                ret += "<li>" +  formatter.format(coarseAspectClassifier.getScore(i)) + " "+  coarseAspectClassifier.getAspectLabel(i) ;
-            }
-        }
-        ret += " </ul>";
+        addHeading("Sentiment");
+        addResult(sentimentLabel, sentimentScore);
 
+        addHeading("Aspect");
+        addResult(aspectLabel, aspectScore);
 
-        ret += "<h3>Sentiment</h3>" + sentimentClassifier.getSentiment(text) + " " + formatter.format(sentimentClassifier.getScore());
+        addHeading("Coarse Aspect");
+        addResult(aspectCoarseLabel, aspectCoarseScore);
 
-        ret += "<h3>Aspect Terms</h3><ul>";
-        for (String term : aspectTerms) {
-
-            ret += "<li>" + term;
-
-        }
-
-        ret += " </ul>";
-        return ret;
+        return sb.toString();
     }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(ApplicationController.class, args);
+    }
+
+    private void addHeading(String text) {
+        sb.append("<h3>").append(text).append("</h3>");
+    }
+
+    private void addResult(String label, double score) {
+        sb.append("Label: ").append(label);
+        sb.append("&emsp; Confidence: ").append(formatter.format(score));
+    }
+
+    private void addText(String text, String cssClass) {
+        sb.append("<p class='").append(cssClass).append("'>");
+        sb.append(text);
+        sb.append("</p>");
     }
 
 }

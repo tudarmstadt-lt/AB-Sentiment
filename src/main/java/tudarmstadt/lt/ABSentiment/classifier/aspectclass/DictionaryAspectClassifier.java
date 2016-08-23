@@ -64,22 +64,13 @@ public class DictionaryAspectClassifier implements Classifier {
     }
 
     @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
     public double getScore() {
         return 1.0;
     }
 
-    @Override
-    public double getScore(int i) {
-        return 1.0;
-    }
-
-    @Override
-    public String[] getLabels() {
-        return new String[0];
-    }
-
-    @Override
-    public double[] getScores() {
-        return new double[0];
-    }
 }

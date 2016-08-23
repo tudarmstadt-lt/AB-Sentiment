@@ -1,14 +1,17 @@
 package tudarmstadt.lt.ABSentiment.classifier.relevance;
 
+import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.classifier.Classifier;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 
 /**
- * Created by eugen on 4/10/16.
+ * Baseline relevance classifier using a dictionary terms that indicate irrelevance.
  */
-public class DictionaryRelevanceClassifier {
+public class DictionaryRelevanceClassifier implements Classifier {
 
     private HashSet<String> wordList;
 
@@ -54,4 +57,20 @@ public class DictionaryRelevanceClassifier {
         }
         return set;
     }
+
+    @Override
+    public String getLabel(JCas cas) {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public double getScore() {
+        return 0;
+    }
+
 }

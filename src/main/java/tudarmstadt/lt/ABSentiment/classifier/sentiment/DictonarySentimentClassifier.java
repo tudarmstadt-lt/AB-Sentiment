@@ -1,15 +1,18 @@
 package tudarmstadt.lt.ABSentiment.classifier.sentiment;
 
 
+import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.classifier.Classifier;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 
 /**
- * Created by eugen on 4/12/16.
+ * Baseline relevance classifier, uses dictionaries of polarity terms.
  */
-public class DictonarySentimentClassifier {
+public class DictonarySentimentClassifier implements Classifier {
 
     private HashSet<String> wordList_p;
     private HashSet<String> wordList_n;
@@ -24,6 +27,7 @@ public class DictonarySentimentClassifier {
         wordList_n = loadWordList(filename_n);
 
     }
+
 
     public String getSentiment(String text) {
         int pos = 0;
@@ -74,5 +78,20 @@ public class DictonarySentimentClassifier {
             return null;
         }
         return set;
+    }
+
+    @Override
+    public String getLabel(JCas cas) {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public double getScore() {
+        return 0;
     }
 }

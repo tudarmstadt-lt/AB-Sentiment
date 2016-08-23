@@ -1,6 +1,5 @@
 package tudarmstadt.lt.ABSentiment.training;
 
-
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
@@ -20,7 +19,7 @@ import java.util.Vector;
  */
 public class LinearTesting extends LinearTraining {
 
-    private static HashMap<Double, String> labelMappings = new HashMap<>();
+    protected static HashMap<Double, String> labelMappings = new HashMap<>();
 
     /**
      * Loads the {@link Model} from a file.
