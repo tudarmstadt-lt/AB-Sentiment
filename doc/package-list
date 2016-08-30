@@ -1,0 +1,15 @@
+tudarmstadt.lt.ABSentiment
+tudarmstadt.lt.ABSentiment.classifier
+tudarmstadt.lt.ABSentiment.classifier.aspectclass
+tudarmstadt.lt.ABSentiment.classifier.aspecttarget
+tudarmstadt.lt.ABSentiment.classifier.relevance
+tudarmstadt.lt.ABSentiment.classifier.sentiment
+tudarmstadt.lt.ABSentiment.featureExtractor
+tudarmstadt.lt.ABSentiment.reader
+tudarmstadt.lt.ABSentiment.training
+tudarmstadt.lt.ABSentiment.training.aspectclass
+tudarmstadt.lt.ABSentiment.training.aspecttarget
+tudarmstadt.lt.ABSentiment.training.relevance
+tudarmstadt.lt.ABSentiment.training.sentiment
+tudarmstadt.lt.ABSentiment.type
+tudarmstadt.lt.ABSentiment.uimahelper
