@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.aspecttermextraction;
+package tudarmstadt.lt.ABSentiment.classifier.aspecttarget;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Baseline aspect target extractor, uses dictionaries of aspect terms.
+ */
 public class DictionaryAspectExtractor {
 
     HashSet<String> wordList;
 
     public DictionaryAspectExtractor() {
-
-
         String filename = "/dictionaries/aspects";
 
         wordList = loadWordList(filename);
-
-
     }
 
     public List<String> getTerms(String text) {

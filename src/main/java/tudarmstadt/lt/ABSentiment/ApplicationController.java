@@ -1,20 +1,27 @@
 package tudarmstadt.lt.ABSentiment;
 
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import org.apache.uima.jcas.JCas;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tudarmstadt.lt.ABSentiment.classifier.CrfClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.LinearClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.aspectclass.LinearAspectClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.relevance.LinearRelevanceClassifier;
 import tudarmstadt.lt.ABSentiment.classifier.sentiment.LinearSentimentClassifer;
+import tudarmstadt.lt.ABSentiment.type.AspectTarget;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
+import static java.awt.SystemColor.text;
+import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.util.JCasUtil.selectAll;
 
 @RestController
 @EnableAutoConfiguration
@@ -31,6 +38,7 @@ public class ApplicationController {
         LinearClassifier aspectClassifier = new LinearAspectClassifier("aspect-model.svm");
         LinearClassifier coarseAspectClassifier = new LinearAspectClassifier("aspect-coarse-model.svm", "aspect-coarse-label-mappings.tsv");
         LinearClassifier sentimentClassifier = new LinearSentimentClassifer("sentiment-model.svm");
+        CrfClassifier aspectTargetClassifier = new CrfClassifier("./");
 
         // process input
         Preprocessor nlpPipeline = new Preprocessor(text);
@@ -46,12 +54,16 @@ public class ApplicationController {
         String aspectCoarseLabel = coarseAspectClassifier.getLabel(cas);
         double aspectCoarseScore = coarseAspectClassifier.getScore();
 
+        JCas aspectCas = aspectTargetClassifier.processCas(cas);
+
         sb = new StringBuilder();
 
         sb.append("<style>margin-bottom:0;.pos {background:green;}.neg {background:red;}</style>");
 
         addHeading("Input");
-        addText(text, sentimentLabel);
+        openInput(sentimentLabel);
+        addText(aspectCas);
+        closeInput();
 
         addHeading("Relevance");
         addResult(relevanceLabel, relevanceScore);
@@ -81,10 +93,28 @@ public class ApplicationController {
         sb.append("&emsp; Confidence: ").append(formatter.format(score));
     }
 
-    private void addText(String text, String cssClass) {
+    private void openInput(String cssClass) {
         sb.append("<p class='").append(cssClass).append("'>");
-        sb.append(text);
+    }
+    private void closeInput() {
         sb.append("</p>");
+    }
+
+    private void addText(JCas cas) {
+        boolean aspectActive = false;
+        for (AspectTarget t: select(cas, AspectTarget.class)) {
+            if (aspectActive && t.getAspectTargetType().compareTo("O") == 0) {
+                aspectActive = false;
+                sb.append("</b>");
+            } else if (!aspectActive && t.getAspectTargetType().compareTo("B") == 0) {
+                aspectActive = true;
+                sb.append("<b>");
+            }
+            sb.append(t.getCoveredText()).append(" ");
+        }
+        if (aspectActive) {
+            sb.append("</b>");
+        }
     }
 
 }

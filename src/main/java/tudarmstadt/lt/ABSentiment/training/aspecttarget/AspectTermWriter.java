@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.aspecttermextraction;
+package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -15,6 +15,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * UIMA Writer for CONNL Output.
+ */
 public class AspectTermWriter extends JCasConsumer_ImplBase {
     public static final String OUTPUT_FILE = "OutputFile";
     @ConfigurationParameter(name = OUTPUT_FILE, mandatory = true)
@@ -30,14 +33,6 @@ public class AspectTermWriter extends JCasConsumer_ImplBase {
 
     public static final String LF = System.getProperty("line.separator");
     public static final String TAB = "\t";
-    private static final String ORG = "ORG";
-    private static final String PER = "PER";
-    private static final String B_ORG = "B-ORG";
-    private static final String B_PER = "B-PER";
-    private static final String I_ORG = "I-ORG";
-    private static final String I_PER = "I-PER";
-    private static final String TYPE_SEP = "$";
-    private static final String ENT_SEP = ",";
 
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
@@ -73,7 +68,6 @@ public class AspectTermWriter extends JCasConsumer_ImplBase {
                     sb.append(aspectAnnotation.getAspectTargetType());
                     sb.append(LF);
                     outputWriter.write(sb.toString());
-
 
                 }
                 outputWriter.write(LF);

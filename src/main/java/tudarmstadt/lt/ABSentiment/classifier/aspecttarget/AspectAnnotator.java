@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.aspecttermextraction;
+package tudarmstadt.lt.ABSentiment.classifier.aspecttarget;
 
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -25,7 +25,9 @@ import java.util.List;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
-
+/**
+ * UIMA ClearTk Annotator for CRF Training and Testing. Extracts Features and trains/classifies an instance.
+ */
 public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
     //lists for features
     private List<FeatureExtractor1<Token>> featureExtractors;
@@ -64,9 +66,6 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
                         new Preceding(3),
                         new Following(3)));
 
-
-
-
     }
 
     public void process(JCas jCas) throws AnalysisEngineProcessException {
@@ -83,10 +82,14 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
                         instance.addAll(extractor.extract(jCas, token));
                     }
                 }
-                instance.setOutcome(selectCovered(jCas, GoldAspectTarget.class, token).get(0).getAspectTargetType());
+                try {
+                    instance.setOutcome(selectCovered(jCas, GoldAspectTarget.class, token).get(0).getAspectTargetType());
+                } catch (IndexOutOfBoundsException e) {
+
+                }
                 instances.add(instance);
             }
-            if(this.isTraining()) {
+            if (this.isTraining()) {
                 this.dataWriter.write(instances);
             } else {
                 List<String> labels = this.classify(instances);
