@@ -14,21 +14,41 @@ import java.util.HashMap;
  */
 public class DictionaryAspectClassifier implements Classifier {
 
-    HashMap<String, String> wordList;
+    private HashMap<String, String> wordList;
+    private String label;
 
+    /**
+     * Constructor, loads a map of aspect terms and their aspect classes
+     */
     public DictionaryAspectClassifier() {
-        String filename = "/dictionaries/aspect_categories";
+        String filename = "/dictionaries/aspect_classes";
 
         wordList = loadWordList(filename);
     }
 
-    public String getLabel(String text) {
+    @Override
+    public String getLabel(JCas cas) {
+        String text = cas.getDocumentText();
+        for (String term : wordList.keySet()) {
+            if (text.contains(term)) {
+                label = wordList.get(term);
+            }
+        }
+        return label;
+    }
 
-        return wordList.get(text);
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public double getScore() {
+        return 1.0;
     }
 
     /**
-     * Loads a word list
+     * Loads a word list.
      *
      * @param fileName the path and filename of the wordlist
      * @return HashSet containing the words
@@ -56,21 +76,6 @@ public class DictionaryAspectClassifier implements Classifier {
             e.printStackTrace();
         }
         return set;
-    }
-
-    @Override
-    public String getLabel(JCas cas) {
-        return null;
-    }
-
-    @Override
-    public String getLabel() {
-        return null;
-    }
-
-    @Override
-    public double getScore() {
-        return 1.0;
     }
 
 }

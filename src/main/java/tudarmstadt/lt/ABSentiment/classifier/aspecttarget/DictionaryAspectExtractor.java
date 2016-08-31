@@ -1,5 +1,8 @@
 package tudarmstadt.lt.ABSentiment.classifier.aspecttarget;
 
+import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.classifier.Classifier;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,18 +13,34 @@ import java.util.List;
 /**
  * Baseline aspect target extractor, uses dictionaries of aspect terms.
  */
-public class DictionaryAspectExtractor {
+public class DictionaryAspectExtractor implements Classifier {
 
-    HashSet<String> wordList;
+    private HashSet<String> wordList;
+    private String label;
 
+    /**
+     * Constructor, loads a list of aspect terms
+     */
     public DictionaryAspectExtractor() {
         String filename = "/dictionaries/aspects";
 
         wordList = loadWordList(filename);
     }
 
-    public List<String> getTerms(String text) {
-        List<String> ret = new ArrayList<String>();
+    @Override
+    public String getLabel(JCas cas) {
+        String text = cas.getDocumentText();
+        for (String t : wordList) {
+            if (text.contains(t)) {
+               label = t;
+            }
+        }
+        return label;
+    }
+
+    public List<String> getLabels(JCas cas) {
+        String text = cas.getDocumentText();
+        List<String> ret = new ArrayList<>();
 
         for (String t : wordList) {
             if (text.contains(t)) {
@@ -31,6 +50,16 @@ public class DictionaryAspectExtractor {
         return ret;
     }
 
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public double getScore() {
+        return 1.0;
+    }
+
     /**
      * Loads a word list
      *
@@ -38,7 +67,7 @@ public class DictionaryAspectExtractor {
      * @return HashSet containing the words
      */
     private HashSet<String> loadWordList(String fileName) {
-        HashSet<String> set = new HashSet<String>();
+        HashSet<String> set = new HashSet<>();
         try {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
@@ -55,4 +84,5 @@ public class DictionaryAspectExtractor {
         }
         return set;
     }
+
 }

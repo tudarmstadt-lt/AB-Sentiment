@@ -14,27 +14,44 @@ import java.util.HashSet;
 public class DictionaryRelevanceClassifier implements Classifier {
 
     private HashSet<String> wordList;
+    private String label;
 
+    /**
+     * Constructor, loads a list of words that indicate non-relevance.
+     */
     public DictionaryRelevanceClassifier() {
-
         String filename = "/dictionaries/non-relevant";
 
         wordList = loadWordList(filename);
-
     }
 
-    public double getScore(String text) {
+
+    @Override
+    public String getLabel(JCas cas) {
+        String text = cas.getDocumentText();
+        label = "1.0";
 
         for (String w : wordList) {
             if (text.contains(w)) {
-                return -1.0;
+                label = "-1.0";
             }
         }
-        return 1.0;
+        return label;
     }
 
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public double getScore() {
+        return 0;
+    }
+
+
     /**
-     * Loads a word list
+     * Loads a word list.
      *
      * @param fileName the path and filename of the wordlist
      * @return HashSet containing the words
@@ -56,21 +73,6 @@ public class DictionaryRelevanceClassifier implements Classifier {
             return null;
         }
         return set;
-    }
-
-    @Override
-    public String getLabel(JCas cas) {
-        return null;
-    }
-
-    @Override
-    public String getLabel() {
-        return null;
-    }
-
-    @Override
-    public double getScore() {
-        return 0;
     }
 
 }
