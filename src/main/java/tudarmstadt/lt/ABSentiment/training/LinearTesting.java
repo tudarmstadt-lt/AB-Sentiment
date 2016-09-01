@@ -56,7 +56,7 @@ public class LinearTesting extends LinearTraining {
         Feature[] instance;
         Vector<Feature[]> instanceFeatures;
         for (Document d : fr) {
-            preprocessor = new Preprocessor(d.getDocumentText());
+            preprocessor.processText(d.getDocumentText());
             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
 
             Double prediction;
@@ -73,11 +73,9 @@ public class LinearTesting extends LinearTraining {
                 if (useCoarseLabels) {
                     out.append(d.getLabelsCoarseString());
                     System.out.println(d.getLabelsCoarseString() + "\t" + labelMappings.get(prediction));
-
                 } else {
                     out.append(d.getLabelsString());
                     System.out.println(d.getLabelsString() + "\t" + labelMappings.get(prediction));
-
                 }
                 out.append("\t").append(labelMappings.get(prediction)).append("\n");
             } catch (IOException e) {
