@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-    <name>NamedEntity</name>
+    <name>GoldAspectTarget</name>
     <description/>
     <version>1.0</version>
     <vendor/>
     <types>
         <typeDescription>
-            <name>tudarmstadt.lt.ABSentiment.type.uima.AspectTarget</name>
+            <name>tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget</name>
             <description/>
             <supertypeName>uima.tcas.Annotation</supertypeName>
             <features>
