@@ -1,11 +1,9 @@
 package tudarmstadt.lt.ABSentiment.training.relevance;
 
 import de.bwaldvogel.liblinear.Model;
-import org.apache.uima.UIMAException;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
-import java.io.IOException;
 import java.util.Vector;
 
 /**
@@ -13,7 +11,11 @@ import java.util.Vector;
  */
 public class Test extends LinearTesting {
 
-    public static void main(String[] args) throws UIMAException, InterruptedException, IOException {
+    /**
+     * Classifies an input file, given a model
+     * @param args optional: input file, model file and the output file
+     */
+    public static void main(String[] args) {
 
         loadLabelMappings("relevance-label-mappings.tsv");
 

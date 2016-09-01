@@ -57,7 +57,7 @@ public class TfIdfFeature implements FeatureExtractor {
     /**
      * Calculates the token counts for each token in the document.
      * @param documentText a collection of String tokens, that constitute the document
-     * @return a HashMap that stores the token count for each token (tokenId->count)
+     * @return a HashMap that stores the token count for each token (tokenId-&gt;count)
      */
     private HashMap<Integer, Integer> getTokenCounts(Collection<String> documentText) {
         HashMap<Integer, Integer> tokenCounts = new HashMap<>();

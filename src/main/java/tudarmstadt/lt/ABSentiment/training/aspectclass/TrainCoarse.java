@@ -13,6 +13,10 @@ import java.util.Vector;
  */
 public class TrainCoarse extends LinearTraining {
 
+    /**
+     * Trains the model from an input file
+     * @param args optional: input file and model file
+     */
     public static void main(String[] args) throws UIMAException, InterruptedException {
 
         String trainingFile = "/aspect-train.tsv";

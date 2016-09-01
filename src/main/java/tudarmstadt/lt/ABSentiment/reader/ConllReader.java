@@ -9,7 +9,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import tudarmstadt.lt.ABSentiment.type.GoldAspectTarget;
+import tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget;
 
 /**
  * Reader for CoNLL format, creates a CAS;
@@ -92,14 +92,17 @@ public class ConllReader extends JCasAnnotator_ImplBase {
             }
         }
 
-        
         if (sentence != null && token != null) {
             terminateSentence(sentence, token);
         }
-
         docView.setSofaDataString(docText.toString(), "text/plain");
     }
 
+    /**
+     * Creates {@link Sentence} Annotation, sets the sentence end.
+     * @param sentence the current {@link Sentence} annotation
+     * @param token the last {@link Token} in the sentence
+     */
     private void terminateSentence(Sentence sentence, Token token) {
         sentence.setEnd(token.getEnd());
         sentence.addToIndexes();

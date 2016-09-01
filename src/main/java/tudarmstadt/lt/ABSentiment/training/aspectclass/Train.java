@@ -2,7 +2,6 @@ package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
-import org.apache.uima.UIMAException;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
@@ -13,7 +12,11 @@ import java.util.Vector;
  */
 public class Train extends LinearTraining {
 
-    public static void main(String[] args) throws UIMAException, InterruptedException {
+    /**
+     * Trains the model from an input file
+     * @param args optional: input file and model file
+     */
+    public static void main(String[] args) {
 
         String trainingFile = "/aspect-train.tsv";
         String modelFile = "aspect-model.svm";

@@ -7,8 +7,8 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
-import tudarmstadt.lt.ABSentiment.type.AspectTarget;
-import tudarmstadt.lt.ABSentiment.type.GoldAspectTarget;
+import tudarmstadt.lt.ABSentiment.type.uima.AspectTarget;
+import tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget;
 
 import java.io.File;
 import java.io.FileWriter;

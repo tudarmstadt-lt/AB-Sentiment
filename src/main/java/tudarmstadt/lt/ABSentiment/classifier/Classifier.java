@@ -22,7 +22,7 @@ public interface Classifier {
 
     /**
      * Returns the confidence score for the most probable label.
-     * @return
+     * @return the confidence score for the label
      */
     double getScore();
 

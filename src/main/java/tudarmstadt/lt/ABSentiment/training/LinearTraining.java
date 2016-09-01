@@ -54,7 +54,7 @@ public class LinearTraining {
      * Builds the {@link Problem} from a training file, using provided {@link FeatureExtractor}s.
      * @param trainingFile path to the training file
      * @param features Vectot of {@link FeatureExtractor}s
-     * @return @{link Problem}, containing the extracted features per instance
+     * @return {@link Problem}, containing the extracted features per instance
      */
     protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
         fr = new TsvReader(trainingFile);
@@ -133,8 +133,8 @@ public class LinearTraining {
     }
 
     /**
-     * Saves the label--identifier mappings in a TAB separated file using the following format:<br />
-     * LABEL_ID  &emsp; LABEL<br />
+     * Saves the label--identifier mappings in a TAB separated file using the following format:<br>
+     * LABEL_ID  &emsp; LABEL<br>
      * Allows for retrieving the original String labels in classification.
      * @param mappingFile the path to the file
      */

@@ -18,6 +18,10 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
  */
 public class Test {
 
+    /**
+     * Classifies an input file from a model
+     * @param args optional: input file and model directory
+     */
     public static void main(String[] args) {
         File testFile = new File("src/main/resources/targets-test.connl");
         File modelDirectory = new File("");
@@ -39,10 +43,10 @@ public class Test {
                             AspectTermWriter.IS_GOLD, true));
         } catch (ResourceInitializationException e1) {
             e1.printStackTrace();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } catch (UIMAException e1) {
-            e1.printStackTrace();
+        } catch (UIMAException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

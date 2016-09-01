@@ -13,6 +13,10 @@ import java.util.Vector;
  */
 public class TestCoarse extends LinearTesting {
 
+    /**
+     * Classifies an input file, given a model
+     * @param args optional: input file, model file and the output file
+     */
     public static void main(String[] args) throws UIMAException, InterruptedException, IOException {
 
         loadLabelMappings("aspect-coarse-label-mappings.tsv");

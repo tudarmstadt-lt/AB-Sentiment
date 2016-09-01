@@ -66,7 +66,7 @@ public class ComputeIdf {
     }
 
     /**
-     * Saves the IDF scores in a tab-separated format:<br/>
+     * Saves the IDF scores in a tab-separated format:<br>
      * TOKEN  &emsp; TOKEN_ID &emsp; IDF-SCORE
      * @param idfFile path to the output file
      */

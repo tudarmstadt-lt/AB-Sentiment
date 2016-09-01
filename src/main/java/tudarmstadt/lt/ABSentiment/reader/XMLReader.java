@@ -35,6 +35,10 @@ public class XMLReader implements InputReader {
     private static final String opinionAttrCategory = "category";
     private static final String opinionAttrPolarity = "polarity";
 
+    /**
+     * Constructor, creates a {@link org.w3c.dom.Document} from an input file.
+     * @param filename path and file name of the .xml file
+     */
     public XMLReader(String filename) {
         dbFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -80,6 +84,11 @@ public class XMLReader implements InputReader {
         }
     }
 
+    /**
+     * Creats a {@link Document} from an element node in the XML graph
+     * @param element the element node containing the docuemnt
+     * @return a {@link Document} object with id, label and sentences (text)
+     */
     private Document buildDocument(Element element) {
         Document doc = new Document();
         doc.setDocumentId(element.getAttribute(docAttrId));
@@ -88,7 +97,6 @@ public class XMLReader implements InputReader {
         Sentence s;
 
         for (int sI = 0; sI < sList.getLength(); sI++) {
-
             Node sNode = sList.item(sI);
 
             s = new Sentence( sNode.getTextContent());
@@ -101,14 +109,19 @@ public class XMLReader implements InputReader {
         return doc;
     }
 
+    /**
+     * Extracts opinions from a sentence element.
+     * @param sNode the sentence Node
+     * @return a Vector of opinions for the sentence
+     */
     private Vector<Opinion> getOpinions(Node sNode) {
         String category,polarity;
         Vector<Opinion> opinions = new Vector<>();
         NodeList oList = ((Element) sNode).getElementsByTagName(opinionTag);
 
         for (int oI = 0; oI < oList.getLength(); oI++) {
-
             Node oNode = oList.item(oI);
+
             category = ((Element) oNode).getAttribute(opinionAttrCategory);
             polarity = ((Element) oNode).getAttribute(opinionAttrPolarity);
             opinions.add(new Opinion(category, polarity));

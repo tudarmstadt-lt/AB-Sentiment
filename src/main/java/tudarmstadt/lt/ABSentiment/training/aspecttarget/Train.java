@@ -22,6 +22,10 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
  */
 public class Train {
 
+    /**
+     * Trains the model from an input file
+     * @param args optional: input file and directory for model
+     */
     public static void main(String[] args) throws AnalysisEngineProcessException {
 
         File modelDirectory = new File("");

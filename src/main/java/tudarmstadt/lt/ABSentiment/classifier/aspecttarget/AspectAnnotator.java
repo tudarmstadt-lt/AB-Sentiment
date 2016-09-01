@@ -13,8 +13,8 @@ import org.cleartk.ml.feature.extractor.CleartkExtractor;
 import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
 import org.cleartk.ml.feature.extractor.FeatureExtractor1;
 import org.cleartk.ml.feature.function.*;
-import tudarmstadt.lt.ABSentiment.type.AspectTarget;
-import tudarmstadt.lt.ABSentiment.type.GoldAspectTarget;
+import tudarmstadt.lt.ABSentiment.type.uima.AspectTarget;
+import tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget;
 import org.cleartk.ml.feature.extractor.CleartkExtractor.Following;
 import org.cleartk.ml.feature.extractor.CleartkExtractor.Preceding;
 
@@ -32,6 +32,7 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
     //lists for features
     private List<FeatureExtractor1<Token>> featureExtractors;
 
+    @Override
     public void initialize(UimaContext context)
             throws ResourceInitializationException {
         super.initialize(context);
@@ -68,6 +69,7 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
 
     }
 
+    @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
         for (Sentence sentence : select(jCas, Sentence.class)) {
             List<Instance<String>> instances = new ArrayList<>();

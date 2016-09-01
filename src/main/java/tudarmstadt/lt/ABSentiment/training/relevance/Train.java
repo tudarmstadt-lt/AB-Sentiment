@@ -1,7 +1,7 @@
 package tudarmstadt.lt.ABSentiment.training.relevance;
 
-import de.bwaldvogel.liblinear.*;
-import org.apache.uima.UIMAException;
+import de.bwaldvogel.liblinear.Model;
+import de.bwaldvogel.liblinear.Problem;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.ComputeIdfScores;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
@@ -13,7 +13,11 @@ import java.util.Vector;
  */
 public class Train extends LinearTraining {
 
-    public static void main(String[] args) throws UIMAException, InterruptedException {
+    /**
+     * Trains the model from an input file
+     * @param args optional: input file and model file
+     */
+    public static void main(String[] args) {
 
         String trainingFile = "/relevance-train.tsv";
         String modelFile = "relevance-model.svm";

@@ -9,7 +9,8 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 /**
- * TSV input reader for tab separated input files.
+ * TSV input reader for tab separated input files.<br>
+ * The input format is: ID &emsp; text &emsp; optional label
  */
 public class TsvReader implements InputReader {
 
@@ -21,11 +22,14 @@ public class TsvReader implements InputReader {
     private String line;
 
 
+    /**
+     * Creates a Reader using a file name
+     * @param filename the path and filename of the input file
+     */
     public TsvReader(String filename) {
         try {
             reader = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
-
         } catch(Exception e) {
             System.err.println("File could not be opened: " +filename );
             e.printStackTrace();
@@ -62,6 +66,11 @@ public class TsvReader implements InputReader {
         return hasNext;
     }
 
+    /**
+     * Creats a {@link Document} from an input line.
+     * @param line the input line
+     * @return a {@link Document} with text, identifier and label
+     */
     private Document buildDocument(String line) {
         Document doc = new Document();
 

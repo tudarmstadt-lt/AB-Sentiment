@@ -55,6 +55,7 @@ public class LinearClassifier extends LinearTesting implements Classifier {
     /**
      * Loads the label--identifier mappings to retrieve the correct String label for the predicted label.
      * @param fileName path to the mapping file
+     * @return the mapping between label IDs and the corresponding String identifier
      */
     protected HashMap<Double, String> loadLabelMapping(String fileName) {
         HashMap<Double, String> lMap = new HashMap<>();
