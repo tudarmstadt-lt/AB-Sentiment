@@ -39,6 +39,11 @@ public class AbSentiment {
         nlpPipeline = new Preprocessor();
     }
 
+    /**
+     * Analyzes an input string. Runs a NLP pipeline, then the classifiers.
+     * @param text the input string
+     * @return a structured {@link Result}
+     */
     public Result analyzeText(String text) {
         nlpPipeline.processText(text);
         JCas cas = nlpPipeline.getCas();
