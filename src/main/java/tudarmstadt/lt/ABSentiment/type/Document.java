@@ -1,16 +1,13 @@
 package tudarmstadt.lt.ABSentiment.type;
 
-import org.apache.uima.jcas.tcas.Annotation;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
 public class Document {
 
-    List<Sentence> sentences;
-    String documentId;
-    String[] labels;
+    private List<Sentence> sentences;
+    private String documentId;
+    private String[] labels;
 
     public Document() {
         this.sentences = new LinkedList<>();

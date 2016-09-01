@@ -5,9 +5,9 @@ import java.util.Vector;
 
 public class Sentence {
 
-    String text;
-    String id;
-    Vector<Opinion> opinions;
+    private String text;
+    private String id;
+    private Vector<Opinion> opinions;
 
     public Sentence() {
         opinions = new Vector<>();

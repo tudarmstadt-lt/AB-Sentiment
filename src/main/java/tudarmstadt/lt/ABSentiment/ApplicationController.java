@@ -1,120 +1,122 @@
 package tudarmstadt.lt.ABSentiment;
 
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import org.apache.uima.jcas.JCas;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tudarmstadt.lt.ABSentiment.classifier.CrfClassifier;
-import tudarmstadt.lt.ABSentiment.classifier.LinearClassifier;
-import tudarmstadt.lt.ABSentiment.classifier.aspectclass.LinearAspectClassifier;
-import tudarmstadt.lt.ABSentiment.classifier.relevance.LinearRelevanceClassifier;
-import tudarmstadt.lt.ABSentiment.classifier.sentiment.LinearSentimentClassifer;
-import tudarmstadt.lt.ABSentiment.type.AspectTarget;
-import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
+import tudarmstadt.lt.ABSentiment.type.AspectExpression;
+import tudarmstadt.lt.ABSentiment.type.Result;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import static java.awt.SystemColor.text;
-import static org.apache.uima.fit.util.JCasUtil.select;
-import static org.apache.uima.fit.util.JCasUtil.selectAll;
 
 @RestController
 @EnableAutoConfiguration
 public class ApplicationController {
 
-    private StringBuilder sb;
+    /**
+     * Output StringBuilder
+     */
+    private StringBuilder output;
+    /**
+     * Formatter for confidence scores
+     */
     private NumberFormat formatter = new DecimalFormat("#0.000");
 
+    private AbSentiment analyzer = new AbSentiment();
+    /**
+     * Processes input text and outputs the classification results.
+     * @param text the input text
+     * @return returns a HTML document with the analysis of the input
+     */
     @RequestMapping("/")
     String home(@RequestParam(value = "text", defaultValue = "") String text) {
 
-        // initialize classifiers
-        LinearClassifier relevanceClassifier = new LinearRelevanceClassifier("relevance-model.svm");
-        LinearClassifier aspectClassifier = new LinearAspectClassifier("aspect-model.svm");
-        LinearClassifier coarseAspectClassifier = new LinearAspectClassifier("aspect-coarse-model.svm", "aspect-coarse-label-mappings.tsv");
-        LinearClassifier sentimentClassifier = new LinearSentimentClassifer("sentiment-model.svm");
-        CrfClassifier aspectTargetClassifier = new CrfClassifier("./");
+        Result result = analyzer.analyzeText(text);
 
-        // process input
-        Preprocessor nlpPipeline = new Preprocessor(text);
-        JCas cas = nlpPipeline.getCas();
+        output = new StringBuilder();
 
-        // classify input
-        String sentimentLabel = sentimentClassifier.getLabel(cas);
-        double sentimentScore = sentimentClassifier.getScore();
-        String relevanceLabel = relevanceClassifier.getLabel(cas);
-        double relevanceScore = relevanceClassifier.getScore();
-        String aspectLabel = aspectClassifier.getLabel(cas);
-        double aspectScore = aspectClassifier.getScore();
-        String aspectCoarseLabel = coarseAspectClassifier.getLabel(cas);
-        double aspectCoarseScore = coarseAspectClassifier.getScore();
-
-        JCas aspectCas = aspectTargetClassifier.processCas(cas);
-
-        sb = new StringBuilder();
-
-        sb.append("<style>margin-bottom:0;.pos {background:green;}.neg {background:red;}</style>");
+        addHeader();
 
         addHeading("Input");
-        openInput(sentimentLabel);
-        addText(aspectCas);
+        openInput(result.getSentiment());
+        addText(result);
         closeInput();
 
         addHeading("Relevance");
-        addResult(relevanceLabel, relevanceScore);
+        addResult(result.getRelevance(), result.getRelevanceScore());
 
         addHeading("Sentiment");
-        addResult(sentimentLabel, sentimentScore);
+        addResult(result.getSentiment(), result.getSentimentScore());
 
         addHeading("Aspect");
-        addResult(aspectLabel, aspectScore);
+        addResult(result.getAspect(), result.getAspectScore());
 
         addHeading("Coarse Aspect");
-        addResult(aspectCoarseLabel, aspectCoarseScore);
+        addResult(result.getAspectCoarse(), result.getAspectCoarseScore());
 
-        return sb.toString();
+        return output.toString();
     }
 
-    public static void main(String[] args) throws Exception {
+    /**
+     * Runs the RESTful server.
+     * @param args execution arguments
+     */
+    public static void main(String[] args) {
         SpringApplication.run(ApplicationController.class, args);
     }
 
+    /**
+     * Adds a Heading to the output.
+     * @param text the heading
+     */
     private void addHeading(String text) {
-        sb.append("<h3>").append(text).append("</h3>");
+        output.append("<h3>").append(text).append("</h3>");
     }
 
+    /**
+     * Adds a label with a confidence score to the output.
+     * @param label the label
+     * @param score the confidence score for the label
+     */
     private void addResult(String label, double score) {
-        sb.append("Label: ").append(label);
-        sb.append("&emsp; Confidence: ").append(formatter.format(score));
+        output.append("Label: ").append(label);
+        output.append("&emsp; Confidence: ").append(formatter.format(score));
     }
 
+    /**
+     * Adds a paragraph tag with a provided class (e.g. sentiment).
+     * @param cssClass the CSS class of the paragraph
+     */
     private void openInput(String cssClass) {
-        sb.append("<p class='").append(cssClass).append("'>");
-    }
-    private void closeInput() {
-        sb.append("</p>");
+        output.append("<p class='").append(cssClass).append("'>");
     }
 
-    private void addText(JCas cas) {
-        boolean aspectActive = false;
-        for (AspectTarget t: select(cas, AspectTarget.class)) {
-            if (aspectActive && t.getAspectTargetType().compareTo("O") == 0) {
-                aspectActive = false;
-                sb.append("</b>");
-            } else if (!aspectActive && t.getAspectTargetType().compareTo("B") == 0) {
-                aspectActive = true;
-                sb.append("<b>");
-            }
-            sb.append(t.getCoveredText()).append(" ");
+    /**
+     * Closes the paragraph tag.
+     */
+    private void closeInput() {
+        output.append("</p>");
+    }
+
+    /**
+     * Adds text from a given {@link Result}. Annotates {@AspectExpression}s
+     * @param result the {@link Result} object
+     */
+    private void addText(Result result) {
+        String text = result.getText();
+        for (AspectExpression e: result.getAspectExpressions()) {
+            text.replaceFirst(e.getAspectExpression(), "<b>"+e.getAspectExpression()+"</b>");
         }
-        if (aspectActive) {
-            sb.append("</b>");
-        }
+        output.append(text);
+    }
+
+    private void addHeader() {
+        output.append("<html><header><title>Analysis</title>");
+        output.append("<style>margin-bottom:0;.pos {background:green;}.neg {background:red;}</style>");
+        output.append("</header>");
     }
 
 }

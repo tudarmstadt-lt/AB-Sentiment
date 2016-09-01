@@ -1,8 +1,6 @@
 package tudarmstadt.lt.ABSentiment.type;
 
-/**
- * Created by eugen on 7/1/16.
- */
+
 public class Opinion {
 
     private char categorySep = '#';
