@@ -6,7 +6,7 @@
     <vendor/>
     <types>
         <typeDescription>
-            <name>tudarmstadt.lt.ABSentiment.type.AspectTarget</name>
+            <name>tudarmstadt.lt.ABSentiment.type.uima.AspectTarget</name>
             <description/>
             <supertypeName>uima.tcas.Annotation</supertypeName>
             <features>
