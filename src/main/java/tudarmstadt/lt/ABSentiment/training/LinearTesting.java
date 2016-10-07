@@ -48,9 +48,11 @@ public class LinearTesting extends LinearTraining {
 
         try {
             OutputStream predStream = new FileOutputStream(predictionFile);
-            out = new OutputStreamWriter(predStream);
+            out = new OutputStreamWriter(predStream, "UTF-8");
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
         Feature[] instance;

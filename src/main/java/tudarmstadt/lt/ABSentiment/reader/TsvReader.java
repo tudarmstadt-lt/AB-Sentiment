@@ -3,9 +3,7 @@ package tudarmstadt.lt.ABSentiment.reader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.type.Sentence;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Iterator;
 
 /**
@@ -31,11 +29,18 @@ public class TsvReader implements InputReader {
             reader = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
         } catch(Exception e) {
-            System.err.println("File could not be opened: " +filename );
-            e.printStackTrace();
-            System.exit(1);
+            System.err.println("Stream could not be opened: " + filename + "\nTrying filename...");
+            try {
+                reader = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+            } catch (FileNotFoundException e1) {
+                System.err.println("File could not be opened: " + filename);
+                e.printStackTrace();
+                System.exit(1);
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
         }
-
     }
 
     @Override

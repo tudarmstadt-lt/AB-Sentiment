@@ -60,7 +60,7 @@ public class DictionaryRelevanceClassifier implements Classifier {
         HashSet<String> set = new HashSet<>();
         try {
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
+                    new InputStreamReader(this.getClass().getResourceAsStream(fileName), "UTF-8"));
 
             String line;
             while ((line = br.readLine()) != null) {
