@@ -16,7 +16,6 @@ public class TsvReader implements InputReader {
     private boolean checkedNext = false;
     private boolean hasNext = false;
 
-    private Document currentDoc;
     private String line;
 
 
@@ -28,7 +27,7 @@ public class TsvReader implements InputReader {
         try {
             reader = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Stream could not be opened: " + filename + "\nTrying filename...");
             try {
                 reader = new BufferedReader(
@@ -48,12 +47,15 @@ public class TsvReader implements InputReader {
         if (!checkedNext) {
             try {
                 line = reader.readLine();
+                while (line.isEmpty()) {
+                    line = reader.readLine();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         checkedNext = false;
-        currentDoc = buildDocument(line);
+        Document currentDoc = buildDocument(line);
         return currentDoc;
     }
 
@@ -61,11 +63,20 @@ public class TsvReader implements InputReader {
     public boolean hasNext() {
         if (!checkedNext) {
             checkedNext = true;
+            line = "";
             try {
-                line = reader.readLine();
-                hasNext = (line != null && !line.isEmpty());
+                // skip empty lines for robustness
+                while (line.isEmpty()) {
+                    line = reader.readLine();
+                    if (line == null) {
+                        hasNext = false;
+                        return false;
+                    }
+                    hasNext = true;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+                hasNext = false;
             }
         }
         return hasNext;
@@ -81,7 +92,7 @@ public class TsvReader implements InputReader {
 
         String[] documentFields = line.split("\\t");
         if (documentFields.length < 2 || documentFields.length > 3) {
-            throw new IllegalArgumentException("The document should at least have 2 fields, with an optional label in the 3rd field!0");
+            throw new IllegalArgumentException("The document should at least have 2 fields, with an optional label in the 3rd field!");
         }
         doc.setDocumentId(documentFields[0]);
         doc.addSentence(new Sentence(documentFields[1]));
@@ -90,8 +101,6 @@ public class TsvReader implements InputReader {
             doc.setLabels(documentFields[2]);
         }
         return doc;
-
-
     }
 
     @Override
