@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class ComputeIdf {
 
+    private int minFrequency = 1;
+
     private int documentCount;
     private int maxTokenId;
 
@@ -28,6 +30,16 @@ public class ComputeIdf {
         documentFrequency  = new HashMap<>();
         preprocessor = new Preprocessor();
         tokenIds = new HashMap<>();
+    }
+
+    /**
+     * Setter Method for the minimum corpus frequency of a term, default 1-
+     * @param minFreq the new minimum corpus frequency for a term
+     */
+    public void setMinFrequency(int minFreq) {
+        if (minFreq >= 0){
+            this.minFrequency = minFreq;
+        }
     }
 
     /**
@@ -67,7 +79,7 @@ public class ComputeIdf {
 
     /**
      * Saves the IDF scores in a tab-separated format:<br>
-     * TOKEN  &emsp; TOKEN_ID &emsp; IDF-SCORE
+     * TOKEN  &emsp; TOKEN_ID &emsp; IDF-SCORE &emsp; FREQUENCY
      * @param idfFile path to the output file
      */
     public void saveIdfScores(String idfFile) {
@@ -76,8 +88,11 @@ public class ComputeIdf {
                     new FileOutputStream(idfFile), "UTF-8"));
             for (String token : tokenIds.keySet()) {
                 int tokenId = tokenIds.get(token);
-                double idfScore = Math.log(documentCount / documentFrequency.get(tokenId));
-                out.write(token + "\t" + tokenId + "\t" + idfScore + "\n");
+                int frequency = documentFrequency.get(tokenId);
+                if (frequency >= minFrequency) {
+                    double idfScore = Math.log(documentCount / frequency);
+                    out.write(token + "\t" + tokenId + "\t" + idfScore + "\t" + frequency + "\n");
+                }
             }
             out.close();
         } catch (Exception e) {

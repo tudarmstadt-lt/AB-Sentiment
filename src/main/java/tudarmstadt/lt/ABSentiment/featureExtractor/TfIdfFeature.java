@@ -24,7 +24,7 @@ public class TfIdfFeature implements FeatureExtractor {
 
     private HashMap<Integer, Double> termIdf = new HashMap<>();
     private HashMap<String, Integer> tokenIds = new HashMap<>();
-    //private HashMap<Integer, String> tokenStrings;
+    private HashMap<Integer, String> tokenStrings = new HashMap<>();
 
     private Preprocessor preprocessor = new Preprocessor();
 
@@ -59,7 +59,7 @@ public class TfIdfFeature implements FeatureExtractor {
      * @param documentText a collection of String tokens, that constitute the document
      * @return a HashMap that stores the token count for each token (tokenId-&gt;count)
      */
-    private HashMap<Integer, Integer> getTokenCounts(Collection<String> documentText) {
+    public HashMap<Integer, Integer> getTokenCounts(Collection<String> documentText) {
         HashMap<Integer, Integer> tokenCounts = new HashMap<>();
         for (String token : documentText) {
             if (token == null) {
@@ -132,6 +132,22 @@ public class TfIdfFeature implements FeatureExtractor {
         return instance;
     }
 
+    public double getIdfScore(String term) {
+        return termIdf.get(getWordId(term));
+    }
+
+    public double getIdfScore(Integer termId) {
+        return termIdf.get(termId);
+    }
+
+    public int getWordId(String term) {
+        return tokenIds.get(term);
+    }
+
+    public String getWordString(Integer termId) {
+        return tokenStrings.get(termId);
+    }
+
     /**
      * Loads a word list with words, wordIds and IDF scores.
      * @param fileName the path to the input file
@@ -149,7 +165,7 @@ public class TfIdfFeature implements FeatureExtractor {
                     maxTokenId = tokenId;
                 }
                 tokenIds.put(tokenLine[0], tokenId);
-                //tokenStrings.put(tokenId, tokenLine[0]);
+                tokenStrings.put(tokenId, tokenLine[0]);
                 termIdf.put(tokenId, Double.parseDouble(tokenLine[2]));
             }
             br.close();
