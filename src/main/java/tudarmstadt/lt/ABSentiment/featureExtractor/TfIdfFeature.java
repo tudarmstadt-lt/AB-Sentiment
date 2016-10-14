@@ -20,7 +20,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class TfIdfFeature implements FeatureExtractor {
 
-    private int maxTokenId = -1;
+    private int maxTokenId = 0;
     private int offset = 0;
 
     private HashMap<Integer, Double> termIdf = new HashMap<>();
@@ -165,10 +165,12 @@ public class TfIdfFeature implements FeatureExtractor {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokenLine = line.split("\\t");
-                int tokenId = Integer.parseInt(tokenLine[1]);
-                if (tokenId > maxTokenId) {
-                    maxTokenId = tokenId;
-                }
+                //int tokenId = Integer.parseInt(tokenLine[1]);
+                //if (tokenId > maxTokenId) {
+                //    maxTokenId = tokenId;
+                //}
+
+                int tokenId = ++maxTokenId;
                 tokenIds.put(tokenLine[0], tokenId);
                 tokenStrings.put(tokenId, tokenLine[0]);
                 termIdf.put(tokenId, Double.parseDouble(tokenLine[2]));
