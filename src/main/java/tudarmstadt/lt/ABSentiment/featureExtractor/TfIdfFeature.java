@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.zip.GZIPInputStream;
 
 /**
  * TF-IDF {@link FeatureExtractor}, extracts normalized TF-IDF scores using a pre-computed IDF file.
@@ -154,9 +155,13 @@ public class TfIdfFeature implements FeatureExtractor {
      */
     private void loadIdfList(String fileName) {
         try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
-
+            BufferedReader br;
+            if (fileName.endsWith(".gz")) {
+                br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(fileName)), "UTF-8"));
+            } else {
+                br = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+            }
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokenLine = line.split("\\t");
