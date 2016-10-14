@@ -1,5 +1,6 @@
-package tudarmstadt.lt.ABSentiment.featureExtractor;
+package tudarmstadt.lt.ABSentiment.training.precomputation;
 
+import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
@@ -7,6 +8,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Computes the IDF Scores from a collection of {@link Document}s.
@@ -84,8 +86,13 @@ public class ComputeIdf {
      */
     public void saveIdfScores(String idfFile) {
         try {
-            Writer out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(idfFile), "UTF-8"));
+            Writer out;
+            if (idfFile.endsWith(".gz")) {
+                out = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(idfFile)), "UTF-8");
+            } else {
+                out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(idfFile), "UTF-8"));
+            }
             for (String token : tokenIds.keySet()) {
                 int tokenId = tokenIds.get(token);
                 int frequency = documentFrequency.get(tokenId);

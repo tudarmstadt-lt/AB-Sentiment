@@ -14,17 +14,20 @@ public class Train extends LinearTraining {
 
     /**
      * Trains the model from an input file
-     * @param args optional: input file and model file
+     * @param args optional: input file and optional model file
      */
     public static void main(String[] args) {
 
-        String trainingFile = "/sentiment-train.tsv";
-        String modelFile = "sentiment-model.svm";
-        String labelMappingsFile  = "sentiment-label-mappings.tsv";
+        trainingFile = "data/sentiment_train.tsv";
+        modelFile = "data/models/sentiment_model.svm";
+        labelMappingsFile  = "data/models/sentiment_label_mappings.tsv";
+        idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
 
         if (args.length == 2) {
             trainingFile = args[0];
             modelFile = args[1];
+        } else if (args.length == 1) {
+            trainingFile = args[0];
         }
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();

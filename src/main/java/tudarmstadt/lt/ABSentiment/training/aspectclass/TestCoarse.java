@@ -19,14 +19,14 @@ public class TestCoarse extends LinearTesting {
      */
     public static void main(String[] args) throws UIMAException, InterruptedException, IOException {
 
-        loadLabelMappings("aspect-coarse-label-mappings.tsv");
+        loadLabelMappings("data/models/aspect_coarse_label_mappings.tsv");
 
-        String inputFile = "/aspect-test.tsv";
-        String modelFile = "aspect-coarse-model.svm";
-        String predictionFile = "aspect-coarse-test_predictions.tsv";
+        testFile = "data/aspect_test.tsv";
+        modelFile = "data/models/aspect_coarse_model.svm";
+        predictionFile = "aspect-coarse_test_predictions.tsv";
 
         if (args.length == 3) {
-            inputFile = args[0];
+            testFile = args[0];
             modelFile = args[1];
             predictionFile = args[2];
         }
@@ -36,7 +36,7 @@ public class TestCoarse extends LinearTesting {
         Model model = loadModel(modelFile);
 
         useCoarseLabels = true;
-        classifyTestSet(inputFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile);
     }
 
 }

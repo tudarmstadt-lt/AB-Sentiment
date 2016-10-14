@@ -41,7 +41,7 @@ public class GoldAspectTarget extends Annotation {
   @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
   /** @generated
-   * @return index of the type  
+   * @return index of the desc.type
    */
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
@@ -53,7 +53,7 @@ public class GoldAspectTarget extends Annotation {
   /** Internal - constructor used by generator 
    * @generated
    * @param addr low level Feature Structure reference
-   * @param type the type of this Feature Structure 
+   * @param type the desc.type of this Feature Structure
    */
   public GoldAspectTarget(int addr, TOP_Type type) {
     super(addr, type);

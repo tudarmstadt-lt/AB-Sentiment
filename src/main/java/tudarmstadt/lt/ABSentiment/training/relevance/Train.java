@@ -3,7 +3,6 @@ package tudarmstadt.lt.ABSentiment.training.relevance;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
-import tudarmstadt.lt.ABSentiment.training.ComputeIdfScores;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
 import java.util.Vector;
@@ -15,21 +14,21 @@ public class Train extends LinearTraining {
 
     /**
      * Trains the model from an input file
-     * @param args optional: input file and model file
+     * @param args optional: input file and optional model file
      */
     public static void main(String[] args) {
 
-        String trainingFile = "/relevance-train.tsv";
-        String modelFile = "relevance-model.svm";
-        String labelMappingsFile  = "relevance-label-mappings.tsv";
+        trainingFile = "data/relevance_train.tsv";
+        modelFile = "data/models/relevance_model.svm";
+        labelMappingsFile  = "data/models/relevance_label_mappings.tsv";
+        idfGazeteerFile = "data/features/relevance_idfterms.tsv";
 
         if (args.length == 2) {
             trainingFile = args[0];
             modelFile = args[1];
+        } else if (args.length == 1) {
+            trainingFile = args[0];
         }
-
-        // IDF scores need to be computed only once per training corpus
-        ComputeIdfScores.computeIdfScores(trainingFile, idfFile);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 

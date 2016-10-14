@@ -17,14 +17,14 @@ public class Test extends LinearTesting {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("aspect-label-mappings.tsv");
+        loadLabelMappings("data/models/aspect_label_mappings.tsv");
 
-        String modelFile = "aspect-model.svm";
-        String inputFile = "/aspect-test.tsv";
-        String predictionFile = "aspect-test_predictions.tsv";
+        modelFile = "data/models/aspect_model.svm.gz";
+        testFile = "data/aspect_test.tsv";
+        predictionFile = "aspect_test_predictions.tsv";
 
         if (args.length == 3) {
-            inputFile = args[0];
+            testFile = args[0];
             modelFile = args[1];
             predictionFile = args[2];
         }
@@ -33,7 +33,7 @@ public class Test extends LinearTesting {
 
         Model model = loadModel(modelFile);
 
-        classifyTestSet(inputFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile);
     }
 
 }

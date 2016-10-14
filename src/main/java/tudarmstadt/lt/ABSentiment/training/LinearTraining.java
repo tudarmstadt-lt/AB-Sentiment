@@ -4,6 +4,7 @@ package tudarmstadt.lt.ABSentiment.training;
 import de.bwaldvogel.liblinear.*;
 import org.apache.uima.jcas.JCas;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.featureExtractor.GazeteerFeature;
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
@@ -13,6 +14,7 @@ import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Training Class that is extended by all linear learners.
@@ -27,8 +29,14 @@ public class LinearTraining {
     private static int featureCount = 0;
     protected static boolean useCoarseLabels = false;
 
-    protected static String idfFile = "idfmap.tsv";
     private static HashMap<String, Integer> labelMappings = new HashMap<>();
+    private static HashMap<Integer, String> labelLookup = new HashMap<>();
+
+    protected static String trainingFile;
+    protected static String modelFile;
+    protected static String labelMappingsFile;
+    protected static String idfGazeteerFile;
+    protected static String idfFile = "data/features/idfmap.tsv.gz";
 
     /**
      * Loads and initializes {@link FeatureExtractor}s for training and testing. Ensures that there is no feature ID overlap between diefferent {@link FeatureExtractor}s.
@@ -44,19 +52,23 @@ public class LinearTraining {
         // FeatureExtractors are added to the features Vector;
         // the offset should be updated for each new FeatureExtractor to prevent overlapping Feature ids
 
-        //FeatureExtractor tfidf2 = new TfIdfFeature(idfFile, offset);
-        //offset += tfidf2.getFeatureCount();
-        //features.add(tfidf2);
+        if (idfGazeteerFile != null) {
+            FeatureExtractor gazeteerIdf = new GazeteerFeature(idfGazeteerFile, offset);
+            offset += gazeteerIdf.getFeatureCount();
+            features.add(gazeteerIdf);
+        }
+
         return features;
     }
 
     /**
-     * Builds the {@link Problem} from a training file, using provided {@link FeatureExtractor}s.
+     * Builds the {@link Problem} from a training file, using provided {@link FeatureExtractor}s. Stores feature vectors in a file.
      * @param trainingFile path to the training file
-     * @param features Vectot of {@link FeatureExtractor}s
+     * @param features Vector of {@link FeatureExtractor}s
+     * @param featureVectorFile path to the file to store the feature vectors
      * @return {@link Problem}, containing the extracted features per instance
      */
-    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
+    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, String featureVectorFile) {
         fr = new TsvReader(trainingFile);
 
         int documentCount = 0;
@@ -72,7 +84,7 @@ public class LinearTraining {
             if (useCoarseLabels) {
                 documentLabels = d.getLabelsCoarse();
             } else {
-                 documentLabels = d.getLabels();
+                documentLabels = d.getLabels();
             }
             for (String l : documentLabels) {
                 Double label = getLabelId(l);
@@ -81,6 +93,10 @@ public class LinearTraining {
                 featureVector.add(combineInstanceFeatures(instanceFeatures));
                 documentCount++;
             }
+        }
+
+        if (featureVectorFile != null) {
+            saveFeatureVectors(featureVectorFile, featureVector, labels);
         }
 
         Problem problem = new Problem();
@@ -92,8 +108,40 @@ public class LinearTraining {
         for (int i = 0; i<labels.size(); i++) {
             problem.y[i] = labels.get(i);
             problem.x[i] = featureVector.get(i);
+
         }
         return problem;
+    }
+
+    /**
+     * Builds the {@link Problem} from a training file, using provided {@link FeatureExtractor}s.
+     * @param trainingFile path to the training file
+     * @param features Vector of {@link FeatureExtractor}s
+     * @return {@link Problem}, containing the extracted features per instance
+     */
+    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
+        return buildProblem(trainingFile, features, null);
+    }
+
+    private static void saveFeatureVectors(String featureVectorFile, Vector<Feature[]> featureVector, Vector<Double> labels) {
+        try {
+            Writer featureOut = new BufferedWriter(new OutputStreamWriter(
+                   new FileOutputStream(featureVectorFile), "UTF-8"));
+            for (int i = 0; i< labels.size(); i++) {
+                featureOut.write(labels.get(i).toString());
+                Feature[] features = featureVector.get(i);
+                for (Feature f : features) {
+                    featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                }
+                featureOut.write("\n");
+            }
+            featureOut.close();
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -161,8 +209,18 @@ public class LinearTraining {
             return labelMappings.get(label).doubleValue();
         } else {
             labelMappings.put(label, ++maxLabelId);
+            labelLookup.put(maxLabelId, label);
             return maxLabelId.doubleValue();
         }
+    }
+
+    /**
+     * Gets the String label for a given label ID.
+     * @param labelId the label ID
+     * @return the String representation of the label
+     */
+    protected static String getLabelString(Double labelId) {
+        return labelLookup.get(labelId.intValue());
     }
 
     /**
@@ -180,16 +238,30 @@ public class LinearTraining {
     }
 
     /**
-     * Saves the {@link Model} in a model file.
+     * Saves the {@link Model} in a model file. The file can be compressed.
+     * @param model the model to be saved
+     * @param modelFile path to the output file
+     * @param saveGzipped boolean flag to enable model compression (recommended)
+     */
+    protected static void saveModel(Model model, String modelFile, boolean saveGzipped) {
+        try {
+            if (saveGzipped) {
+                model.save(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(modelFile + ".gz")), "UTF-8"));
+            } else {
+                model.save(new File(modelFile));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves the {@link Model} in a model file. By default, compresses model and appends .gz to the filename.
      * @param model the model to be saved
      * @param modelFile path to the output file
      */
     protected static void saveModel(Model model, String modelFile) {
-        try {
-            model.save(new File(modelFile));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+       saveModel(model, modelFile, true);
     }
 
 }

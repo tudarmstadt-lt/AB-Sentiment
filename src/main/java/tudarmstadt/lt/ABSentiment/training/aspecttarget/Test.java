@@ -1,7 +1,6 @@
 package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
 import org.cleartk.util.cr.FilesCollectionReader;
 import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
@@ -23,8 +22,8 @@ public class Test {
      * @param args optional: input file and model directory
      */
     public static void main(String[] args) {
-        File testFile = new File("src/main/resources/targets-test.connl");
-        File modelDirectory = new File("");
+        File testFile = new File("data/targets_test.connl");
+        File modelDirectory = new File("data/models/");
 
         if (args.length == 2) {
             testFile = new File(args[0]);
@@ -41,11 +40,7 @@ public class Test {
                             modelDirectory.getAbsolutePath() + "/model.jar"),
                     createEngine(AspectTermWriter.class, AspectTermWriter.OUTPUT_FILE, testFile+"_out",
                             AspectTermWriter.IS_GOLD, true));
-        } catch (ResourceInitializationException e1) {
-            e1.printStackTrace();
-        } catch (UIMAException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (UIMAException | IOException e) {
             e.printStackTrace();
         }
     }

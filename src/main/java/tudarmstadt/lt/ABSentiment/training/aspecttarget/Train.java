@@ -1,6 +1,5 @@
 package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.cleartk.ml.CleartkSequenceAnnotator;
@@ -12,7 +11,6 @@ import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
 import tudarmstadt.lt.ABSentiment.reader.ConllReader;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
@@ -28,8 +26,8 @@ public class Train {
      */
     public static void main(String[] args) throws AnalysisEngineProcessException {
 
-        File modelDirectory = new File("");
-        File trainingFile = new File("src/main/resources/targets-train.connl");
+        File modelDirectory = new File("data/models/");
+        File trainingFile = new File("data/targets_train.connl");
 
         if (args.length == 2) {
             trainingFile = new File(args[0]);
@@ -48,10 +46,6 @@ public class Train {
                             DefaultSequenceDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME,
                             CrfSuiteStringOutcomeDataWriter.class));
             org.cleartk.ml.jar.Train.main(modelDirectory.getAbsolutePath());
-        } catch (UIMAException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

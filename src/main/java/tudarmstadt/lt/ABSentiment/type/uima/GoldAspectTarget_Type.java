@@ -34,7 +34,7 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
  * @generated */
 public class GoldAspectTarget_Type extends Annotation_Type {
   /** @generated 
-   * @return the generator for this type
+   * @return the generator for this desc.type
    */
   @Override
   protected FSGenerator getFSGenerator() {return fsGenerator;}

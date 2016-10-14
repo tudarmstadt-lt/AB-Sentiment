@@ -14,22 +14,25 @@ public class Train extends LinearTraining {
 
     /**
      * Trains the model from an input file
-     * @param args optional: input file and model file
+     * @param args optional: input file and optional model file
      */
     public static void main(String[] args) {
 
-        String trainingFile = "/aspect-train.tsv";
-        String modelFile = "aspect-model.svm";
-        String labelMappingsFile = "aspect-label-mappings.tsv";
+        trainingFile = "data/aspect_train.tsv";
+        modelFile = "data/models/aspect_model.svm";
+        labelMappingsFile = "data/models/aspect_label_mappings.tsv";
+        idfGazeteerFile = "data/features/relevance_idfterms.tsv";
 
         if (args.length == 2) {
             trainingFile = args[0];
             modelFile = args[1];
+        } else if (args.length == 1) {
+            trainingFile = args[0];
         }
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Problem problem = buildProblem(trainingFile, features);
+        Problem problem = buildProblem(trainingFile, features, "vectors");
         Model model = trainModel(problem);
         saveModel(model, modelFile);
 

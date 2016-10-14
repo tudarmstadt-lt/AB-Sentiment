@@ -30,10 +30,10 @@ public class AbSentiment {
      * Constructor that utilizes the classiers and the NLP pipeline.
      */
     public AbSentiment() {
-        relevanceClassifier = new LinearRelevanceClassifier("relevance-model.svm");
-        aspectClassifier = new LinearAspectClassifier("aspect-model.svm");
-        coarseAspectClassifier = new LinearAspectClassifier("aspect-coarse-model.svm", "aspect-coarse-label-mappings.tsv");
-        sentimentClassifier = new LinearSentimentClassifer("sentiment-model.svm");
+        relevanceClassifier = new LinearRelevanceClassifier("data/models/relevance_model.svm");
+        aspectClassifier = new LinearAspectClassifier("data/models/aspect_model.svm");
+        coarseAspectClassifier = new LinearAspectClassifier("data/models/aspect_coarse_model.svm", "data/models/aspect_coarse_label_mappings.tsv");
+        sentimentClassifier = new LinearSentimentClassifer("data/models/sentiment_model.svm");
         aspectTargetClassifier = new CrfClassifier("./");
 
         nlpPipeline = new Preprocessor();
@@ -48,10 +48,11 @@ public class AbSentiment {
         nlpPipeline.processText(text);
         JCas cas = nlpPipeline.getCas();
 
+        Result res = new Result(text);
+
         // extract aspect terms
         JCas aspectCas = aspectTargetClassifier.processCas(cas);
-
-        Result res = new Result(text);
+        extractAspectExpressions(aspectCas, res);
 
         res.setRelevance(relevanceClassifier.getLabel(cas));
         res.setRelevanceScore(relevanceClassifier.getScore());
@@ -59,13 +60,11 @@ public class AbSentiment {
         res.setAspect(aspectClassifier.getLabel(cas));
         res.setAspectScore(aspectClassifier.getScore());
 
-        res.setSentiment(sentimentClassifier.getLabel(cas));
-        res.setSentimentScore(sentimentClassifier.getScore());
-
         res.setAspectCoarse(coarseAspectClassifier.getLabel(cas));
         res.setAspectCoarseScore(coarseAspectClassifier.getScore());
 
-        extractAspectExpressions(aspectCas, res);
+        res.setSentiment(sentimentClassifier.getLabel(cas));
+        res.setSentimentScore(sentimentClassifier.getScore());
 
         return res;
     }

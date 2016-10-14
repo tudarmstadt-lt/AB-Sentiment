@@ -72,6 +72,7 @@ public class LinearClassifier extends LinearTesting implements Classifier {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         return lMap;
     }

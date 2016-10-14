@@ -7,11 +7,11 @@ import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
-import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Testing Class that is extended by all linear testers.
@@ -21,18 +21,30 @@ public class LinearTesting extends LinearTraining {
 
     protected static HashMap<Double, String> labelMappings = new HashMap<>();
 
+    protected static String testFile;
+    protected static String predictionFile;
+
     /**
      * Loads the {@link Model} from a file.
-     * @param modelFile path to the model file
+     * @param modelFile path to the model file, can be gzipped
      * @return the {@link Model} stored in the file
      */
     protected static Model loadModel(String modelFile) {
+        if (modelFile.endsWith(".gz")) {
+            try {
+                return Linear.loadModel(new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(modelFile)), "UTF-8")));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
         try {
             return Linear.loadModel(new File(modelFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Model file not found, trying to load a gzipped file...");
+            // if no model found, try to get a gzipped version
+            return loadModel(modelFile+".gz");
         }
-        return null;
     }
 
     /**
@@ -49,10 +61,9 @@ public class LinearTesting extends LinearTraining {
         try {
             OutputStream predStream = new FileOutputStream(predictionFile);
             out = new OutputStreamWriter(predStream, "UTF-8");
-        } catch (FileNotFoundException e1) {
+        } catch (FileNotFoundException | UnsupportedEncodingException e1) {
             e1.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            System.exit(1);
         }
 
         Feature[] instance;
@@ -110,6 +121,7 @@ public class LinearTesting extends LinearTraining {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }

@@ -17,14 +17,14 @@ public class Test extends LinearTesting {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("relevance-label-mappings.tsv");
+        loadLabelMappings("data/models/relevance_label_mappings.tsv");
 
-        String modelFile = "relevance-model.svm";
-        String inputFile = "/relevance-test.tsv";
-        String predictionFile = "relevance-test_predictions.tsv";
+        modelFile = "data/models/relevance_model.svm";
+        testFile = "data/relevance_test.tsv";
+        predictionFile = "relevance_test_predictions.tsv";
 
         if (args.length == 3) {
-            inputFile = args[0];
+            testFile = args[0];
             modelFile = args[1];
             predictionFile = args[2];
         }
@@ -33,7 +33,7 @@ public class Test extends LinearTesting {
 
         Model model = loadModel(modelFile);
 
-        classifyTestSet(inputFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile);
     }
 
 }

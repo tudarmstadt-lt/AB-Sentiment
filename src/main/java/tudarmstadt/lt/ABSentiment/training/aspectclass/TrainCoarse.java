@@ -15,17 +15,21 @@ public class TrainCoarse extends LinearTraining {
 
     /**
      * Trains the model from an input file
-     * @param args optional: input file and model file
+     * @param args optional: input file and optional model file
      */
     public static void main(String[] args) throws UIMAException, InterruptedException {
 
-        String trainingFile = "/aspect-train.tsv";
-        String modelFile = "aspect-coarse-model.svm";
-        String labelMappingsFile  = "aspect-coarse-label-mappings.tsv";
+
+        trainingFile = "data/aspect_train.tsv";
+        modelFile = "data/models/aspect_coarse_model.svm";
+        labelMappingsFile = "data/models/aspect_coarse_label_mappings.tsv";
+        idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
 
         if (args.length == 2) {
             trainingFile = args[0];
             modelFile = args[1];
+        } else if (args.length == 1) {
+            trainingFile = args[0];
         }
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
