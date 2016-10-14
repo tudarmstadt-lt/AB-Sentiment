@@ -36,8 +36,11 @@ public class LinearTraining {
     protected static String modelFile;
     protected static String labelMappingsFile;
     protected static String featureOutputFile;
+    protected static String featureStatisticsFile;
     protected static String idfGazeteerFile;
     protected static String idfFile = "data/features/idfmap.tsv.gz";
+
+    private static Writer statisticsOut;
 
     /**
      * Loads and initializes {@link FeatureExtractor}s for training and testing. Ensures that there is no feature ID overlap between diefferent {@link FeatureExtractor}s.
@@ -123,6 +126,8 @@ public class LinearTraining {
     protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
         labelMappings = new HashMap<>();
         labelLookup = new HashMap<>();
+        maxLabelId = -1;
+        printFeatureStatistics(features);
         return buildProblem(trainingFile, features, featureOutputFile);
     }
 
@@ -270,13 +275,27 @@ public class LinearTraining {
     }
 
     protected static void printFeatureStatistics(Vector<FeatureExtractor> features) {
-        int start;
-        int end;
-        for (FeatureExtractor feature : features) {
-            start = feature.getOffset()+1;
-            end = feature.getOffset() + feature.getFeatureCount();
-            System.out.println(feature.getClass().getCanonicalName() + "\t" + start + "\t" + end);
-
+        if (featureStatisticsFile != null) {
+            try {
+                statisticsOut = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(featureStatisticsFile), "UTF-8"));
+                statisticsOut.write("training set: "+ trainingFile + "\n");
+                if (featureStatisticsFile != null) {
+                    int start;
+                    int end;
+                    for (FeatureExtractor feature : features) {
+                        start = feature.getOffset() + 1;
+                        end = feature.getOffset() + feature.getFeatureCount();
+                        statisticsOut.append(feature.getClass().getCanonicalName() + "\t" + start + "\t" + end + "\n");
+                    }
+                }
+                statisticsOut.flush();
+            } catch (UnsupportedEncodingException | FileNotFoundException e) {
+                e.printStackTrace();
+                System.exit(1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

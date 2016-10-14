@@ -36,8 +36,6 @@ public class Test extends LinearTesting {
         Model model = loadModel(modelFile);
 
         classifyTestSet(testFile, model, features, predictionFile);
-
-        printFeatureStatistics(features);
     }
 
 }

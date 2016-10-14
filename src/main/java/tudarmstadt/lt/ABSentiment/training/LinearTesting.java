@@ -120,6 +120,7 @@ public class LinearTesting extends LinearTraining {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        printFeatureStatistics(features);
     }
 
     /**

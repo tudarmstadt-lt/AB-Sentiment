@@ -22,6 +22,7 @@ public class TrainCoarse extends LinearTraining {
         trainingFile = "data/aspect_train.tsv";
         modelFile = "data/models/aspect_coarse_model.svm";
         featureOutputFile = "data/aspect_coarse_train.svm";
+        featureStatisticsFile = "data/aspect_coarse_feature_stats.tsv";
         labelMappingsFile = "data/models/aspect_coarse_label_mappings.tsv";
         idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
 

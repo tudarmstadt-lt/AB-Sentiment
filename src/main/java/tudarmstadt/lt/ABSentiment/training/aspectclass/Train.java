@@ -21,6 +21,7 @@ public class Train extends LinearTraining {
         trainingFile = "data/aspect_train.tsv";
         modelFile = "data/models/aspect_model.svm";
         featureOutputFile = "data/aspect_train.svm";
+        featureStatisticsFile = "data/aspect_feature_stats.tsv";
         labelMappingsFile = "data/models/aspect_label_mappings.tsv";
         idfGazeteerFile = "data/features/relevance_idfterms.tsv";
 
