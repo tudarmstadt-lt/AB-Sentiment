@@ -32,6 +32,7 @@ public class LinearTesting extends LinearTraining {
     protected static Model loadModel(String modelFile) {
         if (modelFile.endsWith(".gz")) {
             try {
+                System.err.println("Loading model from: " + modelFile);
                 return Linear.loadModel(new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(modelFile)), "UTF-8")));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -55,12 +56,18 @@ public class LinearTesting extends LinearTraining {
      * @param predictionFile path to the output file to store the predictions
      */
     protected static void classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile) {
+
         InputReader fr = new TsvReader(inputFile);
         Writer out = null;
+        Writer featureOut = null;
 
         try {
             OutputStream predStream = new FileOutputStream(predictionFile);
             out = new OutputStreamWriter(predStream, "UTF-8");
+            if (featureOutputFile != null) {
+                OutputStream vectorStream = new FileOutputStream(featureOutputFile);
+                featureOut = new OutputStreamWriter(vectorStream, "UTF-8");
+            }
         } catch (FileNotFoundException | UnsupportedEncodingException e1) {
             e1.printStackTrace();
             System.exit(1);
@@ -94,7 +101,19 @@ public class LinearTesting extends LinearTraining {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            // vector output
+            if (featureOutputFile != null) {
+                try {
+                    assert featureOut != null;
+                    featureOut.write(prediction.intValue());
+                    for (Feature f : instance) {
+                        featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                    }
+                    featureOut.write("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         try {
             out.close();

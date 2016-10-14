@@ -20,6 +20,7 @@ public class Train extends LinearTraining {
 
         trainingFile = "data/sentiment_train.tsv";
         modelFile = "data/models/sentiment_model.svm";
+        featureOutputFile = "data/sentiment_train.svm";
         labelMappingsFile  = "data/models/sentiment_label_mappings.tsv";
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
 

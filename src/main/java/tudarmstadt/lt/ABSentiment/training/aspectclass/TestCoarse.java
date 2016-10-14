@@ -17,13 +17,15 @@ public class TestCoarse extends LinearTesting {
      * Classifies an input file, given a model
      * @param args optional: input file, model file and the output file
      */
-    public static void main(String[] args) throws UIMAException, InterruptedException, IOException {
+    public static void main(String[] args) {
 
         loadLabelMappings("data/models/aspect_coarse_label_mappings.tsv");
 
         testFile = "data/aspect_test.tsv";
         modelFile = "data/models/aspect_coarse_model.svm";
-        predictionFile = "aspect-coarse_test_predictions.tsv";
+        featureOutputFile = "data/aspect_coarse_test.svm";
+        predictionFile = "aspect_coarse_test_predictions.tsv";
+        idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
 
         if (args.length == 3) {
             testFile = args[0];

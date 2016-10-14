@@ -29,12 +29,13 @@ public class LinearTraining {
     private static int featureCount = 0;
     protected static boolean useCoarseLabels = false;
 
-    private static HashMap<String, Integer> labelMappings = new HashMap<>();
-    private static HashMap<Integer, String> labelLookup = new HashMap<>();
+    private static HashMap<String, Integer> labelMappings;
+    private static HashMap<Integer, String> labelLookup;
 
     protected static String trainingFile;
     protected static String modelFile;
     protected static String labelMappingsFile;
+    protected static String featureOutputFile;
     protected static String idfGazeteerFile;
     protected static String idfFile = "data/features/idfmap.tsv.gz";
 
@@ -120,29 +121,11 @@ public class LinearTraining {
      * @return {@link Problem}, containing the extracted features per instance
      */
     protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
-        return buildProblem(trainingFile, features, null);
+        labelMappings = new HashMap<>();
+        labelLookup = new HashMap<>();
+        return buildProblem(trainingFile, features, featureOutputFile);
     }
 
-    private static void saveFeatureVectors(String featureVectorFile, Vector<Feature[]> featureVector, Vector<Double> labels) {
-        try {
-            Writer featureOut = new BufferedWriter(new OutputStreamWriter(
-                   new FileOutputStream(featureVectorFile), "UTF-8"));
-            for (int i = 0; i< labels.size(); i++) {
-                featureOut.write(labels.get(i).toString());
-                Feature[] features = featureVector.get(i);
-                for (Feature f : features) {
-                    featureOut.write(" " + f.getIndex() + ":" + f.getValue());
-                }
-                featureOut.write("\n");
-            }
-            featureOut.close();
-        } catch (UnsupportedEncodingException | FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Applies {@link FeatureExtractor}s to a given CAS. Each {@link FeatureExtractor} creates an individual array of {@link Feature} entries.
@@ -262,6 +245,39 @@ public class LinearTraining {
      */
     protected static void saveModel(Model model, String modelFile) {
        saveModel(model, modelFile, true);
+    }
+
+    protected static void saveFeatureVectors(String featureVectorFile, Vector<Feature[]> featureVector, Vector<Double> labels) {
+        if (featureVectorFile == null) {return;}
+        try {
+            Writer featureOut = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(featureVectorFile), "UTF-8"));
+            for (int i = 0; i< labels.size(); i++) {
+                featureOut.write(labels.get(i).toString());
+                Feature[] features = featureVector.get(i);
+                for (Feature f : features) {
+                    featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                }
+                featureOut.write("\n");
+            }
+            featureOut.close();
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static void printFeatureStatistics(Vector<FeatureExtractor> features) {
+        int start;
+        int end;
+        for (FeatureExtractor feature : features) {
+            start = feature.getOffset()+1;
+            end = feature.getOffset() + feature.getFeatureCount();
+            System.out.println(feature.getClass().getCanonicalName() + "\t" + start + "\t" + end);
+
+        }
     }
 
 }

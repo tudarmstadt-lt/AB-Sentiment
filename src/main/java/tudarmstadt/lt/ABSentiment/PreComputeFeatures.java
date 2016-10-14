@@ -17,7 +17,7 @@ public class PreComputeFeatures {
         String idfFile = "data/features/idfmap.tsv.gz";
         String corpusFile = "data/corpus/corpus_de.tsv";
 
-        ComputeIdfScores.computeIdfScores(corpusFile, idfFile, 3);
+        ComputeIdfScores.computeIdfScores(corpusFile, idfFile, 5);
 
         String relTrainingFile = "data/relevance_train.tsv";
         String relIdfTermsFile = "data/features/relevance_idfterms.tsv";

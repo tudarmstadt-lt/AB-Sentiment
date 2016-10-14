@@ -21,7 +21,9 @@ public class Test extends LinearTesting {
 
         modelFile = "data/models/relevance_model.svm";
         testFile = "data/relevance_test.tsv";
+        featureOutputFile = "data/relevance_test.svm";
         predictionFile = "relevance_test_predictions.tsv";
+        idfGazeteerFile = "data/features/relevance_idfterms.tsv";
 
         if (args.length == 3) {
             testFile = args[0];
@@ -34,6 +36,8 @@ public class Test extends LinearTesting {
         Model model = loadModel(modelFile);
 
         classifyTestSet(testFile, model, features, predictionFile);
+
+        printFeatureStatistics(features);
     }
 
 }

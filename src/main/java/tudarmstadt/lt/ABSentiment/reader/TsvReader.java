@@ -39,6 +39,7 @@ public class TsvReader implements InputReader {
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             }
+            System.err.println("... success.");
         }
     }
 

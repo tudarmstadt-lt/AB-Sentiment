@@ -42,6 +42,7 @@ public class Test {
                             AspectTermWriter.IS_GOLD, true));
         } catch (UIMAException | IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 

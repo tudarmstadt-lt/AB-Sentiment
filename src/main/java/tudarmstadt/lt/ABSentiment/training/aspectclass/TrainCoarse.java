@@ -17,11 +17,11 @@ public class TrainCoarse extends LinearTraining {
      * Trains the model from an input file
      * @param args optional: input file and optional model file
      */
-    public static void main(String[] args) throws UIMAException, InterruptedException {
-
+    public static void main(String[] args) {
 
         trainingFile = "data/aspect_train.tsv";
         modelFile = "data/models/aspect_coarse_model.svm";
+        featureOutputFile = "data/aspect_coarse_train.svm";
         labelMappingsFile = "data/models/aspect_coarse_label_mappings.tsv";
         idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
 

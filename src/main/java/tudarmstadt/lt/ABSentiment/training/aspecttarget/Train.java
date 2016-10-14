@@ -24,7 +24,7 @@ public class Train {
      * Trains the model from an input file
      * @param args optional: input file and directory for model
      */
-    public static void main(String[] args) throws AnalysisEngineProcessException {
+    public static void main(String[] args) {
 
         File modelDirectory = new File("data/models/");
         File trainingFile = new File("data/targets_train.connl");
@@ -48,6 +48,7 @@ public class Train {
             org.cleartk.ml.jar.Train.main(modelDirectory.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }

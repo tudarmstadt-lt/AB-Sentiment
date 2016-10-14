@@ -20,6 +20,7 @@ public class Train extends LinearTraining {
 
         trainingFile = "data/aspect_train.tsv";
         modelFile = "data/models/aspect_model.svm";
+        featureOutputFile = "data/aspect_train.svm";
         labelMappingsFile = "data/models/aspect_label_mappings.tsv";
         idfGazeteerFile = "data/features/relevance_idfterms.tsv";
 
@@ -32,7 +33,7 @@ public class Train extends LinearTraining {
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Problem problem = buildProblem(trainingFile, features, "vectors");
+        Problem problem = buildProblem(trainingFile, features);
         Model model = trainModel(problem);
         saveModel(model, modelFile);
 
