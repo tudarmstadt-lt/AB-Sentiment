@@ -67,12 +67,11 @@ public class DictionaryAspectClassifier implements Classifier {
                         set.put(split[0], split[1]);
                     }
                 } catch (Exception e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
             br.close();
         } catch (IOException e) {
-            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
         }
         return set;

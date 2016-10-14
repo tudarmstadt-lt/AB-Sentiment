@@ -12,7 +12,7 @@ public class LinearRelevanceClassifier extends LinearClassifier  {
      * @param modelFile path to the SVM model file
      */
     public LinearRelevanceClassifier(String modelFile) {
-        this(modelFile, "relevance-label-mappings.tsv");
+        this(modelFile, "data/models/relevance_label_mappings.tsv");
     }
 
     /**

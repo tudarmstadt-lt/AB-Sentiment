@@ -38,7 +38,7 @@ public class LinearClassifier extends LinearTesting implements Classifier {
         Double prediction = Linear.predictProbability(model, instance, probEstimates);
 
         label = labelMappings.get(prediction);
-        score = probEstimates[Double.valueOf(prediction).intValue()];
+        score = probEstimates[prediction.intValue()];
         return label;
     }
 

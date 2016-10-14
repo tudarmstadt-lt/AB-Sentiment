@@ -12,7 +12,7 @@ public class LinearAspectClassifier extends LinearClassifier {
      * @param modelFile path to the SVM model file
      */
     public LinearAspectClassifier(String modelFile) {
-        this(modelFile, "aspect-label-mappings.tsv");
+        this(modelFile, "data/models/aspect_label_mappings.tsv");
     }
 
     /**

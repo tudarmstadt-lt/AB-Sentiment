@@ -11,7 +11,7 @@ public class LinearSentimentClassifer extends LinearClassifier {
      * @param modelFile path to the SVM model file
      */
     public LinearSentimentClassifer(String modelFile) {
-        this(modelFile, "sentiment-label-mappings.tsv");
+        this(modelFile, "data/models/sentiment_label_mappings.tsv");
     }
 
     /**

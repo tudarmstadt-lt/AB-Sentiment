@@ -78,7 +78,6 @@ public class DictionaryAspectExtractor implements Classifier {
             }
             br.close();
         } catch (IOException e) {
-            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
             return null;
         }
