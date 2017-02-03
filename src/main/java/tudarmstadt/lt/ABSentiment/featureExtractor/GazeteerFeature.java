@@ -43,6 +43,7 @@ public class GazeteerFeature implements FeatureExtractor {
     @Override
     public Feature[] extractFeature(JCas cas) {
         Collection<String> documentText = preprocessor.getTokenStrings(cas);
+        int matchCount = 0;
 
         // find matches
         Vector<Integer> matches = new Vector<>();
@@ -51,6 +52,7 @@ public class GazeteerFeature implements FeatureExtractor {
             term = terms.get(i);
             if (documentText.contains(term)) {
                 matches.add(i+1);
+                matchCount++;
             }
         }
         // construct feature array

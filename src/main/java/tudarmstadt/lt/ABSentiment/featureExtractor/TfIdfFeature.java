@@ -57,7 +57,7 @@ public class TfIdfFeature implements FeatureExtractor {
 
     /**
      * Calculates the token counts for each token in the document.
-     * @param documentText a collection of String tokens, that constitute the document
+     * @param documentText a collection of String tokens that constitute the document
      * @return a HashMap that stores the token count for each token (tokenId-&gt;count)
      */
     public HashMap<Integer, Integer> getTokenCounts(Collection<String> documentText) {
@@ -177,7 +177,6 @@ public class TfIdfFeature implements FeatureExtractor {
             }
             br.close();
         } catch (IOException e) {
-            //logger.log(Level.SEVERE, "Could not load word list " + fileName + "!");
             e.printStackTrace();
         }
     }
