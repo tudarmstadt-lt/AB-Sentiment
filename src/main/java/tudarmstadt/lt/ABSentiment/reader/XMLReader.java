@@ -11,7 +11,7 @@ import tudarmstadt.lt.ABSentiment.type.Sentence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -31,9 +31,10 @@ public class XMLReader implements InputReader {
     private static final String docAttrId = "rid";
     private static final String sentenceTag = "sentence";
     private static final String sentenceAttrId = "id";
-    private static final String opinionTag = "opinion";
+    private static final String opinionTag = "Opinion";
     private static final String opinionAttrCategory = "category";
     private static final String opinionAttrPolarity = "polarity";
+    private static final String opinionAttrTarget = "target";
 
     /**
      * Constructor, creates a {@link org.w3c.dom.Document} from an input file.
@@ -47,7 +48,7 @@ public class XMLReader implements InputReader {
             e.printStackTrace();
         }
         try {
-            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
+            doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -115,16 +116,17 @@ public class XMLReader implements InputReader {
      * @return a Vector of opinions for the sentence
      */
     private Vector<Opinion> getOpinions(Node sNode) {
-        String category,polarity;
+        String category,polarity,target;
         Vector<Opinion> opinions = new Vector<>();
         NodeList oList = ((Element) sNode).getElementsByTagName(opinionTag);
-
         for (int oI = 0; oI < oList.getLength(); oI++) {
             Node oNode = oList.item(oI);
 
             category = ((Element) oNode).getAttribute(opinionAttrCategory);
             polarity = ((Element) oNode).getAttribute(opinionAttrPolarity);
-            opinions.add(new Opinion(category, polarity));
+            target = ((Element) oNode).getAttribute(opinionAttrTarget);
+
+            opinions.add(new Opinion(category, polarity, target));
         }
         return  opinions;
     }

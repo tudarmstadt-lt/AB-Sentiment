@@ -34,7 +34,7 @@ public class TsvReader implements InputReader {
                         new InputStreamReader(new FileInputStream(filename), "UTF-8"));
             } catch (FileNotFoundException e1) {
                 System.err.println("File could not be opened: " + filename);
-                e.printStackTrace();
+                e1.printStackTrace();
                 System.exit(1);
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
