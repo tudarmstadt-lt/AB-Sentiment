@@ -20,7 +20,7 @@ public class DictionaryRelevanceClassifier implements Classifier {
      * Constructor, loads a list of words that indicate non-relevance.
      */
     public DictionaryRelevanceClassifier() {
-        String filename = "/dictionaries/non-relevant";
+        String filename = "/data/dictionaries/non-relevant";
 
         wordList = loadWordList(filename);
     }

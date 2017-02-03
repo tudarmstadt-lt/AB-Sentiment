@@ -22,7 +22,7 @@ public class DictionaryAspectExtractor implements Classifier {
      * Constructor, loads a list of aspect terms
      */
     public DictionaryAspectExtractor() {
-        String filename = "/dictionaries/aspects";
+        String filename = "/data/dictionaries/aspects";
 
         wordList = loadWordList(filename);
     }

@@ -21,7 +21,7 @@ public class DictionaryAspectClassifier implements Classifier {
      * Constructor, loads a map of aspect terms and their aspect classes
      */
     public DictionaryAspectClassifier() {
-        String filename = "/dictionaries/aspect_classes";
+        String filename = "/data/dictionaries/aspect_classes";
 
         wordList = loadWordList(filename);
     }
@@ -29,11 +29,9 @@ public class DictionaryAspectClassifier implements Classifier {
     @Override
     public String getLabel(JCas cas) {
         String text = cas.getDocumentText();
-        for (String term : wordList.keySet()) {
-            if (text.contains(term)) {
-                label = wordList.get(term);
-            }
-        }
+        wordList.keySet().stream().filter(text::contains).forEach(term -> {
+            label = wordList.get(term);
+        });
         return label;
     }
 

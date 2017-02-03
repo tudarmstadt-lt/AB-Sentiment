@@ -3,6 +3,7 @@ package tudarmstadt.lt.ABSentiment.classifier.aspecttarget;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
@@ -10,13 +11,14 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.ml.CleartkSequenceAnnotator;
 import org.cleartk.ml.Instance;
 import org.cleartk.ml.feature.extractor.CleartkExtractor;
+import org.cleartk.ml.feature.extractor.CleartkExtractor.Following;
+import org.cleartk.ml.feature.extractor.CleartkExtractor.Preceding;
 import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
 import org.cleartk.ml.feature.extractor.FeatureExtractor1;
+import org.cleartk.ml.feature.extractor.TypePathExtractor;
 import org.cleartk.ml.feature.function.*;
 import tudarmstadt.lt.ABSentiment.type.uima.AspectTarget;
 import tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget;
-import org.cleartk.ml.feature.extractor.CleartkExtractor.Following;
-import org.cleartk.ml.feature.extractor.CleartkExtractor.Preceding;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +41,23 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
 
         featureExtractors = new ArrayList<>();
 
+        featureExtractors.add(new FeatureFunctionExtractor(new TypePathExtractor(Token.class, "pos/PosValue")));
+
+
+        //featureExtractors.add(new FeatureFunctionExtractor(new TypePathExtractor(Token.class, "lemma")));
+
+        //featureExtractors.add(new CleartkExtractor(Token.class,
+          //      new FeatureFunctionExtractor(new TypePathExtractor(Token.class, "pos/PosValue")),
+            //    new Preceding(2), new Following(2)));
+
+        //featureExtractors.add(new CleartkExtractor(Token.class,
+        //        new FeatureFunctionExtractor(new TypePathExtractor(Token.class, "lemma")),
+        //        new Preceding(2), new Following(2)));
+
+        //featureExtractors.add(new CleartkExtractor(Token.class,
+          //      new FeatureFunctionExtractor(new TypePathExtractor(Token.class, "lemma")),
+            //    new Preceding(3), new Following(3)));
+
         featureExtractors.add(new FeatureFunctionExtractor(
                 new CoveredTextExtractor(), new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(),
                 new NumericTypeFeatureFunction(), new CharacterCategoryPatternFunction<Token>(), new ContainsHyphenFeatureFunction(),
@@ -52,6 +71,7 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
                 new CharacterNgramFeatureFunction(CharacterNgramFeatureFunction.Orientation.LEFT_TO_RIGHT, 0, 5)
         ));
 
+
         featureExtractors.add(
                 new CleartkExtractor(Token.class,
                         new FeatureFunctionExtractor(new CoveredTextExtractor(), new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(),
@@ -64,8 +84,9 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
                                 new CharacterNgramFeatureFunction(CharacterNgramFeatureFunction.Orientation.LEFT_TO_RIGHT, 0, 3),
                                 new CharacterNgramFeatureFunction(CharacterNgramFeatureFunction.Orientation.LEFT_TO_RIGHT, 0, 4),
                                 new CharacterNgramFeatureFunction(CharacterNgramFeatureFunction.Orientation.LEFT_TO_RIGHT, 0, 5)),
-                        new Preceding(3),
-                        new Following(3)));
+                        new Preceding(2),
+                        new Following(2)));
+
 
     }
 

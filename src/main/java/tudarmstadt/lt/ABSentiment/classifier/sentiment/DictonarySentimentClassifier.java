@@ -24,8 +24,8 @@ public class DictonarySentimentClassifier implements Classifier {
      * Constructor, initializes the polarity wordlists.
      */
     public DictonarySentimentClassifier() {
-        String filename_p = "/dictionaries/positive";
-        String filename_n = "/dictionaries/negative";
+        String filename_p = "/data/dictionaries/positive";
+        String filename_n = "/data/dictionaries/negative";
 
         wordList_p = loadWordList(filename_p);
         wordList_n = loadWordList(filename_n);

@@ -26,7 +26,7 @@ public class CrfClassifier {
         try {
             classifier = createEngine(AspectAnnotator.class,
                     GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH,
-                    modelDirectory + "/model.jar");
+                    modelDirectory + "model.jar");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }
