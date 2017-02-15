@@ -1,5 +1,7 @@
 package tudarmstadt.lt.ABSentiment.type;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 
@@ -35,6 +37,50 @@ public class Sentence {
     }
 
     public void addOpinions(Vector<Opinion> opinions) {
-        opinions.addAll(opinions);
+        this.opinions.addAll(opinions);
+    }
+
+    public String getSentiment() throws NoSuchFieldException {
+        Set<String> polarities = new HashSet<>();
+        for (Opinion o: opinions) {
+            try {
+                polarities.add(o.getPolarity());
+            } catch (NoSuchFieldException e) {
+            }
+        }
+        String r = new String();
+        for (String p : polarities) {
+            r += p + " ";
+        }
+        if (r.compareTo("") == 0) {
+            throw new NoSuchFieldException("No Sentiment present");
+        }
+        return r.trim();
+    }
+
+    public String getAspectCategories() throws NoSuchFieldException {
+        Set<String> aspects = new HashSet<>();
+        for (Opinion o: opinions) {
+            try {
+                aspects.add(o.getFineCategory());
+            } catch (NoSuchFieldException e) {
+            }
+        }
+        String r = new String();
+        for (String p : aspects) {
+            r += p + " ";
+        }
+        if (r.compareTo("") == 0) {
+            throw new NoSuchFieldException("No Aspect Category specified");
+        }
+        return r.trim();
+    }
+
+    public Set<String> getTargets() {
+        Set<String> targets = new HashSet<>();
+        for (Opinion o: opinions) {
+           targets.add(o.getTarget());
+        }
+        return targets;
     }
 }

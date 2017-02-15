@@ -7,6 +7,7 @@ public class Opinion {
     private String categoryCoarse;
     private String categoryFine;
     private String polarity;
+    private String target;
 
     public Opinion(String category) {
         this.categoryFine = category;
@@ -17,6 +18,15 @@ public class Opinion {
     public Opinion(String categoryFine, String polarity) {
         this.categoryFine = categoryFine;
         this.polarity = polarity;
+
+        this.categoryCoarse = extractCoarseCategory(categoryFine);
+    }
+
+    public Opinion(String category, String polarity, String target) {
+
+        this.categoryFine = category;
+        this.polarity = polarity;
+        this.target = target;
 
         this.categoryCoarse = extractCoarseCategory(categoryFine);
     }
@@ -42,6 +52,22 @@ public class Opinion {
         } else {
             throw new NoSuchFieldException("The fine category is not set");
         }
+    }
+
+    public String getPolarity() throws NoSuchFieldException {
+        if (polarity != null) {
+            return polarity;
+        } else {
+            throw new NoSuchFieldException("The polarity is not set");
+        }
+    }
+
+    public void setTarget(String t) {
+        this.target = t;
+    }
+
+    public String getTarget() {
+        return target;
     }
 
     public String toString() {

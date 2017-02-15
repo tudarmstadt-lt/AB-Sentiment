@@ -23,6 +23,7 @@ public class Document {
     }
 
     public void setLabels(String label) {
+        label = label.replaceAll("  ", " ").trim();
         labels = label.split(" ");
     }
 
@@ -76,6 +77,10 @@ public class Document {
             }
         }
         return sb.toString().trim();
+    }
+
+    public List<Sentence> getSentences() {
+        return this.sentences;
     }
 
     private String extractCoarseCategory(String categoryFine) {
