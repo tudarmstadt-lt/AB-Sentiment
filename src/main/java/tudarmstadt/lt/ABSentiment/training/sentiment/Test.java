@@ -21,9 +21,12 @@ public class Test extends LinearTesting {
 
         modelFile = "data/models/sentiment_model.svm";
         testFile = "data/sentiment_test.tsv";
+
         featureOutputFile = "data/sentiment_test.svm";
         predictionFile = "sentiment_test_predictions.tsv";
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
+        positiveGazeteerFile = "data/dictionaries/positive";
+        negativeGazeteerFile = "data/dictionaries/negative";
 
         if (args.length == 3) {
             testFile = args[0];

@@ -1,5 +1,8 @@
 package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
+import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.cleartk.ml.CleartkSequenceAnnotator;
@@ -39,6 +42,10 @@ public class Train {
                     FilesCollectionReader.getCollectionReaderWithSuffixes(trainingFile.getAbsolutePath(),
                             ConllReader.CONLL_VIEW, trainingFile.getName()),
                     createEngine(ConllReader.class),
+                    AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin"),
+
+                    AnalysisEngineFactory.createEngine(ClearNlpLemmatizer.class),
                     AnalysisEngineFactory.createEngine(AspectAnnotator.class,
                             CleartkSequenceAnnotator.PARAM_IS_TRAINING, true,
                             DirectoryDataWriterFactory.PARAM_OUTPUT_DIRECTORY,

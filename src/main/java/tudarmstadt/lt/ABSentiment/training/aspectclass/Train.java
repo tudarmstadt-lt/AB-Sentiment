@@ -23,7 +23,7 @@ public class Train extends LinearTraining {
         featureOutputFile = "data/aspect_train.svm";
         featureStatisticsFile = "data/aspect_feature_stats.tsv";
         labelMappingsFile = "data/models/aspect_label_mappings.tsv";
-        idfGazeteerFile = "data/features/relevance_idfterms.tsv";
+        idfGazeteerFile = "data/features/aspect_idfterms.tsv";
 
         if (args.length == 2) {
             trainingFile = args[0];

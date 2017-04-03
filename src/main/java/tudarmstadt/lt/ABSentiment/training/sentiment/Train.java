@@ -24,6 +24,8 @@ public class Train extends LinearTraining {
         featureStatisticsFile = "data/sentiment_feature_stats.tsv";
         labelMappingsFile  = "data/models/sentiment_label_mappings.tsv";
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
+        positiveGazeteerFile = "data/dictionaries/positive";
+        negativeGazeteerFile = "data/dictionaries/negative";
 
         if (args.length == 2) {
             trainingFile = args[0];

@@ -1,6 +1,10 @@
 package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
+import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import org.apache.uima.UIMAException;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
 import org.cleartk.util.cr.FilesCollectionReader;
 import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
@@ -35,6 +39,9 @@ public class Test {
                     FilesCollectionReader.getCollectionReaderWithSuffixes(testFile.getAbsolutePath(),
                             ConllReader.CONLL_VIEW, testFile.getName()),
                     createEngine(ConllReader.class),
+                    AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin"),
+                    AnalysisEngineFactory.createEngine(ClearNlpLemmatizer.class),
                     createEngine(AspectAnnotator.class,
                             GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH,
                             modelDirectory.getAbsolutePath() + "/model.jar"),
