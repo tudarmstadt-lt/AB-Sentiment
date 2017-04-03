@@ -1,6 +1,8 @@
 package tudarmstadt.lt.ABSentiment;
 
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +34,52 @@ public class ApplicationController {
      * @return returns a HTML document with the analysis of the input
      */
     @RequestMapping("/")
-    String home(@RequestParam(value = "text", defaultValue = "") String text) {
+    String home(@RequestParam(value = "text", defaultValue = "") String text, @RequestParam(value="format", defaultValue ="html") String format) {
 
         Result result = analyzer.analyzeText(text);
 
+       if (format.compareTo("json") == 0) {
+            return generateJSONResponse(result);
+       } else {
+           return generateHTMLResponse(result);
+       }
+    }
+
+    private String generateJSONResponse(Result result) {
+        JSONObject out = new JSONObject();
+        out.put("input", result.getText());
+
+        JSONObject sent = new JSONObject();
+        sent.put("label", result.getSentiment());
+        sent.put("score", result.getSentimentScore());
+        out.put("sentiment", sent);
+
+        JSONObject rel = new JSONObject();
+        rel.put("label", result.getRelevance());
+        rel.put("score", result.getRelevanceScore());
+        out.put("relevance", rel);
+
+        JSONObject asp = new JSONObject();
+        asp.put("label", result.getAspect());
+        asp.put("score", result.getAspectScore());
+        out.put("aspect", asp);
+
+
+        JSONObject aspCoarse = new JSONObject();
+        aspCoarse.put("label", result.getAspectCoarse());
+        aspCoarse.put("score", result.getAspectCoarseScore());
+        out.put("aspect_coarse", aspCoarse);
+
+        JSONArray targets = new JSONArray();
+        for (AspectExpression a : result.getAspectExpressions()) {
+            targets.add(a.getAspectExpression());
+        }
+        out.put("targets", targets);
+
+        return out.toString();
+    }
+
+    private String generateHTMLResponse(Result result) {
         output = new StringBuilder();
 
         addHeader();
@@ -149,7 +193,7 @@ public class ApplicationController {
     private void addExamples() {
         addHeading("Examples");
         output.append("<div><ul>");
-        addExample("Hast du schon Deutsche Bahn #Jobs in #Augsburg auf unserer Homepage gesehen ? http://t.co/lAnyuN6WUq http://t.co/IvnaO2OAh7 ");
+        addExample("Hast du schon Deutsche Bahn &#35;Jobs in &#35;Augsburg auf unserer Homepage gesehen ? http://t.co/lAnyuN6WUq http://t.co/IvnaO2OAh7 ");
         addExample("\" Ja geil .. 1 Stunde später zuhause weil sich \"\" \"\" Unbefugte \"\" \"\" in der Bahn aufhielten . :/ \"");
         addExample("Re : MDR Sachsen-Anhalt Zum Glück fahr ich nicht mit der bahn bin immer 100 Prozent pünktlich und das seit Jahren . Komisch das es nie bei der Bahn geht obwohl die fette Kohle bekommen ");
         addExample("Re : Rheinbahn Das kann doch nicht wahr sein . Diese Woche ist die Bahn jedesmal ein paar minuten zu früh dran , weshalb ich sie dann verpasse und meinen Anschlusszug nur mit , Hetzen und Leute beiseite schieben , schaffe . Das Nervt gewaltig . ");
@@ -157,6 +201,8 @@ public class ApplicationController {
         addExample("schlechte Luft am Bahnsteig");
         addExample("Manche Fahrgäste fühlen sich vom Qualm der Mitreisenden belästigt");
         addExample("RT @phornic : Nette Mitarbeiter der Bahn sind nett");
+        addExample("Die App funktioniert nicht , sieht aber gut aus");
+        addExample("Der neue ICE sieht schön aus und hat ein gutes Design");
         output.append("</ul></div>");
     }
 
