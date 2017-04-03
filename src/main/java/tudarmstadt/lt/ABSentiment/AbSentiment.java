@@ -34,7 +34,7 @@ public class AbSentiment {
         aspectClassifier = new LinearAspectClassifier("data/models/aspect_model.svm");
         coarseAspectClassifier = new LinearAspectClassifier("data/models/aspect_coarse_model.svm", "data/models/aspect_coarse_label_mappings.tsv");
         sentimentClassifier = new LinearSentimentClassifer("data/models/sentiment_model.svm");
-        aspectTargetClassifier = new CrfClassifier("./");
+        aspectTargetClassifier = new CrfClassifier("data/models/");
 
         nlpPipeline = new Preprocessor();
     }
