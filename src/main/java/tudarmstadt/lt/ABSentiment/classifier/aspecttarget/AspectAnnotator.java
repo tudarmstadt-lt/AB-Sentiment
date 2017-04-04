@@ -108,7 +108,7 @@ public class AspectAnnotator extends CleartkSequenceAnnotator<String> {
                 try {
                     instance.setOutcome(selectCovered(jCas, GoldAspectTarget.class, token).get(0).getAspectTargetType());
                 } catch (IndexOutOfBoundsException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 instances.add(instance);
             }
