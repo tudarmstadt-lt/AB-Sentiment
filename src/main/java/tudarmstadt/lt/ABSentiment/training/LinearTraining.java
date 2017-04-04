@@ -40,10 +40,11 @@ public class LinearTraining {
     protected static String idfGazeteerFile;
     protected static String idfFile = "data/features/idfmap.tsv.gz";
 
-    private static Writer statisticsOut;
+    protected static String positiveGazeteerFile;
+    protected static String negativeGazeteerFile;
 
     /**
-     * Loads and initializes {@link FeatureExtractor}s for training and testing. Ensures that there is no feature ID overlap between diefferent {@link FeatureExtractor}s.
+     * Loads and initializes {@link FeatureExtractor}s for training and testing. Ensures that there is no feature ID overlap between different {@link FeatureExtractor}s.
      * @return a Vector of {@link FeatureExtractor} entries
      */
     protected static Vector<FeatureExtractor> loadFeatureExtractors() {
@@ -60,6 +61,16 @@ public class LinearTraining {
             FeatureExtractor gazeteerIdf = new GazeteerFeature(idfGazeteerFile, offset);
             offset += gazeteerIdf.getFeatureCount();
             features.add(gazeteerIdf);
+        }
+        if (positiveGazeteerFile!= null) {
+            FeatureExtractor posDict = new GazeteerFeature(positiveGazeteerFile, offset);
+            offset += posDict.getFeatureCount();
+            features.add(posDict);
+        }
+        if (negativeGazeteerFile!= null) {
+            FeatureExtractor negDict = new GazeteerFeature(negativeGazeteerFile, offset);
+            offset += negDict.getFeatureCount();
+            features.add(negDict);
         }
 
         return features;
@@ -91,6 +102,7 @@ public class LinearTraining {
                 documentLabels = d.getLabels();
             }
             for (String l : documentLabels) {
+                if (l.isEmpty()) {continue;}
                 Double label = getLabelId(l);
                 labels.add(label);
                 // combine feature vectors for one instance
@@ -124,11 +136,16 @@ public class LinearTraining {
      * @return {@link Problem}, containing the extracted features per instance
      */
     protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
-        labelMappings = new HashMap<>();
-        labelLookup = new HashMap<>();
+        resetLabelMappings();
         maxLabelId = -1;
         printFeatureStatistics(features);
         return buildProblem(trainingFile, features, featureOutputFile);
+    }
+
+    protected static void resetLabelMappings() {
+        labelMappings = new HashMap<>();
+        labelLookup = new HashMap<>();
+        maxLabelId = -1;
     }
 
 
@@ -277,7 +294,7 @@ public class LinearTraining {
     protected static void printFeatureStatistics(Vector<FeatureExtractor> features) {
         if (featureStatisticsFile != null) {
             try {
-                statisticsOut = new BufferedWriter(new OutputStreamWriter(
+                Writer statisticsOut = new BufferedWriter(new OutputStreamWriter(
                         new FileOutputStream(featureStatisticsFile), "UTF-8"));
                 statisticsOut.write("training set: "+ trainingFile + "\n");
                 if (featureStatisticsFile != null) {
@@ -289,7 +306,7 @@ public class LinearTraining {
                         statisticsOut.append(feature.getClass().getCanonicalName() + "\t" + start + "\t" + end + "\n");
                     }
                 }
-                statisticsOut.flush();
+                statisticsOut.close();
             } catch (UnsupportedEncodingException | FileNotFoundException e) {
                 e.printStackTrace();
                 System.exit(1);

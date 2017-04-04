@@ -19,7 +19,8 @@ import java.util.zip.GZIPInputStream;
  */
 public class LinearTesting extends LinearTraining {
 
-    protected static HashMap<Double, String> labelMappings = new HashMap<>();
+    private static HashMap<String, Integer> labelMappings = new HashMap<>();
+    private static HashMap<Integer, String> labelLookup = new HashMap<>();
 
     protected static String testFile;
     protected static String predictionFile;
@@ -84,34 +85,40 @@ public class LinearTesting extends LinearTraining {
             instance = combineInstanceFeatures(instanceFeatures);
             double[] prob_estimates = new double[model.getNrClass()];
             prediction = Linear.predictProbability(model, instance, prob_estimates);
-
+            System.out.println("-------------\n" + d.getDocumentId());
             for (int j = 0; j < model.getNrClass(); j++) {
-                System.out.println(labelMappings.get(Double.parseDouble(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
+                System.out.println(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
             }
 
+
             try {
+                out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");
                 if (useCoarseLabels) {
                     out.append(d.getLabelsCoarseString());
-                    System.out.println(d.getLabelsCoarseString() + "\t" + labelMappings.get(prediction));
+                    System.out.println(d.getLabelsCoarseString() + "\t" + labelLookup.get(prediction.intValue()));
                 } else {
                     out.append(d.getLabelsString());
-                    System.out.println(d.getLabelsString() + "\t" + labelMappings.get(prediction));
+                    System.out.println(d.getLabelsString() + "\t" + labelLookup.get(prediction.intValue()));
                 }
-                out.append("\t").append(labelMappings.get(prediction)).append("\n");
+                out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
             } catch (IOException e) {
                 e.printStackTrace();
             }
             // vector output
             if (featureOutputFile != null) {
-                try {
-                    assert featureOut != null;
-                    featureOut.write(prediction.intValue());
-                    for (Feature f : instance) {
-                        featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                String[] labels = d.getLabels();
+                if (useCoarseLabels) { labels = d.getLabelsCoarse(); }
+                for (String label : labels) {
+                    try {
+                        assert featureOut != null;
+                        featureOut.write(Double.parseDouble(labelMappings.get(label).toString()) + "");
+                        for (Feature f : instance) {
+                            featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                        }
+                        featureOut.write("\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    featureOut.write("\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         }
@@ -135,8 +142,10 @@ public class LinearTesting extends LinearTraining {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] catLine = line.split("\\t");
-                Double labelId = Double.parseDouble(catLine[0]);
-                labelMappings.put(labelId, catLine[1]);
+                Integer labelId = Integer.parseInt(catLine[0]);
+                labelLookup.put(labelId, catLine[1]);
+
+                labelMappings.put(catLine[1], labelId);
             }
             br.close();
         } catch (IOException e) {
