@@ -5,6 +5,7 @@ import tudarmstadt.lt.ABSentiment.type.Sentence;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.zip.GZIPInputStream;
 
 /**
  * TSV input reader for tab separated input files.<br>
@@ -34,8 +35,13 @@ public class TsvReader implements InputReader {
                         new InputStreamReader(new FileInputStream(filename), "UTF-8"));
             } catch (FileNotFoundException e1) {
                 System.err.println("File could not be opened: " + filename);
-                e1.printStackTrace();
-                System.exit(1);
+                try {
+                    System.err.println("Trying gzipped file: " + filename + ".gz ...");
+                    reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename + ".gz")), "UTF-8"));
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                    System.exit(1);
+                }
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             }
