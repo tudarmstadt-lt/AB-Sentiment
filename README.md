@@ -50,3 +50,6 @@ public class MyClass {
 
 ## Licence
 This software is published under the Apache Software Licence 2.0
+
+## Third party license
+This software uses the jblas library. The copyright link is : https://github.com/mikiobraun/jblas/blob/e1de8249b28137fa94a79558ee90ff037fd7c47d/COPYING
