@@ -20,13 +20,15 @@ public class Test extends LinearTesting {
         loadLabelMappings("data/models/sentiment_label_mappings.tsv");
 
         modelFile = "data/models/sentiment_model.svm";
-        testFile = "data/sentiment_test.tsv";
+        testFile = "data/new_financial_test.tsv";
 
         featureOutputFile = "data/sentiment_test.svm";
         predictionFile = "sentiment_test_predictions.tsv";
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
         positiveGazeteerFile = "data/dictionaries/positive";
         negativeGazeteerFile = "data/dictionaries/negative";
+        gloveFile = "data/wordEmbedding/glove_50_dimension.txt";
+        w2vFile = "data/wordEmbedding/w2v_50_dimension.bin";
 
         if (args.length == 3) {
             testFile = args[0];
@@ -39,6 +41,14 @@ public class Test extends LinearTesting {
         Model model = loadModel(modelFile);
 
         classifyTestSet(testFile, model, features, predictionFile);
+
+        printConfusionMatrix();
+        System.out.println("\n");
+        System.out.println("True positive     : "+getTruePositive());
+        System.out.println("Accuracy          : "+getOverallAccuracy());
+        System.out.println("Overall Precision : "+getOverallPrecision());
+        System.out.println("Overall Recall    : "+getOverallRecall());
+        System.out.println("Overall FMeasure  : "+getOverallFMeasure());
     }
 
 }

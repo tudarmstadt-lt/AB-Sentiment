@@ -3,6 +3,7 @@ package tudarmstadt.lt.ABSentiment.training;
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
+import tudarmstadt.lt.ABSentiment.featureExtractor.util.ConfusionMatrix;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
@@ -24,6 +25,16 @@ public class LinearTesting extends LinearTraining {
 
     protected static String testFile;
     protected static String predictionFile;
+
+    private static float truePositive = 0.0F;
+    private static float trueNegative = 0.0F;
+    private static float falsePositive = 0.0F;
+    private static float falseNegative = 0.0F;
+
+    private static String goldLabel;
+    private static String predictedLabel;
+
+    private static ConfusionMatrix confusionMatrix;
 
     /**
      * Loads the {@link Model} from a file.
@@ -76,6 +87,13 @@ public class LinearTesting extends LinearTraining {
 
         Feature[] instance;
         Vector<Feature[]> instanceFeatures;
+
+        confusionMatrix = new ConfusionMatrix();
+        for (int j = 0; j < model.getNrClass(); j++) {
+            confusionMatrix.addLabel(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")));
+        }
+
+        confusionMatrix.createMatrix();
         for (Document d : fr) {
             preprocessor.processText(d.getDocumentText());
             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
@@ -90,16 +108,20 @@ public class LinearTesting extends LinearTraining {
                 System.out.println(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
             }
 
-
             try {
                 out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");
                 if (useCoarseLabels) {
                     out.append(d.getLabelsCoarseString());
-                    System.out.println(d.getLabelsCoarseString() + "\t" + labelLookup.get(prediction.intValue()));
+                    goldLabel = d.getLabelsCoarseString();
+                    predictedLabel = labelLookup.get(prediction.intValue());
+                    System.out.println(goldLabel + "\t" + predictedLabel);
                 } else {
                     out.append(d.getLabelsString());
-                    System.out.println(d.getLabelsString() + "\t" + labelLookup.get(prediction.intValue()));
+                    goldLabel = d.getLabelsString();
+                    predictedLabel= labelLookup.get(prediction.intValue());
+                    System.out.println(goldLabel + "\t" + predictedLabel);
                 }
+                confusionMatrix.updateMatrix(predictedLabel, goldLabel);
                 out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -152,5 +174,49 @@ public class LinearTesting extends LinearTraining {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    protected static void printConfusionMatrix(){
+        confusionMatrix.printConfusionMatrix();
+    }
+
+    protected static double getRecallForLabel(String label){
+        return confusionMatrix.getRecallForLabel(label);
+    }
+
+    protected static double getPrecisionForLabel(String label){
+        return confusionMatrix.getPrecisionForLabel(label);
+    }
+
+    protected static HashMap<String, Float> getRecallForAll(){
+        return confusionMatrix.getRecallForAllLabels();
+    }
+
+    protected static HashMap<String, Float> getPrecisionForAll(){
+        return confusionMatrix.getPrecisionForAllLabels();
+    }
+
+    protected static HashMap<String, Float> getFMeasureForAll(){
+        return confusionMatrix.getFMeasureForAllLabels();
+    }
+
+    protected static int getTruePositive(){
+        return confusionMatrix.getTruePositive();
+    }
+
+    protected static float getOverallAccuracy(){
+        return confusionMatrix.getOverallAccuracy();
+    }
+
+    protected static float getOverallRecall(){
+        return confusionMatrix.getOverallRecall();
+    }
+
+    protected static float getOverallPrecision(){
+        return confusionMatrix.getOverallPrecision();
+    }
+
+    protected static float getOverallFMeasure(){
+        return confusionMatrix.getOverallFMeasure()   ;
     }
 }
