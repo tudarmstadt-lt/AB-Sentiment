@@ -188,7 +188,7 @@ public class ApplicationController {
 
 
     /**
-     * Adds a list of example items that are active for testing.
+     * Adds a list of example items that are active for TestingGlove.
      */
     private void addExamples() {
         addHeading("Examples");
@@ -207,7 +207,7 @@ public class ApplicationController {
     }
 
     /**
-     * Adds an clickable example item for convenient testing.
+     * Adds an clickable example item for convenient TestingGlove.
      * @param text the input string
      */
     private void addExample(String text) {

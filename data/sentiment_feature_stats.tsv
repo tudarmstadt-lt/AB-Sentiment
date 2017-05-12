@@ -1,0 +1,7 @@
+training set: data/new_financial_train.tsv
+tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature	1	112050
+tudarmstadt.lt.ABSentiment.featureExtractor.GazeteerFeature	112051	112110
+tudarmstadt.lt.ABSentiment.featureExtractor.GazeteerFeature	112111	129737
+tudarmstadt.lt.ABSentiment.featureExtractor.GazeteerFeature	129738	149699
+tudarmstadt.lt.ABSentiment.featureExtractor.WordEmbeddingFeature	149700	149749
+tudarmstadt.lt.ABSentiment.featureExtractor.WordEmbeddingFeature	149750	149799
