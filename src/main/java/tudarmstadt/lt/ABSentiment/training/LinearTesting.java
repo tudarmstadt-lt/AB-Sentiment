@@ -26,11 +26,6 @@ public class LinearTesting extends LinearTraining {
     protected static String testFile;
     protected static String predictionFile;
 
-    private static float truePositive = 0.0F;
-    private static float trueNegative = 0.0F;
-    private static float falsePositive = 0.0F;
-    private static float falseNegative = 0.0F;
-
     private static String goldLabel;
     private static String predictedLabel;
 
@@ -204,9 +199,7 @@ public class LinearTesting extends LinearTraining {
         return confusionMatrix.getTruePositive();
     }
 
-    protected static float getOverallAccuracy(){
-        return confusionMatrix.getOverallAccuracy();
-    }
+    protected static float getOverallAccuracy(){return confusionMatrix.getOverallAccuracy(); }
 
     protected static float getOverallRecall(){
         return confusionMatrix.getOverallRecall();
