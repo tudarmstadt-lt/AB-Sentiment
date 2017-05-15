@@ -18,7 +18,7 @@ public class Train extends LinearTraining {
      */
     public static void main(String[] args) {
 
-        trainingFile = "data/new_financial_train.tsv";
+        trainingFile = "data/sentiment_train.tsv";
         modelFile = "data/models/sentiment_model.svm";
         featureOutputFile = "data/sentiment_train.svm";
         featureStatisticsFile = "data/sentiment_feature_stats.tsv";
@@ -26,8 +26,8 @@ public class Train extends LinearTraining {
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
         positiveGazeteerFile = "data/dictionaries/positive";
         negativeGazeteerFile = "data/dictionaries/negative";
-        gloveFile = "data/wordEmbedding/glove_50_dimension.txt";
-        w2vFile = "data/wordEmbedding/w2v_50_dimension.bin";
+        gloveFile = null;
+        w2vFile = null;
 
         if (args.length == 2) {
             trainingFile = args[0];
