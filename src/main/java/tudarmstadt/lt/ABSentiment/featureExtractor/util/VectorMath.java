@@ -4,6 +4,7 @@ import org.jblas.FloatMatrix;
 
 /**
  * A Java Class for some vector math utilities
+ * The original code comes from https://github.com/igorbrigadir/word2vec-java
  */
 public class VectorMath {
 

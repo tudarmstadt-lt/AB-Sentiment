@@ -17,6 +17,7 @@ import org.jblas.FloatMatrix;
 
 /*
  * A Java wrapper for W2v - Only Reads a pre trained model!
+ * The original code comes from https://github.com/igorbrigadir/word2vec-java
  */
 public class W2vSpace extends GenericWordSpace<FloatMatrix> {
 

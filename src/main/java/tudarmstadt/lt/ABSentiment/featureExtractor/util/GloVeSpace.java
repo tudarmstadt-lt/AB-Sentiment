@@ -18,6 +18,7 @@ import org.jblas.FloatMatrix;
 
 /**
  * A Java wrapper for GloVe - Only Reads a pre trained model!
+ * The original code comes from https://github.com/igorbrigadir/word2vec-java
  */
 public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
 

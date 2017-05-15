@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Abstract class for generic word space. Specifies common methods.
+ * The original code comes from https://github.com/igorbrigadir/word2vec-java
  */
 public abstract class GenericWordSpace<T>{
 
