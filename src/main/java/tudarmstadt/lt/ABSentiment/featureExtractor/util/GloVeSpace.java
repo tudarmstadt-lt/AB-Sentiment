@@ -1,8 +1,5 @@
 package tudarmstadt.lt.ABSentiment.featureExtractor.util;
 
-/**
- * Created by abhishek on 10/5/17.
- */
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -19,16 +16,20 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jblas.FloatMatrix;
 
-/*
+/**
  * A Java wrapper for GloVe - Only Reads a pre trained model!
  */
 public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
 
     private static int vectorLength;
 
-    /*
- * Read binary model, includes bias term, context vectors:
- */
+    /**
+     * Reads a binary model
+     * @param vocabFile vocabulary file, containing all the words in the binary file
+     * @param gloVeModel path containing the binary model
+     * @param norm specifies if the word representation is to be normalised
+     * @return a model containing the word representation of all the words in the vocabulary
+     */
     public static GloVeSpace load(String vocabFile, String gloVeModel, boolean norm) {
         GloVeSpace model = new GloVeSpace();
         try {
@@ -59,8 +60,12 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
         return model;
     }
 
-    /*
-     * Read .txt or .txt.gz model:
+    /**
+     * Reads a .txt or .txt.gz model
+     * @param gloVeModel path containing the model
+     * @param norm specifies if the word representation is to be normalised
+     * @param header specifies if the first word and it's representation is to be printed
+     * @return a model containing the word representation of all the words
      */
     public static GloVeSpace load(String gloVeModel, boolean norm, boolean header) {
         GloVeSpace model = new GloVeSpace();
@@ -108,9 +113,12 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
         return model;
     }
 
-    /*
-   * Read a Vector - Array from binary file:
-   */
+    /**
+     * Read a Vector - Array from binary file
+     * @param ds input data stream
+     * @param vectorSize length of each word vector
+     * @return an array of float containing the word vector representation
+     */
     private static float[] readFloatVector(DataInputStream ds, int vectorSize) throws IOException {
         float[] vector = new float[vectorSize];
         for (int j = 0; j < vectorSize; j++) {
@@ -121,8 +129,10 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
         return vector;
     }
 
-    /*
-     * Read a Vector - Array from text file:
+    /**
+     * Read a Vector - Array from text file
+     * @param line a single input line containing the word and it's representation
+     * @return an array of float containing the word vector representation
      */
     private static float[] readFloatVector(String[] line) throws IOException {
         int vectorSize = line.length;
@@ -139,6 +149,7 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
         return vector;
     }
 
+    @Override
     public int getVectorLength(){
         return vectorLength;
     }
@@ -147,14 +158,4 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
     public double cosineSimilarity(FloatMatrix vec1, FloatMatrix vec2) {
         return VectorMath.cosineSimilarity(vec1, vec2);
     }
-
-    @Override
-    public double distanceSimilarity(FloatMatrix vec1, FloatMatrix vec2) {
-        return VectorMath.distanceSimilarity(vec1, vec2);
-    }
-
-    public FloatMatrix additiveSentenceVector(List<FloatMatrix> vectors) {
-        return VectorMath.normalize(VectorMath.addFloatMatrix(vectors));
-    }
-
 }
