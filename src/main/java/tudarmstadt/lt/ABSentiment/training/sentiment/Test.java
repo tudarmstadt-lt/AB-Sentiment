@@ -42,13 +42,6 @@ public class Test extends LinearTesting {
 
         classifyTestSet(testFile, model, features, predictionFile);
 
-        printConfusionMatrix();
-        System.out.println("\n");
-        System.out.println("True positive     : " + getTruePositive());
-        System.out.println("Accuracy          : " + getOverallAccuracy());
-        System.out.println("Overall Precision : " + getOverallPrecision());
-        System.out.println("Overall Recall    : " + getOverallRecall());
-        System.out.println("Overall FMeasure  : " + getOverallFMeasure());
     }
 
 }

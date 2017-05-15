@@ -48,7 +48,7 @@ public class LinearTraining {
     protected static String w2vFile;
 
     /**
-     * Loads and initializes {@link FeatureExtractor}s for training and TestingGlove. Ensures that there is no feature ID overlap between different {@link FeatureExtractor}s.
+     * Loads and initializes {@link FeatureExtractor}s for training and testing. Ensures that there is no feature ID overlap between different {@link FeatureExtractor}s.
      * @return a Vector of {@link FeatureExtractor} entries
      */
     protected static Vector<FeatureExtractor> loadFeatureExtractors() {
@@ -61,37 +61,31 @@ public class LinearTraining {
         // FeatureExtractors are added to the features Vector;
         // the offset should be updated for each new FeatureExtractor to prevent overlapping Feature ids
 
-        System.out.println("Offset after tfidf : "+ offset);
         if (idfGazeteerFile != null) {
             FeatureExtractor gazeteerIdf = new GazeteerFeature(idfGazeteerFile, offset);
             offset += gazeteerIdf.getFeatureCount();
             features.add(gazeteerIdf);
         }
-        System.out.println("Offset after gaz : "+ offset);
         if (positiveGazeteerFile!= null) {
             FeatureExtractor posDict = new GazeteerFeature(positiveGazeteerFile, offset);
             offset += posDict.getFeatureCount();
             features.add(posDict);
         }
-        System.out.println("Offset after pos gaz : "+ offset);
         if (negativeGazeteerFile!= null) {
             FeatureExtractor negDict = new GazeteerFeature(negativeGazeteerFile, offset);
             offset += negDict.getFeatureCount();
             features.add(negDict);
         }
-        System.out.println("Offset after neg gaz : "+ offset);
         if (gloveFile!=null){
             FeatureExtractor glove = new WordEmbeddingFeature(gloveFile, 1, offset);
             offset+=glove.getFeatureCount();
             features.add(glove);
         }
-        System.out.println("Offset after glove : "+ offset);
         if(w2vFile!=null){
             FeatureExtractor word2vec = new WordEmbeddingFeature(w2vFile, 2, offset);
             offset+=word2vec.getFeatureCount();
             features.add(word2vec);
         }
-        System.out.println("Offset after w2v : "+ offset);
 
         return features;
     }

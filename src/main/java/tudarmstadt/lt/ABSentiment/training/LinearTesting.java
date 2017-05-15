@@ -144,7 +144,15 @@ public class LinearTesting extends LinearTraining {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         printFeatureStatistics(features);
+        printConfusionMatrix();
+        System.out.println("\n");
+        System.out.println("True positive     : " + getTruePositive());
+        System.out.println("Accuracy          : " + getOverallAccuracy());
+        System.out.println("Overall Precision : " + getOverallPrecision());
+        System.out.println("Overall Recall    : " + getOverallRecall());
+        System.out.println("Overall FMeasure  : " + getOverallFMeasure());
     }
 
     /**
