@@ -12,7 +12,7 @@ import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 import java.util.Collection;
 
 /**
- * Created by abhishek on 10/5/17.
+ * Word Embedding {@link FeatureExtractor}, extracts the averaged word representation for an instance using a word embedding file.
  */
 public class WordEmbeddingFeature implements FeatureExtractor {
 
@@ -22,7 +22,11 @@ public class WordEmbeddingFeature implements FeatureExtractor {
     int wordRepresentation;
     GenericWordSpace<FloatMatrix> model;
 
-
+    /**
+     * Constructor; specifies the word embedding file. The type of word embedding. Feature offset is set to '0' by default.
+     * @param embeddingFile path to the file containing word embeddings
+     * @param wordRepresentation specifies the type of word embedding to be used
+     */
     public WordEmbeddingFeature(String embeddingFile, int wordRepresentation){
         this.embeddingFile = embeddingFile;
         this.wordRepresentation = wordRepresentation;
@@ -34,6 +38,12 @@ public class WordEmbeddingFeature implements FeatureExtractor {
         featureCount = model.getVectorLength();
     }
 
+    /**
+     * Constructor; specifies the word embedding file. The type of word embedding. Feature offset is specified.
+     * @param embeddingFile path to the file containing word embeddings
+     * @param wordRepresentation specifies the type of word embedding to be used
+     * @param offset the feature offset, all features start from this offset
+     */
     public WordEmbeddingFeature(String embeddingFile, int wordRepresentation, int offset){
         this(embeddingFile, wordRepresentation);
         this.offset = offset;

@@ -1,8 +1,5 @@
 package tudarmstadt.lt.ABSentiment.featureExtractor.util;
 
-/**
- * Created by abhishek on 10/5/17.
- */
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -25,13 +22,22 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
 
     private static int vectorLength;
 
-    /*
-     * Load vectors from a text file - 1 word per line.
+    /**
+     * Reads a .txt or .txt.gz model. Norm is set to 'true' and header is set to 'false' by default.
+     * @param word2vecModel path containing the model
+     * @return a model containing the word representation of all the words
      */
     public W2vSpace loadText(String word2vecModel) {
         return loadText(word2vecModel, true, false);
     }
 
+    /**
+     * Reads a .txt or .txt.gz model
+     * @param word2vecModel path containing the model
+     * @param norm specifies if the word representation is to be normalised
+     * @param header specifies if the first word and it's representation is to be printed
+     * @return a model containing the word representation of all the words
+     */
     public W2vSpace loadText(String word2vecModel, boolean norm, boolean header) {
         W2vSpace model = new W2vSpace();
         try {
@@ -78,31 +84,21 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
         return model;
     }
 
-    /*
-     * Read a Vector - Array from text file:
-     */
-    private static float[] readFloatVector(String[] line) throws IOException {
-        int vectorSize = line.length;
-        float[] vector = new float[vectorSize - 1];
-        for (int j = 1; j < vectorSize; j++) {
-            try {
-                float d = Float.parseFloat(line[j]);
-                vector[j - 1] = d;
-            } catch (NumberFormatException e) {
-                System.err.println("ERROR Parsing: " + line + " " + e.getMessage());
-                vector[j - 1] = 0.0f;
-            }
-        }
-        return vector;
-    }
-
-    /*
-     * Load vectors from w2v C binary file
+    /**
+     * Reads a binary model. Norm is set to 'true' by default.
+     * @param word2vecModel path containing the binary model
+     * @return a model containing the word representation of all the words in the vocabulary
      */
     public static W2vSpace load(String word2vecModel) {
         return load(word2vecModel, true);
     }
 
+    /**
+     * Reads a binary model. Norm is specified.
+     * @param word2vecModel path containing the binary model
+     * @param norm specifies if the word representation is to be normalised
+     * @return a model containing the word representation of all the words in the vocabulary
+     */
     public static W2vSpace load(String word2vecModel, boolean norm) {
         W2vSpace model = new W2vSpace();
         try (DataInputStream ds = new DataInputStream(new BufferedInputStream(new FileInputStream(word2vecModel), 131072))) {
@@ -128,8 +124,10 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
         return model;
     }
 
-    /*
-     * Read a string from the binary model (System default should be UTF-8):
+    /**
+     * Read a string from the binary model (System default should be UTF-8)
+     * @param ds input data stream
+     * @return a String from the model
      */
     public static String readString(DataInputStream ds) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
@@ -146,8 +144,31 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
         return word;
     }
 
-    /*
-     * Read a Vector - Array of Floats from the binary model:
+    /**
+     * Read a Vector - Array from text file
+     * @param line a single input line containing the word and it's representation
+     * @return an array of float containing the word vector representation
+     */
+    private static float[] readFloatVector(String[] line) throws IOException {
+        int vectorSize = line.length;
+        float[] vector = new float[vectorSize - 1];
+        for (int j = 1; j < vectorSize; j++) {
+            try {
+                float d = Float.parseFloat(line[j]);
+                vector[j - 1] = d;
+            } catch (NumberFormatException e) {
+                System.err.println("ERROR Parsing: " + line + " " + e.getMessage());
+                vector[j - 1] = 0.0f;
+            }
+        }
+        return vector;
+    }
+
+    /**
+     * Read a Vector - Array of Floats from the binary model
+     * @param ds input data stream
+     * @param vectorSize length of each word vector
+     * @return an array of float containing the word vector representation
      */
     public static float[] readFloatVector(DataInputStream ds, int vectorSize) throws IOException {
         // Vector is an Array of Floats...
@@ -171,7 +192,7 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
         return vector;
     }
 
-
+    @Override
     public int getVectorLength(){
         return vectorLength;
     }
@@ -180,15 +201,4 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
     public double cosineSimilarity(FloatMatrix vec1, FloatMatrix vec2) {
         return VectorMath.cosineSimilarity(vec1, vec2);
     }
-
-    @Override
-    public double distanceSimilarity(FloatMatrix vec1, FloatMatrix vec2) {
-        return VectorMath.distanceSimilarity(vec1, vec2);
-    }
-
-    public FloatMatrix additiveSentenceVector(List<FloatMatrix> vectors) {
-        return VectorMath.normalize(VectorMath.addFloatMatrix(vectors));
-
-    }
-
 }
