@@ -6,6 +6,7 @@ import org.apache.uima.jcas.JCas;
 import org.jblas.FloatMatrix;
 import tudarmstadt.lt.ABSentiment.featureExtractor.util.GenericWordSpace;
 import tudarmstadt.lt.ABSentiment.featureExtractor.util.GloVeSpace;
+import tudarmstadt.lt.ABSentiment.featureExtractor.util.VectorMath;
 import tudarmstadt.lt.ABSentiment.featureExtractor.util.W2vSpace;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
@@ -62,9 +63,10 @@ public class WordEmbeddingFeature implements FeatureExtractor {
                 num++;
             }
         }
-//        wordVector = VectorMath.normalize(wordVector);
-//        wordVector = wordVector.div(num);
         Feature[] instance = new Feature[featureCount];
+        if(num!=0){
+            wordVector = VectorMath.normalize(wordVector);
+        }
         for(int i=0;i<featureCount;i++){
             instance[i] = new FeatureNode(i+offset, wordVector.get(i));
         }
