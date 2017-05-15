@@ -26,6 +26,8 @@ public class Train extends LinearTraining {
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
         positiveGazeteerFile = "data/dictionaries/positive";
         negativeGazeteerFile = "data/dictionaries/negative";
+        gloveFile = null;
+        w2vFile = null;
 
         if (args.length == 2) {
             trainingFile = args[0];

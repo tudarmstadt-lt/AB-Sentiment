@@ -27,6 +27,8 @@ public class Test extends LinearTesting {
         idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
         positiveGazeteerFile = "data/dictionaries/positive";
         negativeGazeteerFile = "data/dictionaries/negative";
+        gloveFile = null;
+        w2vFile = null;
 
         if (args.length == 3) {
             testFile = args[0];
@@ -39,6 +41,14 @@ public class Test extends LinearTesting {
         Model model = loadModel(modelFile);
 
         classifyTestSet(testFile, model, features, predictionFile);
+
+        printConfusionMatrix();
+        System.out.println("\n");
+        System.out.println("True positive     : " + getTruePositive());
+        System.out.println("Accuracy          : " + getOverallAccuracy());
+        System.out.println("Overall Precision : " + getOverallPrecision());
+        System.out.println("Overall Recall    : " + getOverallRecall());
+        System.out.println("Overall FMeasure  : " + getOverallFMeasure());
     }
 
 }
