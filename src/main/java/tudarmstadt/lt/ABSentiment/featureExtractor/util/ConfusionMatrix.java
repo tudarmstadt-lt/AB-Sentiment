@@ -37,7 +37,7 @@ public class ConfusionMatrix {
      * Prints the confusion matrix
      */
     public void printConfusionMatrix(){
-        System.out.println("Gold labels      : Left to Right");
+        System.out.println("\nGold labels      : Left to Right");
         System.out.println("Predicted labels : Top to bottom");
         for(String label:labels){
             System.out.print("\t"+label);
