@@ -30,15 +30,21 @@ public class ConfusionMatrix {
      * @param goldLabel the actual gold label for the instance
      */
     public void updateMatrix(String predictedLabel, String goldLabel){
-        matrix.put(new Pair<>(predictedLabel, goldLabel), matrix.get(new Pair<>(predictedLabel, goldLabel))+1);
+        Pair entry = new Pair(predictedLabel, goldLabel);
+        if (matrix.get(entry) == null) {
+            matrix.put(entry, 1);
+        } else {
+            matrix.put(entry, matrix.get(entry)+1);
+
+        }
     }
 
     /**
      * Prints the confusion matrix
      */
     public void printConfusionMatrix(){
-        System.out.println("Gold labels      : Left to Right");
-        System.out.println("Predicted labels : Top to bottom");
+        System.out.println("Gold labels:\t Left to Right");
+        System.out.println("Predicted labels:\t Top to bottom");
         for(String label:labels){
             System.out.print("\t"+label);
         }
