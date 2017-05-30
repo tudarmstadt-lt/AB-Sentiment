@@ -9,8 +9,8 @@ import java.util.HashMap;
  */
 public class ConfusionMatrix {
 
-    ArrayList<String> labels = new ArrayList<>();
-    HashMap<Pair<String, String>, Integer> matrix = new HashMap<>();
+    private ArrayList<String> labels = new ArrayList<>();
+    private HashMap<Pair<String, String>, Integer> matrix = new HashMap<>();
 
     public void addLabel(String label){
         labels.add(label);
@@ -30,13 +30,14 @@ public class ConfusionMatrix {
      * @param goldLabel the actual gold label for the instance
      */
     public void updateMatrix(String predictedLabel, String goldLabel){
-        Pair entry = new Pair(predictedLabel, goldLabel);
+        Pair<String,String> entry = new Pair<>(predictedLabel, goldLabel);
         if (matrix.get(entry) == null) {
-            matrix.put(entry, 1);
-        } else {
+            for (String label : labels) {
+                matrix.put(new Pair<>(label, goldLabel), 0);
+            }
+        }
             matrix.put(entry, matrix.get(entry)+1);
 
-        }
     }
 
     /**
@@ -61,7 +62,7 @@ public class ConfusionMatrix {
      * @param target the label for which the sum is to be returned
      * @return the total number of a particular gold label
      */
-    public int getGoldSumForLabel(String target){
+    private int getGoldSumForLabel(String target){
         int result = 0;
         for(String label:labels){
             result+=matrix.get(new Pair<>(label, target));
@@ -74,7 +75,7 @@ public class ConfusionMatrix {
      * @param target the label for which the sum is to be returned
      * @return the total number of a particular predicted label
      */
-    public int getPredictedSumForLabel(String target){
+    private int getPredictedSumForLabel(String target){
         int result = 0;
         for(String label:labels){
             result+=matrix.get(new Pair<>(target, label));
