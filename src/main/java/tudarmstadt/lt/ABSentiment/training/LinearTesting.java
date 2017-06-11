@@ -10,6 +10,7 @@ import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
@@ -30,6 +31,8 @@ public class LinearTesting extends LinearTraining {
     private static String predictedLabel;
 
     private static ConfusionMatrix confusionMatrix;
+
+    private static ArrayList<String> allLabels = new ArrayList<>();
 
     /**
      * Loads the {@link Model} from a file.
@@ -84,8 +87,11 @@ public class LinearTesting extends LinearTraining {
         Vector<Feature[]> instanceFeatures;
 
         confusionMatrix = new ConfusionMatrix();
+        String item;
         for (int j = 0; j < model.getNrClass(); j++) {
-            confusionMatrix.addLabel(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")));
+            item = labelLookup.get(Integer.parseInt(model.getLabels()[j]+""));
+            confusionMatrix.addLabel(item);
+            allLabels.add(item);
         }
 
         confusionMatrix.createMatrix();
@@ -143,6 +149,19 @@ public class LinearTesting extends LinearTraining {
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        System.out.println("---------------------------------------");
+        HashMap<String, Float> recall;
+        HashMap<String, Float> precision;
+        HashMap<String, Float> fMeasure;
+
+        recall = getRecallForAll();
+        precision = getPrecisionForAll();
+        fMeasure = getFMeasureForAll();
+
+        System.out.println("Label"+"\t"+"Recall"+"\t"+"Precision"+"\t"+"F Score");
+        for(String itemLabel: allLabels){
+            System.out.println(itemLabel+"\t"+recall.get(itemLabel)+"\t"+precision.get(itemLabel)+"\t"+fMeasure.get(itemLabel));
         }
 
         printFeatureStatistics(features);
