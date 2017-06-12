@@ -20,8 +20,10 @@ public class WordEmbeddingFeature implements FeatureExtractor {
     private int offset = 0;
     private int featureCount = 0;
     private String embeddingFile;
-    int wordRepresentation;
-    GenericWordSpace<FloatMatrix> model;
+    private int wordRepresentation;
+    private GenericWordSpace<FloatMatrix> model;
+
+    private Preprocessor preprocessor = new Preprocessor();
 
     /**
      * Constructor; specifies the word embedding file. The type of word embedding. Feature offset is set to '0' by default.
@@ -49,8 +51,6 @@ public class WordEmbeddingFeature implements FeatureExtractor {
         this(embeddingFile, wordRepresentation);
         this.offset = offset;
     }
-
-    private Preprocessor preprocessor = new Preprocessor();
 
     @Override
     public Feature[] extractFeature(JCas cas) {

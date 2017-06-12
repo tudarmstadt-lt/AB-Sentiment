@@ -208,6 +208,6 @@ public class ConfusionMatrix {
                 allPrediction+=matrix.get(new Pair<>(label1, label2));
             }
         }
-        return ((float) truePositive / (float) allPrediction)*100;
+        return ((float) truePositive / (float) allPrediction);
     }
 }

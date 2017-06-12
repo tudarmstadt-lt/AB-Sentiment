@@ -1,7 +1,9 @@
 package tudarmstadt.lt.ABSentiment;
 
-import tudarmstadt.lt.ABSentiment.training.precomputation.ComputeIdfScores;
-import tudarmstadt.lt.ABSentiment.training.precomputation.ComputeIdfTermsCategory;
+import tudarmstadt.lt.ABSentiment.featureExtractor.precomputation.ComputeCorpusIdfScores;
+import tudarmstadt.lt.ABSentiment.featureExtractor.precomputation.ComputeMaxDocumentLength;
+
+import static tudarmstadt.lt.ABSentiment.featureExtractor.precomputation.ComputeIdfTermsCategory.computeIdfScores;
 
 /**
  * Precomputation of IDF map and other data used in features.
@@ -16,9 +18,12 @@ public class PreComputeFeatures {
 
         String idfFile = "data/features/idfmap.tsv.gz";
         String corpusFile = "data/corpus/corpus_de.tsv";
+        String maxLengthFile = "data/features/max_length";
 
-        ComputeIdfScores.computeIdfScores(corpusFile, idfFile, 5);
+        ComputeCorpusIdfScores.computeIdfScores(corpusFile, idfFile, 100);
+        ComputeMaxDocumentLength.computeMaxDocumentLength(corpusFile, maxLengthFile);
 
+        String trainingFile = "train.tsv";
         String relTrainingFile = "data/relevance_train.tsv";
         String relIdfTermsFile = "data/features/relevance_idfterms.tsv";
 
@@ -29,11 +34,11 @@ public class PreComputeFeatures {
         String aspectIdfTermsFile = "data/features/aspect_idfterms.tsv";
         String aspecCoarsetIdfTermsFile = "data/features/aspect_coarse_idfterms.tsv";
 
-        ComputeIdfTermsCategory.computeIdfScores(relTrainingFile, relIdfTermsFile);
-        ComputeIdfTermsCategory.computeIdfScores(sentTrainingFile, sentIdfTermsFile);
-        ComputeIdfTermsCategory.computeIdfScores(aspectTrainingFile, aspectIdfTermsFile);
+        computeIdfScores(trainingFile, relIdfTermsFile, false, "relevance");
+        computeIdfScores(trainingFile, sentIdfTermsFile, false, "sentiment");
+        computeIdfScores(trainingFile, aspectIdfTermsFile, false, "aspect");
         // coarse labels
-        ComputeIdfTermsCategory.computeIdfScores(aspectTrainingFile, aspecCoarsetIdfTermsFile, true);
+        computeIdfScores(trainingFile, aspecCoarsetIdfTermsFile, true, "aspect");
     }
 
 }

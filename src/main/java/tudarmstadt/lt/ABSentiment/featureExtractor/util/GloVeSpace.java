@@ -41,8 +41,8 @@ public class GloVeSpace extends GenericWordSpace<FloatMatrix> {
             // Vector Size = num of bytes in total / 16 / vocab
             int vecSize = (int) (in.getChannel().size() / 16 / numWords) - 1;
             // Word Vectors:
-            for (int i = 0; i < numWords; i++) {
-                String word = StringUtils.split(vocab.get(i), ' ')[0];
+            for (String aVocab : vocab) {
+                String word = StringUtils.split(aVocab, ' ')[0];
                 float[] vector = readFloatVector(ds, vecSize);
                 model.store.put(word, new FloatMatrix(vector));
             }

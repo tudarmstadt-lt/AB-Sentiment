@@ -165,10 +165,6 @@ public class TfIdfFeature implements FeatureExtractor {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tokenLine = line.split("\\t");
-                //int tokenId = Integer.parseInt(tokenLine[1]);
-                //if (tokenId > maxTokenId) {
-                //    maxTokenId = tokenId;
-                //}
 
                 int tokenId = ++maxTokenId;
                 tokenIds.put(tokenLine[0], tokenId);
