@@ -6,20 +6,27 @@ public class Opinion {
     private char categorySep = '#';
     private String categoryCoarse;
     private String categoryFine;
+
+    public void setPolarity(String polarity) {
+        this.polarity = polarity;
+    }
+
     private String polarity;
     private String target;
 
     public Opinion(String category) {
         this.categoryFine = category;
         this.categoryCoarse = extractCoarseCategory(category);
-
     }
 
     public Opinion(String categoryFine, String polarity) {
         this.categoryFine = categoryFine;
         this.polarity = polarity;
 
-        this.categoryCoarse = extractCoarseCategory(categoryFine);
+        if (categoryFine != null) {
+            this.categoryCoarse = extractCoarseCategory(categoryFine);
+        }
+
     }
 
     public Opinion(String category, String polarity, String target) {
