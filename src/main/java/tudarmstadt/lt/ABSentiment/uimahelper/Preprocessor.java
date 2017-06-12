@@ -1,6 +1,7 @@
 package tudarmstadt.lt.ABSentiment.uimahelper;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -24,6 +25,8 @@ public class Preprocessor {
 
     private JCas cas;
     private AnalysisEngine tokenizer;
+    private AnalysisEngine postagger;
+    private boolean lightAnalysis = false;
     private final String language;
 
     /**
@@ -33,6 +36,8 @@ public class Preprocessor {
         // build annotation engine
         try {
             tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+            postagger = AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }
@@ -43,6 +48,15 @@ public class Preprocessor {
             e.printStackTrace();
         }
         language = "de";
+    }
+
+    /**
+     * Constructor; initializes the UIMA pipeline and the CAS, then processes an input text
+     * @param lightAnalysis flag to indicate light analysis, only tokenization is applied
+     */
+    public Preprocessor(boolean lightAnalysis) {
+        this();
+        this.lightAnalysis = lightAnalysis;
     }
 
     /**
@@ -62,6 +76,9 @@ public class Preprocessor {
         createCas(input);
         try {
             tokenizer.process(cas);
+            if (!lightAnalysis) {
+                postagger.process(cas);
+            }
         } catch (AnalysisEngineProcessException e) {
             e.printStackTrace();
         }
