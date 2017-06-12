@@ -3,7 +3,6 @@ package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
-import tudarmstadt.lt.ABSentiment.reader.TsvReader3;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
