@@ -11,7 +11,9 @@ public class AspectTrainCoarseTest {
         String idfFile = "data/features/idfmap.tsv";
         ComputeCorpusIdfScores.computeIdfScores(trainingFile, idfFile);
 
-        Train.main(new String[0]);
+        String[] args = new String[1];
+        args[0] = trainingFile;
+        Train.main(args);
     }
 
 }
