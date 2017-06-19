@@ -7,7 +7,7 @@ public class AspectTrainCoarseTest {
 
     @org.junit.Test
     public void Train() {
-        String trainingFile = "data/aspect_train.tsv";
+        String trainingFile = "/train.xml";
         String idfFile = "data/features/idfmap.tsv";
         ComputeCorpusIdfScores.computeIdfScores(trainingFile, idfFile);
 

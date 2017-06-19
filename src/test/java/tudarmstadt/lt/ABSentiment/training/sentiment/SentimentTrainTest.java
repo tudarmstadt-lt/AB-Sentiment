@@ -7,8 +7,8 @@ public class SentimentTrainTest {
 
     @org.junit.Test
     public void Train() {
-        String trainingFile = "data/sentiment_train.tsv";
-        String idfFile = "data/features/idfmap.tsv";
+        String trainingFile = "/train.xml";
+        String idfFile = "data/features/idfmap.tsv.gz";
 
         ComputeCorpusIdfScores.computeIdfScores(trainingFile, idfFile);
 
