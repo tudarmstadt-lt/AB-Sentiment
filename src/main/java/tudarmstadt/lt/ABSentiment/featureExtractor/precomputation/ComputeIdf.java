@@ -1,4 +1,4 @@
-package tudarmstadt.lt.ABSentiment.training.precomputation;
+package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
 import tudarmstadt.lt.ABSentiment.type.Document;
