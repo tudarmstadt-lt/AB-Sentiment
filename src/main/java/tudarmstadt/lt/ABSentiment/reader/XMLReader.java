@@ -54,7 +54,15 @@ public class XMLReader implements InputReader {
             e.printStackTrace();
         }
         try {
-            doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
+            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
+        } catch (FileNotFoundException e) {
+            try {
+                doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (SAXException e1) {
+                e1.printStackTrace();
+            }
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -21,6 +21,9 @@ public class XMLExtractorTarget {
 
         String inputFile = args[0];
         String outputFile = inputFile.replace(".xml", "") + ".conll";
+        if (outputFile.startsWith("/")) {
+            outputFile = "." + outputFile;
+        }
 
         Writer out = null;
 

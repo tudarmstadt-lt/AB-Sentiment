@@ -43,6 +43,9 @@ public class Train {
             String[] xArgs = new String[2];
             xArgs[0] = inputFile;
             inputFile = inputFile.replace(".xml", "") + ".conll";
+            if (inputFile.startsWith("/")) {
+                inputFile = "." + inputFile;
+            }
             xArgs[1] = inputFile;
             XMLExtractorTarget.main(xArgs);
         }
