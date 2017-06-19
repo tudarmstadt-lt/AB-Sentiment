@@ -6,7 +6,7 @@ import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import org.apache.uima.jcas.JCas;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
-import tudarmstadt.lt.ABSentiment.training.LinearTesting;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ import java.util.Vector;
 /**
  * The LinearClassifier provides common methods for classification
  */
-public class LinearClassifier extends LinearTesting implements Classifier {
+public class LinearClassifier extends ProblemBuilder implements Classifier {
 
     protected Model model;
 
@@ -32,7 +32,6 @@ public class LinearClassifier extends LinearTesting implements Classifier {
     @Override
     public String getLabel(JCas cas) {
         Vector<Feature[]> instanceFeatures = applyFeatures(cas, features);
-
         Feature[] instance = combineInstanceFeatures(instanceFeatures);
         probEstimates = new double[model.getNrClass()];
         Double prediction = Linear.predictProbability(model, instance, probEstimates);
