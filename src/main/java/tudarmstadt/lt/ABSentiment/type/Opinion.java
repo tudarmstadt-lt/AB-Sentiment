@@ -1,34 +1,40 @@
 package tudarmstadt.lt.ABSentiment.type;
 
 
+import tudarmstadt.lt.ABSentiment.featureExtractor.util.Pair;
+import tudarmstadt.lt.ABSentiment.reader.InputReader;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Opinion {
 
     private char categorySep = '#';
     private String categoryCoarse;
     private String categoryFine;
+
+    private ArrayList<Pair<Integer, Integer>> targets = new ArrayList<>();
+
+    public void setPolarity(String polarity) {
+        this.polarity = polarity;
+    }
+
     private String polarity;
     private String target;
 
     public Opinion(String category) {
         this.categoryFine = category;
         this.categoryCoarse = extractCoarseCategory(category);
-
     }
 
-    public Opinion(String categoryFine, String polarity) {
-        this.categoryFine = categoryFine;
+    public Opinion(String category, String polarity) {
+        this(category);
         this.polarity = polarity;
-
-        this.categoryCoarse = extractCoarseCategory(categoryFine);
     }
 
     public Opinion(String category, String polarity, String target) {
-
-        this.categoryFine = category;
-        this.polarity = polarity;
+        this(category, polarity);
         this.target = target;
-
-        this.categoryCoarse = extractCoarseCategory(categoryFine);
     }
 
     private String extractCoarseCategory(String categoryFine) {
@@ -70,8 +76,19 @@ public class Opinion {
         return target;
     }
 
+    public void addTarget(Pair<Integer, Integer> positions) {
+        if (positions.getSecond() > 0) {
+            targets.add(positions);
+        }
+    }
+
+    public List<Pair<Integer, Integer>> getTargets() {
+        return targets;
+    }
+
+
     public String toString() {
-        return "coarse: " + categoryCoarse + "\tfine: "+ categoryFine + "\tpolarity: " + polarity;
+        return "coarse: " + categoryCoarse + "\tfine: " + categoryFine + "\tpolarity: " + polarity;
     }
 
     public void setCategorySeparator(char separator) {
