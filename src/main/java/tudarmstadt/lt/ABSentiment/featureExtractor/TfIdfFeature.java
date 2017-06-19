@@ -3,6 +3,7 @@ package tudarmstadt.lt.ABSentiment.featureExtractor;
 import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.FeatureNode;
 import org.apache.uima.jcas.JCas;
+import tudarmstadt.lt.ABSentiment.featureExtractor.util.TfidfHelper;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.io.BufferedReader;
@@ -18,14 +19,9 @@ import java.util.zip.GZIPInputStream;
 /**
  * TF-IDF {@link FeatureExtractor}, extracts normalized TF-IDF scores using a pre-computed IDF file.
  */
-public class TfIdfFeature implements FeatureExtractor {
+public class TfIdfFeature extends TfidfHelper implements FeatureExtractor {
 
-    private int maxTokenId = 0;
     private int offset = 0;
-
-    private HashMap<Integer, Double> termIdf = new HashMap<>();
-    private HashMap<String, Integer> tokenIds = new HashMap<>();
-    private HashMap<Integer, String> tokenStrings = new HashMap<>();
 
     private Preprocessor preprocessor = new Preprocessor();
 
@@ -141,43 +137,11 @@ public class TfIdfFeature implements FeatureExtractor {
         return termIdf.get(termId);
     }
 
-    public int getWordId(String term) {
-        return tokenIds.get(term);
-    }
+    public int getWordId(String term) {return tokenIds.get(term);}
 
     public String getWordString(Integer termId) {
         return tokenStrings.get(termId);
     }
 
-    /**
-     * Loads a word list with words, wordIds and IDF scores.
-     * @param fileName the path to the input file
-     */
-    private void loadIdfList(String fileName) {
-        try {
-            BufferedReader br;
-            if (fileName.endsWith(".gz")) {
-                br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(fileName)), "UTF-8"));
-            } else {
-                br = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
-            }
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] tokenLine = line.split("\\t");
-                //int tokenId = Integer.parseInt(tokenLine[1]);
-                //if (tokenId > maxTokenId) {
-                //    maxTokenId = tokenId;
-                //}
-
-                int tokenId = ++maxTokenId;
-                tokenIds.put(tokenLine[0], tokenId);
-                tokenStrings.put(tokenId, tokenLine[0]);
-                termIdf.put(tokenId, Double.parseDouble(tokenLine[2]));
-            }
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public boolean containsToken(String term){return tokenIds.containsKey(term);}
 }
