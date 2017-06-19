@@ -1,15 +1,15 @@
 package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
-import tudarmstadt.lt.ABSentiment.training.precomputation.ComputeIdfScores;
+import tudarmstadt.lt.ABSentiment.featureExtractor.precomputation.ComputeCorpusIdfScores;
 
 public class AspectTrainCoarseTest {
 
 
     @org.junit.Test
     public void Train() {
-        String trainingFile = "data/relevance_train.tsv";
+        String trainingFile = "data/aspect_train.tsv";
         String idfFile = "data/features/idfmap.tsv";
-        ComputeIdfScores.computeIdfScores(trainingFile, idfFile);
+        ComputeCorpusIdfScores.computeIdfScores(trainingFile, idfFile);
 
         Train.main(new String[0]);
     }

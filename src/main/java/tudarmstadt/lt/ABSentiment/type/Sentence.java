@@ -1,8 +1,8 @@
 package tudarmstadt.lt.ABSentiment.type;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import tudarmstadt.lt.ABSentiment.featureExtractor.util.Pair;
+
+import java.util.*;
 
 
 public class Sentence {
@@ -58,22 +58,29 @@ public class Sentence {
         return r.trim();
     }
 
-    public String getAspectCategories() throws NoSuchFieldException {
-        Set<String> aspects = new HashSet<>();
+    public String[] getAspectCategories() {
+        String[] aspects = new String[opinions.size()];
+        int i = 0;
         for (Opinion o: opinions) {
             try {
-                aspects.add(o.getFineCategory());
+                aspects[i++] = o.getFineCategory();
             } catch (NoSuchFieldException e) {
             }
         }
-        String r = new String();
-        for (String p : aspects) {
-            r += p + " ";
+        return aspects;
+    }
+
+
+    public String[] getAspectCategoriesCoarse() {
+        String[] aspects = new String[opinions.size()];
+        int i = 0;
+        for (Opinion o: opinions) {
+            try {
+                aspects[i++] = o.getCoarseCategory();
+            } catch (NoSuchFieldException e) {
+            }
         }
-        if (r.compareTo("") == 0) {
-            throw new NoSuchFieldException("No Aspect Category specified");
-        }
-        return r.trim();
+        return aspects;
     }
 
     public Set<String> getTargets() {
@@ -82,5 +89,14 @@ public class Sentence {
            targets.add(o.getTarget());
         }
         return targets;
+    }
+
+    public Collection<? extends Pair<Integer,Integer>> getTargetOffsets() {
+
+        List<Pair<Integer, Integer>> offsets = new ArrayList<>();
+        for (Opinion opinion : opinions) {
+            offsets.addAll(opinion.getTargets());
+        }
+        return offsets;
     }
 }

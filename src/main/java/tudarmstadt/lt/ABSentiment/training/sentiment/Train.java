@@ -18,7 +18,7 @@ public class Train extends LinearTraining {
      */
     public static void main(String[] args) {
 
-        trainingFile = "data/sentiment_train.tsv";
+        trainingFile = "train.xml";
         modelFile = "data/models/sentiment_model.svm";
         featureOutputFile = "data/sentiment_train.svm";
         featureStatisticsFile = "data/sentiment_feature_stats.tsv";
@@ -38,7 +38,7 @@ public class Train extends LinearTraining {
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Problem problem = buildProblem(trainingFile, features);
+        Problem problem = buildProblem(trainingFile, features, "sentiment");
         Model model = trainModel(problem);
         saveModel(model, modelFile);
 

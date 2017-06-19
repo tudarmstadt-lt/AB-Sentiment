@@ -20,10 +20,11 @@ public class Test extends LinearTesting {
         loadLabelMappings("data/models/relevance_label_mappings.tsv");
 
         modelFile = "data/models/relevance_model.svm";
-        testFile = "data/relevance_test.tsv";
+        testFile = "dev.xml";
         featureOutputFile = "data/relevance_test.svm";
         predictionFile = "relevance_test_predictions.tsv";
         idfGazeteerFile = "data/features/relevance_idfterms.tsv";
+        //documentLengthFile = "data/features/max_length";
 
         if (args.length == 3) {
             testFile = args[0];
@@ -35,7 +36,7 @@ public class Test extends LinearTesting {
 
         Model model = loadModel(modelFile);
 
-        classifyTestSet(testFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile, "relevance");
     }
 
 }

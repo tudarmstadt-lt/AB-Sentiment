@@ -18,12 +18,14 @@ public class Train extends LinearTraining {
      */
     public static void main(String[] args) {
 
-        trainingFile = "data/relevance_train.tsv";
+   //     trainingFile = "train.tsv";
+        trainingFile = "train.xml";
         modelFile = "data/models/relevance_model.svm";
         featureOutputFile = "data/relevance_train.svm";
         featureStatisticsFile = "data/relevance_feature_stats.tsv";
         labelMappingsFile  = "data/models/relevance_label_mappings.tsv";
         idfGazeteerFile = "data/features/relevance_idfterms.tsv";
+        //documentLengthFile = "data/features/max_length";
 
         if (args.length == 2) {
             trainingFile = args[0];
@@ -34,7 +36,7 @@ public class Train extends LinearTraining {
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Problem problem = buildProblem(trainingFile, features);
+        Problem problem = buildProblem(trainingFile, features, "relevance");
         Model model = trainModel(problem);
         saveModel(model, modelFile);
 

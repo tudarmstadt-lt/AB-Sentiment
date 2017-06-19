@@ -24,6 +24,7 @@ public class LinearAspectClassifier extends LinearClassifier {
         model = loadModel(modelFile);
         features = loadFeatureExtractors();
 
+        //idfGazeteerFile = "data/features/aspect_idfterms.tsv";
         labelMappings = loadLabelMapping(labelMappingsFile);
     }
 

@@ -21,7 +21,7 @@ public class TestCoarse extends LinearTesting {
 
         loadLabelMappings("data/models/aspect_coarse_label_mappings.tsv");
 
-        testFile = "data/aspect_test.tsv";
+        testFile = "dev.tsv";
         modelFile = "data/models/aspect_coarse_model.svm";
         featureOutputFile = "data/aspect_coarse_test.svm";
         predictionFile = "aspect_coarse_test_predictions.tsv";
@@ -38,7 +38,7 @@ public class TestCoarse extends LinearTesting {
         Model model = loadModel(modelFile);
 
         useCoarseLabels = true;
-        classifyTestSet(testFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile, "aspect");
     }
 
 }

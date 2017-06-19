@@ -3,12 +3,10 @@ package tudarmstadt.lt.ABSentiment.training;
 
 import de.bwaldvogel.liblinear.*;
 import org.apache.uima.jcas.JCas;
-import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
-import tudarmstadt.lt.ABSentiment.featureExtractor.GazeteerFeature;
-import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
-import tudarmstadt.lt.ABSentiment.featureExtractor.WordEmbeddingFeature;
+import tudarmstadt.lt.ABSentiment.featureExtractor.*;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
@@ -43,6 +41,7 @@ public class LinearTraining {
 
     protected static String positiveGazeteerFile;
     protected static String negativeGazeteerFile;
+    protected static String documentLengthFile;
 
     protected static String gloveFile;
     protected static String w2vFile;
@@ -65,6 +64,11 @@ public class LinearTraining {
             FeatureExtractor gazeteerIdf = new GazeteerFeature(idfGazeteerFile, offset);
             offset += gazeteerIdf.getFeatureCount();
             features.add(gazeteerIdf);
+        }
+        if (documentLengthFile != null) {
+            FeatureExtractor documentLength = new DocumentLengthFeature(documentLengthFile, offset);
+            offset += documentLength.getFeatureCount();
+            features.add(documentLength);
         }
         if (positiveGazeteerFile!= null) {
             FeatureExtractor posDict = new GazeteerFeature(positiveGazeteerFile, offset);
@@ -94,11 +98,18 @@ public class LinearTraining {
      * Builds the {@link Problem} from a training file, using provided {@link FeatureExtractor}s. Stores feature vectors in a file.
      * @param trainingFile path to the training file
      * @param features Vector of {@link FeatureExtractor}s
-     * @param featureVectorFile path to the file to store the feature vectors
+     * @param type The type of the problem: relevance, sentiment, aspect
      * @return {@link Problem}, containing the extracted features per instance
      */
-    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, String featureVectorFile) {
-        fr = new TsvReader(trainingFile);
+    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, String type) {
+        resetLabelMappings();
+        printFeatureStatistics(features);
+
+        if (trainingFile.endsWith("xml")) {
+            fr = new XMLReader(trainingFile);
+        } else {
+            fr = new TsvReader(trainingFile);
+        }
 
         int documentCount = 0;
         Vector<Double> labels = new Vector<>();
@@ -109,12 +120,22 @@ public class LinearTraining {
             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
 
             // creates a training instance for each document label (multi-label training)
-            String[] documentLabels;
-            if (useCoarseLabels) {
-                documentLabels = d.getLabelsCoarse();
-            } else {
+            String[] documentLabels = new String[0];
+
+            if (type == null) {
                 documentLabels = d.getLabels();
+            } else if (type.compareTo("relevance") == 0) {
+                documentLabels = d.getRelevance();
+            } else if (type.compareTo("sentiment") == 0) {
+                documentLabels = d.getDocumentSentiment();
+            } else if (type.compareTo("aspect") == 0) {
+                if (useCoarseLabels) {
+                    documentLabels = d.getLabelsCoarse();
+                } else {
+                    documentLabels = d.getLabels();
+                }
             }
+
             for (String l : documentLabels) {
                 if (l.isEmpty()) {continue;}
                 Double label = getLabelId(l);
@@ -125,8 +146,8 @@ public class LinearTraining {
             }
         }
 
-        if (featureVectorFile != null) {
-            saveFeatureVectors(featureVectorFile, featureVector, labels);
+        if (featureOutputFile != null) {
+            saveFeatureVectors(featureOutputFile, featureVector, labels);
         }
 
         Problem problem = new Problem();
@@ -151,10 +172,12 @@ public class LinearTraining {
      */
     protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
         resetLabelMappings();
-        maxLabelId = -1;
         printFeatureStatistics(features);
-        return buildProblem(trainingFile, features, featureOutputFile);
+        return buildProblem(trainingFile, features, null);
     }
+
+
+
 
     protected static void resetLabelMappings() {
         labelMappings = new HashMap<>();

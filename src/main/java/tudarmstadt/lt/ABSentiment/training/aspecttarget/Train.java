@@ -1,10 +1,7 @@
 package tudarmstadt.lt.ABSentiment.training.aspecttarget;
 
 import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.clearnlp.ClearNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.cleartk.ml.CleartkSequenceAnnotator;
 import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.jar.DefaultSequenceDataWriterFactory;
@@ -12,6 +9,7 @@ import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.util.cr.FilesCollectionReader;
 import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
 import tudarmstadt.lt.ABSentiment.reader.ConllReader;
+import tudarmstadt.lt.ABSentiment.util.XMLExtractorTarget;
 
 import java.io.File;
 
@@ -25,28 +23,42 @@ public class Train {
 
     /**
      * Trains the model from an input file
+     *
      * @param args optional: input file and directory for model
      */
     public static void main(String[] args) {
 
         File modelDirectory = new File("data/models/");
-        File trainingFile = new File("data/targets_train.connl");
+        String inputFile = "train.xml";
 
         if (args.length == 2) {
-            trainingFile = new File(args[0]);
+            inputFile = args[0];
             modelDirectory = new File(args[1]);
+        } else if (args.length == 1) {
+            inputFile = args[0];
         }
 
+
+        if (inputFile.endsWith("xml")) {
+            String[] xArgs = new String[2];
+            xArgs[0] = inputFile;
+            inputFile = inputFile.replace(".xml", "") + ".conll";
+            xArgs[1] = inputFile;
+            XMLExtractorTarget.main(xArgs);
+        }
+
+        File trainingFile = new File(inputFile);
+        trainingFile.deleteOnExit();
         try {
             runPipeline(
                     FilesCollectionReader.getCollectionReaderWithSuffixes(trainingFile.getAbsolutePath(),
-                            ConllReader.CONLL_VIEW, trainingFile.getName()),
+                            ConllReader.CONLL_VIEW, inputFile),
                     createEngine(ConllReader.class),
-                    AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
+                    createEngine(OpenNlpPosTagger.class,
                             OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin"),
 
-                    AnalysisEngineFactory.createEngine(ClearNlpLemmatizer.class),
-                    AnalysisEngineFactory.createEngine(AspectAnnotator.class,
+                    createEngine(ClearNlpLemmatizer.class),
+                    createEngine(AspectAnnotator.class,
                             CleartkSequenceAnnotator.PARAM_IS_TRAINING, true,
                             DirectoryDataWriterFactory.PARAM_OUTPUT_DIRECTORY,
                             modelDirectory.getAbsolutePath(),
@@ -57,5 +69,6 @@ public class Train {
             e.printStackTrace();
             System.exit(1);
         }
+
     }
 }

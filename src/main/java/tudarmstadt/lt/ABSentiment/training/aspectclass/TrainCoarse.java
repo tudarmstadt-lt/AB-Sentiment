@@ -19,7 +19,7 @@ public class TrainCoarse extends LinearTraining {
      */
     public static void main(String[] args) {
 
-        trainingFile = "data/aspect_train.tsv";
+        trainingFile = "train.xml";
         modelFile = "data/models/aspect_coarse_model.svm";
         featureOutputFile = "data/aspect_coarse_train.svm";
         featureStatisticsFile = "data/aspect_coarse_feature_stats.tsv";
@@ -38,7 +38,7 @@ public class TrainCoarse extends LinearTraining {
         // enable coarse document labels
         useCoarseLabels = true;
 
-        Problem problem = buildProblem(trainingFile, features);
+        Problem problem = buildProblem(trainingFile, features, "aspect");
         Model model = trainModel(problem);
         saveModel(model, modelFile);
 

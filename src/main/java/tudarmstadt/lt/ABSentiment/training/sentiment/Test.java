@@ -20,7 +20,7 @@ public class Test extends LinearTesting {
         loadLabelMappings("data/models/sentiment_label_mappings.tsv");
 
         modelFile = "data/models/sentiment_model.svm";
-        testFile = "data/sentiment_test.tsv";
+        testFile = "dev.tsv";
 
         featureOutputFile = "data/sentiment_test.svm";
         predictionFile = "sentiment_test_predictions.tsv";
@@ -40,7 +40,7 @@ public class Test extends LinearTesting {
 
         Model model = loadModel(modelFile);
 
-        classifyTestSet(testFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile, "sentiment");
 
     }
 

@@ -20,8 +20,7 @@ public class Test extends LinearTesting {
         loadLabelMappings("data/models/aspect_label_mappings.tsv");
 
         modelFile = "data/models/aspect_model.svm";
-        testFile = "data/aspect_test.tsv";
-        featureOutputFile = "data/aspect_test.svm";
+        testFile = "dev.xml";
         predictionFile = "aspect_test_predictions.tsv";
         idfGazeteerFile = "data/features/aspect_idfterms.tsv";
 
@@ -35,7 +34,7 @@ public class Test extends LinearTesting {
 
         Model model = loadModel(modelFile);
 
-        classifyTestSet(testFile, model, features, predictionFile);
+        classifyTestSet(testFile, model, features, predictionFile, "aspect");
     }
 
 }

@@ -7,6 +7,7 @@ import tudarmstadt.lt.ABSentiment.featureExtractor.util.ConfusionMatrix;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 
 import java.io.*;
@@ -26,9 +27,6 @@ public class LinearTesting extends LinearTraining {
 
     protected static String testFile;
     protected static String predictionFile;
-
-    private static String goldLabel;
-    private static String predictedLabel;
 
     private static ConfusionMatrix confusionMatrix;
 
@@ -59,6 +57,30 @@ public class LinearTesting extends LinearTraining {
     }
 
     /**
+     * Loads the label--identifier mappings to retrieve the correct String label for the predicted label.
+     * @param fileName path to the mapping file
+     */
+    protected static void loadLabelMappings(String fileName) {
+        try {
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] catLine = line.split("\\t");
+                Integer labelId = Integer.parseInt(catLine[0]);
+                labelLookup.put(labelId, catLine[1]);
+
+                labelMappings.put(catLine[1], labelId);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    /**
      * Classifies a file containing the test set using a {@link Model}. Stores the original labels and the predictions in a file for evaluation.
      * @param inputFile corpus containing the test set
      * @param model linear {@link Model}
@@ -66,8 +88,26 @@ public class LinearTesting extends LinearTraining {
      * @param predictionFile path to the output file to store the predictions
      */
     protected static void classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile) {
+        classifyTestSet(inputFile, model, features, predictionFile, null);
+    }
 
-        InputReader fr = new TsvReader(inputFile);
+    /**
+     * Classifies a file containing the test set using a {@link Model}. Stores the original labels and the predictions in a file for evaluation.
+     * @param inputFile corpus containing the test set
+     * @param model linear {@link Model}
+     * @param features Vector of {@link FeatureExtractor}s
+     * @param predictionFile path to the output file to store the predictions
+     * @param type the type of the problem: relevance, sentiment or aspect; used for internal evaluation
+     */
+    protected static void classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile, String type) {
+
+        InputReader fr;
+        if (inputFile.endsWith("xml")) {
+            fr = new XMLReader(inputFile);
+        } else {
+            fr = new TsvReader(inputFile);
+        }
+
         Writer out = null;
         Writer featureOut = null;
 
@@ -96,6 +136,7 @@ public class LinearTesting extends LinearTraining {
 
         confusionMatrix.createMatrix();
         for (Document d : fr) {
+            System.out.println(d.getDocumentId());
             preprocessor.processText(d.getDocumentText());
             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
 
@@ -105,23 +146,26 @@ public class LinearTesting extends LinearTraining {
             double[] prob_estimates = new double[model.getNrClass()];
             prediction = Linear.predictProbability(model, instance, prob_estimates);
             System.out.println("-------------\n" + d.getDocumentId());
-            for (int j = 0; j < model.getNrClass(); j++) {
-                System.out.println(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
-            }
+            //for (int j = 0; j < model.getNrClass(); j++) {
+            //    System.out.println(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
+            //}
 
             try {
                 out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");
-                if (useCoarseLabels) {
+                String goldLabel;
+                String predictedLabel = labelLookup.get(prediction.intValue());
+                if (type.compareTo("relevance") == 0) {
+                    goldLabel = d.getRelevance()[0];
+                } else if (type.compareTo("sentiment") == 0) {
+                    goldLabel = d.getDocumentSentiment()[0];
+                } else if (useCoarseLabels) {
                     out.append(d.getLabelsCoarseString());
                     goldLabel = d.getLabelsCoarseString();
-                    predictedLabel = labelLookup.get(prediction.intValue());
-                    System.out.println(goldLabel + "\t" + predictedLabel);
                 } else {
                     out.append(d.getLabelsString());
                     goldLabel = d.getLabelsString();
-                    predictedLabel= labelLookup.get(prediction.intValue());
-                    System.out.println(goldLabel + "\t" + predictedLabel);
                 }
+                System.out.println(goldLabel + "\t" + predictedLabel);
                 confusionMatrix.updateMatrix(predictedLabel, goldLabel);
                 out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
             } catch (IOException e) {
@@ -134,7 +178,7 @@ public class LinearTesting extends LinearTraining {
                 for (String label : labels) {
                     try {
                         assert featureOut != null;
-                        featureOut.write(Double.parseDouble(labelMappings.get(label).toString()) + "");
+                        //featureOut.write(Double.parseDouble(labelMappings.get(label).toString()) + "");
                         for (Feature f : instance) {
                             featureOut.write(" " + f.getIndex() + ":" + f.getValue());
                         }
@@ -172,30 +216,6 @@ public class LinearTesting extends LinearTraining {
         System.out.println("Overall Precision : " + getOverallPrecision());
         System.out.println("Overall Recall    : " + getOverallRecall());
         System.out.println("Overall FMeasure  : " + getOverallFMeasure());
-    }
-
-    /**
-     * Loads the label--identifier mappings to retrieve the correct String label for the predicted label.
-     * @param fileName path to the mapping file
-     */
-    protected static void loadLabelMappings(String fileName) {
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] catLine = line.split("\\t");
-                Integer labelId = Integer.parseInt(catLine[0]);
-                labelLookup.put(labelId, catLine[1]);
-
-                labelMappings.put(catLine[1], labelId);
-            }
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
     }
 
     protected static void printConfusionMatrix(){
