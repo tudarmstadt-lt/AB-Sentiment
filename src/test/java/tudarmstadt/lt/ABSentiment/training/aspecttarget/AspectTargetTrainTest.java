@@ -5,7 +5,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 public class AspectTargetTrainTest {
     @org.junit.Test
     public void Train() throws AnalysisEngineProcessException {
-        Train.main(new String[0]);
+        String[] args = new String[1];
+        args[0] = "/train.xml";
+        Train.main(args);
     }
 
 }
