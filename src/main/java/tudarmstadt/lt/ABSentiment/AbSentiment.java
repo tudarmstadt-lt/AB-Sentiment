@@ -27,13 +27,14 @@ public class AbSentiment {
     private Preprocessor nlpPipeline;
 
     /**
-     * Constructor that utilizes the classiers and the NLP pipeline.
+     * Constructor that utilizes the classifiers and the NLP pipeline.
      */
     public AbSentiment() {
-        relevanceClassifier = new LinearRelevanceClassifier("data/models/relevance_model.svm");
-        aspectClassifier = new LinearAspectClassifier("data/models/aspect_model.svm");
-        coarseAspectClassifier = new LinearAspectClassifier("data/models/aspect_coarse_model.svm", "data/models/aspect_coarse_label_mappings.tsv");
-        sentimentClassifier = new LinearSentimentClassifer("data/models/sentiment_model.svm");
+        String configurationFile = "configuration.txt";
+        relevanceClassifier = new LinearRelevanceClassifier(configurationFile);
+        aspectClassifier = new LinearAspectClassifier(configurationFile);
+        coarseAspectClassifier = new LinearAspectClassifier(configurationFile, "data/models/aspect_coarse_label_mappings.tsv");
+        sentimentClassifier = new LinearSentimentClassifer(configurationFile);
         aspectTargetClassifier = new CrfClassifier("data/models/");
 
         nlpPipeline = new Preprocessor();
