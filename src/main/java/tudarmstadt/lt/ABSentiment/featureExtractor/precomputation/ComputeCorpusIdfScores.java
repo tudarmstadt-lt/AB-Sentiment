@@ -1,13 +1,13 @@
-package tudarmstadt.lt.ABSentiment.training.precomputation;
+package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 
 /**
- * Computes global IDF scores for a corpus
+ * Computes global IDF scores for a corpus in TSV format.
  */
-public class ComputeIdfScores {
+public class ComputeCorpusIdfScores {
 
     /**
      * Computes global IDF scores from an input file and saves them in a file; specifies a minimum frequency for terms.
