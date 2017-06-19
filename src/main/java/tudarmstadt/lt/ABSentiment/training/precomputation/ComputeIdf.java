@@ -57,7 +57,7 @@ public class ComputeIdf {
         for (String token : documentTokens) {
             Integer tokenId = tokenIds.get(token);
             if (tokenId == null) {
-                tokenId = ++maxTokenId;
+                tokenId = maxTokenId++;
                 tokenIds.put(token, tokenId);
             }
             if (!containedTokens.contains(tokenId)) {

@@ -1,7 +1,11 @@
 package tudarmstadt.lt.ABSentiment.training.sentiment;
 
 import de.bwaldvogel.liblinear.Model;
+import de.bwaldvogel.liblinear.Problem;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
+import tudarmstadt.lt.ABSentiment.training.LSTMTesting;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
 import java.util.Vector;
@@ -9,7 +13,7 @@ import java.util.Vector;
 /**
  * Sentiment Model Tester
  */
-public class Test extends LinearTesting {
+public class Test extends ProblemBuilder {
 
     /**
      * Classifies an input file, given a model
@@ -17,18 +21,11 @@ public class Test extends LinearTesting {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("data/models/sentiment_label_mappings.tsv");
+        initialise("configuration.txt");
 
-        modelFile = "data/models/sentiment_model.svm";
-        testFile = "data/sentiment_test.tsv";
+        loadLabelMappings(labelMappingsFile);
 
-        featureOutputFile = "data/sentiment_test.svm";
-        predictionFile = "sentiment_test_predictions.tsv";
-        idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
-        positiveGazeteerFile = "data/dictionaries/positive";
-        negativeGazeteerFile = "data/dictionaries/negative";
-        gloveFile = null;
-        w2vFile = null;
+        String modelType = "linear";
 
         if (args.length == 3) {
             testFile = args[0];
@@ -38,11 +35,17 @@ public class Test extends LinearTesting {
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Model model = loadModel(modelFile);
-
-        classifyTestSet(testFile, model, features, predictionFile);
+        if(modelType.equals("linear")){
+            LinearTesting linearTesting = new LinearTesting();
+            Model model = linearTesting.loadModel(modelFile);
+            classifyTestSet(testFile, model, features, predictionFile);
+        }else if(modelType.equals("lstm")){
+            LSTMTesting lstmTesting = new LSTMTesting();
+            Problem problem = buildProblem(testFile, features);
+            MultiLayerNetwork model = lstmTesting.loadModel(modelFile);
+            classifyTestSet(model, problem);
+        }
 
     }
 
 }
-

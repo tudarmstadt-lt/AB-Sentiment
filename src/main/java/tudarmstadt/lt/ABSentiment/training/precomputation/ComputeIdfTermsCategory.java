@@ -1,9 +1,9 @@
 package tudarmstadt.lt.ABSentiment.training.precomputation;
 
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
-import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Relevance Model Trainer
  */
-public class ComputeIdfTermsCategory extends LinearTraining {
+public class ComputeIdfTermsCategory extends ProblemBuilder {
 
 
     private static TreeMap<Double, HashMap<Integer, Integer>> termFrequencyLabel;

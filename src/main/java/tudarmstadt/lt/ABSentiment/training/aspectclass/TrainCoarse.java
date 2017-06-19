@@ -2,8 +2,10 @@ package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
-import org.apache.uima.UIMAException;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
+import tudarmstadt.lt.ABSentiment.training.LSTMTraining;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
 import java.util.Vector;
@@ -11,38 +13,43 @@ import java.util.Vector;
 /**
  * Aspect Model Trainer (coarse-grained)
  */
-public class TrainCoarse extends LinearTraining {
+public class TrainCoarse extends ProblemBuilder {
 
-    /**
-     * Trains the model from an input file
-     * @param args optional: input file and optional model file
-     */
     public static void main(String[] args) {
 
-        trainingFile = "data/aspect_train.tsv";
-        modelFile = "data/models/aspect_coarse_model.svm";
-        featureOutputFile = "data/aspect_coarse_train.svm";
-        featureStatisticsFile = "data/aspect_coarse_feature_stats.tsv";
-        labelMappingsFile = "data/models/aspect_coarse_label_mappings.tsv";
-        idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
+        trainFile = "data/new_financial_train.tsv";
+        modelFile = "data/models/sentiment_model";
+        featureOutputFile = "data/sentiment_train.svm";
+        featureStatisticsFile = "data/sentiment_feature_stats.tsv";
+        labelMappingsFile  = "data/models/sentiment_label_mappings.tsv";
+        idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
+        positiveGazeteerFile = "data/dictionaries/positive";
+        negativeGazeteerFile = "data/dictionaries/negative";
+        gloveFile = "data/wordEmbedding/glove_50_dimension.txt";
+        w2vFile = "data/wordEmbedding/w2v_50_dimension.bin";
+
+        String modelType = "linear";
 
         if (args.length == 2) {
-            trainingFile = args[0];
+            trainFile = args[0];
             modelFile = args[1];
         } else if (args.length == 1) {
-            trainingFile = args[0];
+            trainFile = args[0];
         }
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Problem problem = buildProblem(trainFile, features);
 
-        // enable coarse document labels
-        useCoarseLabels = true;
-
-        Problem problem = buildProblem(trainingFile, features);
-        Model model = trainModel(problem);
-        saveModel(model, modelFile);
-
-        saveLabelMappings(labelMappingsFile);
+        if(modelType.equals("linear")){
+            LinearTraining linearTraining = new LinearTraining();
+            Model model = linearTraining.trainModel(problem);
+            linearTraining.saveModel(model, modelFile);
+            saveLabelMappings(labelMappingsFile);
+        }else if(modelType.equals("lstm")){
+            LSTMTraining lstmTraining = new LSTMTraining();
+            MultiLayerNetwork model = lstmTraining.trainModel(problem);
+            lstmTraining.saveModel(model, modelFile, true);
+        }
     }
 
 }
