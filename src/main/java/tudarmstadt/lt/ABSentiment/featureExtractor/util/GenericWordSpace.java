@@ -12,7 +12,7 @@ public abstract class GenericWordSpace<T>{
     /*
      * Store vectors & vocab in memory:
      */
-    public Map<String, T> store = new HashMap<String, T>();
+    public Map<String, T> store = new HashMap<>();
     /**
      * Checks if the word representation of a word exists
      * @param word the word whose representation is to be checked
