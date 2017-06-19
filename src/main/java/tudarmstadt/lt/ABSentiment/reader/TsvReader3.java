@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
  * TSV input reader for tab separated input files.<br>
  * The input format is: ID &emsp; text &emsp; optional label
  */
-public class TsvReader implements InputReader {
+public class TsvReader3 implements InputReader {
 
     private BufferedReader reader = null;
     private boolean checkedNext = false;
@@ -24,7 +24,7 @@ public class TsvReader implements InputReader {
      * Creates a Reader using a file name
      * @param filename the path and filename of the input file
      */
-    public TsvReader(String filename) {
+    public TsvReader3(String filename) {
         try {
             reader = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
@@ -54,7 +54,7 @@ public class TsvReader implements InputReader {
         if (!checkedNext) {
             try {
                 line = reader.readLine();
-                while (line.isEmpty() || line.startsWith("SOURCE")) {
+                while (line.isEmpty()) {
                     line = reader.readLine();
                 }
             } catch (IOException e) {
@@ -73,7 +73,7 @@ public class TsvReader implements InputReader {
             line = "";
             try {
                 // skip empty lines for robustness
-                while (line.isEmpty() || line.startsWith("SOURCE")) {
+                while (line.isEmpty()) {
                     line = reader.readLine();
                     if (line == null) {
                         hasNext = false;
@@ -98,20 +98,14 @@ public class TsvReader implements InputReader {
         Document doc = new Document();
 
         String[] documentFields = line.split("\\t");
-        if (documentFields.length < 2 ) {
-            throw new IllegalArgumentException("The document should at least have 2 fields, with optional labels in the following fields!");
+        if (documentFields.length < 2) {
+            throw new IllegalArgumentException("The document should at least have 2 fields, with an optional label in the 3rd field!");
         }
         doc.setDocumentId(documentFields[0]);
         doc.addSentence(new Sentence(documentFields[1]));
 
         if (documentFields.length >= 3) {
-            doc.setRelevance(documentFields[2]);
-        }
-        if (documentFields.length >= 4) {
-            doc.setDocumentSentiment(documentFields[3]);
-        }
-        if (documentFields.length >= 5) {
-            doc.setDocumentAspects(documentFields[4]);
+            doc.setLabels(documentFields[2]);
         }
         return doc;
     }

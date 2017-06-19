@@ -4,7 +4,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import tudarmstadt.lt.ABSentiment.featureExtractor.util.Pair;
+import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.type.Opinion;
 import tudarmstadt.lt.ABSentiment.type.Sentence;
@@ -12,16 +12,15 @@ import tudarmstadt.lt.ABSentiment.type.Sentence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 /**
- * XML input reader to read GermEval sentiment XML format.
+ * XML input reader to read SemEval sentiment XML format.
  */
-public class XMLReader implements InputReader {
+public class XMLReaderSemEval implements InputReader {
 
     private DocumentBuilderFactory dbFactory;
     private DocumentBuilder dBuilder;
@@ -30,23 +29,20 @@ public class XMLReader implements InputReader {
     private NodeList reviewList;
     private int reviewPosition;
 
-    private static final String docTag = "Document";
-    private static final String docAttrId = "id";
-    private static final String sentenceTag = "text";
+    private static final String docTag = "Review";
+    private static final String docAttrId = "rid";
+    private static final String sentenceTag = "sentence";
+    private static final String sentenceAttrId = "id";
     private static final String opinionTag = "Opinion";
-    private static final String relevanceTag = "relevance";
-    private static final String sentimentTag = "sentiment";
     private static final String opinionAttrCategory = "category";
     private static final String opinionAttrPolarity = "polarity";
     private static final String opinionAttrTarget = "target";
-    private static final String opinionAttrTargetBegin = "from";
-    private static final String opinionAttrTargetEnd = "to";
 
     /**
      * Constructor, creates a {@link org.w3c.dom.Document} from an input file.
      * @param filename path and file name of the .xml file
      */
-    public XMLReader(String filename) {
+    public XMLReaderSemEval(String filename) {
         dbFactory = DocumentBuilderFactory.newInstance();
         try {
             dBuilder = dbFactory.newDocumentBuilder();
@@ -54,15 +50,7 @@ public class XMLReader implements InputReader {
             e.printStackTrace();
         }
         try {
-            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
-        } catch (FileNotFoundException e) {
-            try {
-                doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (SAXException e1) {
-                e1.printStackTrace();
-            }
+            doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -100,23 +88,23 @@ public class XMLReader implements InputReader {
     }
 
     /**
-     * Creates a {@link Document} from an element node in the XML graph
-     * @param element the element node containing the document
+     * Creats a {@link Document} from an element node in the XML graph
+     * @param element the element node containing the docuemnt
      * @return a {@link Document} object with id, label and sentences (text)
      */
     private Document buildDocument(Element element) {
         Document doc = new Document();
         doc.setDocumentId(element.getAttribute(docAttrId));
-        doc.setRelevance(element.getElementsByTagName(relevanceTag).item(0).getTextContent());
-        doc.setDocumentSentiment(element.getElementsByTagName(sentimentTag).item(0).getTextContent());
         NodeList sList = element.getElementsByTagName(sentenceTag);
+
         Sentence s;
 
         for (int sI = 0; sI < sList.getLength(); sI++) {
             Node sNode = sList.item(sI);
 
             s = new Sentence( sNode.getTextContent());
-            s.addOpinions(getOpinions(element));
+            s.setId(((Element) sNode).getAttribute(sentenceAttrId));
+            s.addOpinions(getOpinions(sNode));
 
             doc.addSentence(s);
         }
@@ -134,24 +122,13 @@ public class XMLReader implements InputReader {
         Vector<Opinion> opinions = new Vector<>();
         NodeList oList = ((Element) sNode).getElementsByTagName(opinionTag);
         for (int oI = 0; oI < oList.getLength(); oI++) {
-            Element oNode = (Element) oList.item(oI);
+            Node oNode = oList.item(oI);
 
-            category =  oNode.getAttribute(opinionAttrCategory);
-            polarity = oNode.getAttribute(opinionAttrPolarity);
-            target = oNode.getAttribute(opinionAttrTarget);
+            category = ((Element) oNode).getAttribute(opinionAttrCategory);
+            polarity = ((Element) oNode).getAttribute(opinionAttrPolarity);
+            target = ((Element) oNode).getAttribute(opinionAttrTarget);
 
-
-            Opinion opinion = new Opinion(category, polarity, target);
-            if (target.compareTo("NULL") != 0) {
-                opinion.addTarget(new Pair<>(Integer.parseInt(oNode.getAttribute(opinionAttrTargetBegin)), Integer.parseInt(oNode.getAttribute(opinionAttrTargetEnd))));
-                int i = 1;
-                while (oNode.getAttribute(opinionAttrTargetBegin + i).compareTo("") != 0) {
-                    opinion.addTarget(new Pair<>(Integer.parseInt(oNode.getAttribute(opinionAttrTargetBegin+i)), Integer.parseInt(oNode.getAttribute(opinionAttrTargetEnd+i))));
-                    i++;
-                }
-            }
-
-            opinions.add(opinion);
+            opinions.add(new Opinion(category, polarity, target));
         }
         return  opinions;
     }
