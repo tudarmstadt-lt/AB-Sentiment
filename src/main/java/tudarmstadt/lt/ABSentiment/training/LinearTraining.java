@@ -105,7 +105,7 @@ public class LinearTraining {
         resetLabelMappings();
         printFeatureStatistics(features);
 
-        if (trainingFile.endsWith("xml")) {
+        if (trainingFile.endsWith(".xml")) {
             fr = new XMLReader(trainingFile);
         } else {
             fr = new TsvReader(trainingFile);

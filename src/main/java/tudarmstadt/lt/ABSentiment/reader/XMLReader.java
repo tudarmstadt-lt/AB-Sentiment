@@ -55,7 +55,7 @@ public class XMLReader implements InputReader {
         }
         try {
             doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | IllegalArgumentException e) {
             try {
                 doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
             } catch (IOException e1) {
