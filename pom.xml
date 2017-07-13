@@ -25,6 +25,13 @@
     </properties>
 
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,6 +117,27 @@
             <version>${dkpro.core.version}</version>
         </dependency>
 
+        <!--
+        <dependency>
+            <groupId>com.github.eugenso</groupId>
+            <artifactId>segUIMA</artifactId>
+            <version>-5202819638-1</version>
+        </dependency> -->
+
+        <dependency>
+            <groupId>lt-hamburg</groupId>
+            <artifactId>seg-UIMA</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>de.tudarmstadt</groupId>
+            <artifactId>lt.seg</artifactId>
+            <version>0.7.1a</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.cleartk</groupId>
             <artifactId>cleartk-ml</artifactId>
@@ -131,15 +159,12 @@
             <version>${cleartk.version}</version>
         </dependency>
 
+
+
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -151,8 +176,31 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
 
 
 </project>

@@ -2,7 +2,7 @@ package tudarmstadt.lt.ABSentiment.uimahelper;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import lt_hamburg.segmenter.annotator.TokenAnnotator;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -35,7 +35,7 @@ public class Preprocessor {
     public Preprocessor() {
         // build annotation engine
         try {
-            tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
+            tokenizer = AnalysisEngineFactory.createEngine(TokenAnnotator.class);
             postagger = AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
                             OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin");
         } catch (ResourceInitializationException e) {
