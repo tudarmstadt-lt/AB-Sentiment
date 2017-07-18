@@ -23,7 +23,7 @@ public class ComputeIdfTest extends ProblemBuilder{
     public void checkNodeIDOrder() throws Exception {
         initialise("/configurationTest.txt");
         Vector<FeatureExtractor> features = loadFeatureExtractors();
-        Problem problem = buildProblem(trainFile, features);
+        Problem problem = buildProblem(trainFile, features, true);
         Feature[][] inputFeature = problem.x;
         int n = inputFeature.length, i, len;
         for (i = 0; i < n; ++i) {
