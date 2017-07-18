@@ -1,8 +1,9 @@
 package tudarmstadt.lt.ABSentiment.uimahelper;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import lt_hamburg.segmenter.annotator.TokenAnnotator;
+import lt_hamburg.segmenter.type.Token;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -114,6 +115,14 @@ public class Preprocessor {
             tokenStrings.add(token.getCoveredText());
         }
         return tokenStrings;
+    }
+
+    public Collection<Token> getTokens(JCas cas) {
+        return select(cas, Token.class);
+    }
+
+    public Collection<Token> getTokens() {
+        return getTokens(this.getCas());
     }
 
     /**
