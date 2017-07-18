@@ -18,7 +18,7 @@
     </parent>
 
     <properties>
-        <nd4j.type>native</nd4j.type>
+        <nd4j.type>cuda-8.0</nd4j.type>
         <nd4j.backend>nd4j-${nd4j.type}</nd4j.backend>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
