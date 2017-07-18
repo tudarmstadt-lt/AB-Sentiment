@@ -17,16 +17,7 @@ public class Train extends ProblemBuilder {
 
     public static void main(String[] args) {
 
-        trainFile = "data/new_financial_train.tsv";
-        modelFile = "data/models/sentiment_model";
-        featureOutputFile = "data/sentiment_train.svm";
-        featureStatisticsFile = "data/sentiment_feature_stats.tsv";
-        labelMappingsFile  = "data/models/sentiment_label_mappings.tsv";
-        idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
-        positiveGazeteerFile = "data/dictionaries/positive";
-        negativeGazeteerFile = "data/dictionaries/negative";
-        gloveFile = "data/wordEmbedding/glove_50_dimension.txt";
-        w2vFile = "data/wordEmbedding/w2v_50_dimension.bin";
+        initialise("configuration.txt");
 
         String modelType = "linear";
 
@@ -38,7 +29,7 @@ public class Train extends ProblemBuilder {
         }
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
-        Problem problem = buildProblem(trainFile, features);
+        Problem problem = buildProblem(trainFile, features, "relevance", true);
 
         if(modelType.equals("linear")){
             LinearTraining linearTraining = new LinearTraining();

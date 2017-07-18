@@ -4,22 +4,21 @@ import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.datavec.api.records.reader.RecordReader;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.factory.Nd4j;
 import tudarmstadt.lt.ABSentiment.featureExtractor.*;
 import tudarmstadt.lt.ABSentiment.featureExtractor.util.ConfusionMatrix;
-import tudarmstadt.lt.ABSentiment.reader.InputReader;
-import tudarmstadt.lt.ABSentiment.reader.TsvReader;
-import tudarmstadt.lt.ABSentiment.training.util.ListDoubleRecordReader;
-import tudarmstadt.lt.ABSentiment.training.util.ListDoubleSplit;
+import tudarmstadt.lt.ABSentiment.reader.*;
 import tudarmstadt.lt.ABSentiment.type.Document;
+import tudarmstadt.lt.ABSentiment.type.Sentence;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.io.*;
@@ -34,7 +33,7 @@ import java.util.Vector;
 public class ProblemBuilder {
 
     protected static InputReader fr;
-    protected static Preprocessor preprocessor = new Preprocessor();
+    protected static Preprocessor preprocessor = new Preprocessor(true);
 
     private static Integer maxLabelId = -1;
     private static int featureCount = 0;
@@ -57,6 +56,10 @@ public class ProblemBuilder {
     protected static String positiveGazeteerFile;
     protected static String negativeGazeteerFile;
 
+    protected static String polarityLexiconFile;
+    protected static String denseGazeteerFile;
+
+    protected static String DTConfigurationFile;
     protected static String missingWordsFile;
     protected static String DTExpansionFile;
 
@@ -69,11 +72,14 @@ public class ProblemBuilder {
 
     protected static HashMap<String, Integer> labelMappings = new HashMap<>();
     protected static HashMap<Integer, String> labelLookup = new HashMap<>();
-    protected static String goldLabel;
-    protected static String predictedLabel;
     protected static ConfusionMatrix confusionMatrix;
     protected static ArrayList<String> allLabels = new ArrayList<>();
 
+
+    /**
+     * Loads a file and initializes all the variables present in the configuration file.
+     * @param configurationFile path to a file containing the variable name and their initialization
+     */
     protected static void initialise(String configurationFile){
 
         modelFile = null;
@@ -97,6 +103,9 @@ public class ProblemBuilder {
         weightedW2vFile = null;
         weightedGloveFile = null;
         weightedIdfFile = null;
+        polarityLexiconFile = null;
+        denseGazeteerFile = null;
+        DTConfigurationFile = null;
 
         Configuration config = new Configuration();
         HashMap<String, String> fileLocation;
@@ -145,10 +154,22 @@ public class ProblemBuilder {
                 weightedGloveFile = entry.getValue();
             }else if(entry.getKey().equals("weightedIdfFile")) {
                 weightedIdfFile = entry.getValue();
+            }else if(entry.getKey().equals("useCoarseLabels")) {
+                useCoarseLabels = Boolean.parseBoolean(entry.getValue());
+            }else if(entry.getKey().equals("polarityLexiconFile")) {
+                polarityLexiconFile = entry.getValue();
+            }else if(entry.getKey().equals("denseGazeteerFile")) {
+                denseGazeteerFile = entry.getValue();
+            }else if(entry.getKey().equals("DTConfigurationFile")){
+                DTConfigurationFile = entry.getValue();
             }
         }
     }
 
+    /**
+     * Computes a feature vector out of all the feature name specified in the configuration file
+     * @return a Vector containing all the specified feature
+     */
     protected static Vector<FeatureExtractor> loadFeatureExtractors() {
         int offset = 1;
         Vector<FeatureExtractor> features = new Vector<>();
@@ -178,6 +199,16 @@ public class ProblemBuilder {
             offset+=glove.getFeatureCount();
             features.add(glove);
         }
+        if(polarityLexiconFile!=null){
+            FeatureExtractor polarityLexicon = new PolarityLexiconFeature(polarityLexiconFile, offset);
+            offset+=polarityLexicon.getFeatureCount();
+            features.add(polarityLexicon);
+        }
+        if(denseGazeteerFile!=null){
+            FeatureExtractor denseGazeteer = new DenseGazeteerFeature(denseGazeteerFile, offset);
+            offset+=denseGazeteer.getFeatureCount();
+            features.add(denseGazeteer);
+        }
         if(w2vFile!=null){
             FeatureExtractor word2vec = new WordEmbeddingFeature(w2vFile, null, 2, DTExpansionFile,  offset);
             offset+=word2vec.getFeatureCount();
@@ -196,36 +227,62 @@ public class ProblemBuilder {
         return features;
     }
 
-    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, String featureVectorFile) {
-        fr = new TsvReader(trainingFile);
+    /**
+     * Builds a problem - the input feature matrix, output labels, total number of feature instances and the feature count
+     * @param trainingFile path to the training file
+     * @param features feature vector of all the features specified
+     * @param type
+     * @param ifTraining specifies if this method is used for training or testing
+     */
+    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, String type, Boolean ifTraining) {
+        if(ifTraining){
+            resetLabelMappings();
+        }
+        printFeatureStatistics(features);
+
+        if (trainingFile.endsWith("xml")) {
+            fr = new XMLReaderSemEval(trainingFile);
+        } else {
+            fr = new TsvReader3(trainingFile, "sentiment");
+        }
 
         int documentCount = 0;
         Vector<Double> labels = new Vector<>();
         Vector<Feature[]> featureVector = new Vector<>();
-        Vector<Feature[]> instanceFeatures;
-        for (Document d: fr) {
-            preprocessor.processText(d.getDocumentText());
-            instanceFeatures = applyFeatures(preprocessor.getCas(), features);
+        Vector<Feature[]> instanceFeatures = null;
+        String[] stringLabel = null;
 
-            // creates a training instance for each document label (multi-label training)
-            String[] documentLabels;
-            if (useCoarseLabels) {
-                documentLabels = d.getLabelsCoarse();
-            } else {
-                documentLabels = d.getLabels();
-            }
-            for (String l : documentLabels) {
-                if (l.isEmpty()) {continue;}
-                Double label = getLabelId(l);
-                labels.add(label);
-                // combine feature vectors for one instance
-                featureVector.add(combineInstanceFeatures(instanceFeatures));
-                documentCount++;
+        for (Document doc: fr) {
+            for(Sentence sentence:doc.getSentences()){
+             preprocessor.processText(sentence.getText());
+             instanceFeatures = applyFeatures(preprocessor.getCas(), features);
+                if (type == null) {
+                    stringLabel = sentence.getAspectCategories();
+                } else if (type.compareTo("sentiment") == 0) {
+                    try {
+                        stringLabel = sentence.getSentiment();
+                    } catch (NoSuchFieldException e) {            // COMMENT HERE
+                        continue;
+                    }
+                } else if (type.compareTo("aspect") == 0) {
+                    if (useCoarseLabels) {
+                        stringLabel = sentence.getAspectCategoriesCoarse();
+                    } else {
+                        stringLabel = sentence.getAspectCategories();
+                    }
+                }
+                for (String l : stringLabel) {
+                    if (l.isEmpty()) {continue;}
+                    Double label = getLabelId(l);
+                    labels.add(label);
+                    featureVector.add(combineInstanceFeatures(instanceFeatures));
+                    documentCount++;
+                }
             }
         }
 
-        if (featureVectorFile != null) {
-            saveFeatureVectors(featureVectorFile, featureVector, labels);
+        if (featureOutputFile != null) {
+            saveFeatureVectors(featureOutputFile, featureVector, labels);
         }
 
         Problem problem = new Problem();
@@ -237,16 +294,21 @@ public class ProblemBuilder {
         for (int i = 0; i<labels.size(); i++) {
             problem.y[i] = labels.get(i);
             problem.x[i] = featureVector.get(i);
-        }
 
+        }
         return problem;
     }
 
-    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features) {
+    /**
+     * Builds a problem - the input feature matrix, output labels, total number of feature instances and the feature count
+     * @param trainingFile path to the training file
+     * @param features feature vector of all the features specified
+     * @param ifTraining specifies if this method is used for training or testing
+     */
+    protected static Problem buildProblem(String trainingFile, Vector<FeatureExtractor> features, Boolean ifTraining) {
         resetLabelMappings();
-        maxLabelId = -1;
         printFeatureStatistics(features);
-        return buildProblem(trainingFile, features, featureOutputFile);
+        return buildProblem(trainingFile, features, null, ifTraining);
     }
 
     protected static Vector<Feature[]> applyFeatures(JCas cas, Vector<FeatureExtractor> features) {
@@ -374,9 +436,15 @@ public class ProblemBuilder {
         }
     }
 
-    protected static void classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile) {
+    protected static INDArray classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile, String type, boolean printResult) {
 
-        InputReader fr = new TsvReader(inputFile);
+        InputReader fr;
+        if (inputFile.endsWith("xml")) {
+            fr = new XMLReaderSemEval(inputFile);
+        } else {
+            fr = new TsvReader3(inputFile, "sentiment");
+        }
+
         Writer out = null;
         Writer featureOut = null;
 
@@ -403,91 +471,106 @@ public class ProblemBuilder {
             allLabels.add(item);
         }
 
+        ArrayList<double[]> probability = new ArrayList<>();
         confusionMatrix.createMatrix();
-        for (Document d : fr) {
-            preprocessor.processText(d.getDocumentText());
-            instanceFeatures = applyFeatures(preprocessor.getCas(), features);
-
-            Double prediction;
-
-            instance = combineInstanceFeatures(instanceFeatures);
-            double[] prob_estimates = new double[model.getNrClass()];
-            prediction = Linear.predictProbability(model, instance, prob_estimates);
-            System.out.println("-------------\n" + d.getDocumentId());
-            for (int j = 0; j < model.getNrClass(); j++) {
-                System.out.println(labelLookup.get(Integer.parseInt(model.getLabels()[j]+"")) +"\t" +(prob_estimates[j]));
-            }
-
-            try {
-                out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");
-                if (useCoarseLabels) {
-                    out.append(d.getLabelsCoarseString());
-                    goldLabel = d.getLabelsCoarseString();
-                    predictedLabel = labelLookup.get(prediction.intValue());
-                    System.out.println(goldLabel + "\t" + predictedLabel);
-                } else {
-                    out.append(d.getLabelsString());
-                    goldLabel = d.getLabelsString();
-                    predictedLabel= labelLookup.get(prediction.intValue());
-                    System.out.println(goldLabel + "\t" + predictedLabel);
-                }
-                confusionMatrix.updateMatrix(predictedLabel, goldLabel);
-                out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            // vector output
-            if (featureOutputFile != null) {
-                String[] labels = d.getLabels();
-                if (useCoarseLabels) { labels = d.getLabelsCoarse(); }
-                for (String label : labels) {
-                    try {
-                        assert featureOut != null;
-                        featureOut.write(Double.parseDouble(labelMappings.get(label).toString()) + "");
-                        for (Feature f : instance) {
-                            featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+        for (Document doc : fr) {
+            for(Sentence sentence:doc.getSentences()){
+                int i = 0;
+                preprocessor.processText(sentence.getText());
+                instanceFeatures = applyFeatures(preprocessor.getCas(), features);
+                Double prediction;
+                instance = combineInstanceFeatures(instanceFeatures);
+                double[] prob_estimates = new double[model.getNrClass()];
+                prediction = Linear.predictProbability(model, instance, prob_estimates);
+                probability.add(prob_estimates);
+                try {
+                    out.write(sentence.getId() + "\t" + sentence.getText() + "\t");
+                    String goldLabel = null;
+                    String predictedLabel = labelLookup.get(prediction.intValue());
+                    if (type.compareTo("relevance") == 0) {
+                        goldLabel = sentence.getRelevance()[0];
+                        confusionMatrix.updateMatrix(predictedLabel, goldLabel);
+                    } else if (type.compareTo("sentiment") == 0) {
+                        try {
+                        while(i < sentence.getSentiment().length){
+                            goldLabel = sentence.getSentiment()[i++];
+                            confusionMatrix.updateMatrix(predictedLabel, goldLabel);
                         }
-                        featureOut.write("\n");
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        } catch (NoSuchFieldException e) {
+                        }
+                    } else if (useCoarseLabels) {
+                        out.append(StringUtils.join(sentence.getAspectCategoriesCoarse(), " "));
+                        goldLabel = StringUtils.join(sentence.getAspectCategoriesCoarse(), " ");
+                        confusionMatrix.updateMatrix(predictedLabel, goldLabel);
+                    } else {
+                        out.append(StringUtils.join(sentence.getAspectCategories(), " "));
+                        goldLabel = StringUtils.join(sentence.getAspectCategories(), " ");
+                        confusionMatrix.updateMatrix(predictedLabel, goldLabel);
+                    }
+                    out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (featureOutputFile != null) {
+                    String[] labels = sentence.getAspectCategories();
+                    if (useCoarseLabels) { labels = sentence.getAspectCategoriesCoarse(); }
+                    for (String label : labels) {
+                        try {
+                            assert featureOut != null;
+                            for (Feature f : instance) {
+                                featureOut.write(" " + f.getIndex() + ":" + f.getValue());
+                            }
+                            featureOut.write("\n");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         }
+
+        INDArray classificationProbability = Nd4j.zeros(probability.size(), model.getNrClass());
+        int j=-1;
+        for(double prob_estimates[]:probability){
+            classificationProbability.putRow(++j, Nd4j.create(prob_estimates));
+        }
+
         try {
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("---------------------------------------");
         HashMap<String, Float> recall;
         HashMap<String, Float> precision;
         HashMap<String, Float> fMeasure;
 
-        recall = confusionMatrix.getRecallForAllLabels();
-        precision = confusionMatrix.getPrecisionForAllLabels();
-        fMeasure = confusionMatrix.getFMeasureForAllLabels();
+        recall = getRecallForAll();
+        precision = getPrecisionForAll();
+        fMeasure = getFMeasureForAll();
 
-        System.out.println("Label"+"\t"+"Recall"+"\t"+"Precision"+"\t"+"F Score");
-        for(String itemLabel: allLabels){
-            System.out.println(itemLabel+"\t"+recall.get(itemLabel)+"\t"+precision.get(itemLabel)+"\t"+fMeasure.get(itemLabel));
+        if(printResult){
+            System.out.println("Label"+"\t"+"Recall"+"\t"+"Precision"+"\t"+"F Score");
+            for(String itemLabel: allLabels){
+                System.out.println(itemLabel+"\t"+recall.get(itemLabel)+"\t"+precision.get(itemLabel)+"\t"+fMeasure.get(itemLabel));
+            }
+            printFeatureStatistics(features);
+            printConfusionMatrix();
+            System.out.println("\n");
+            System.out.println("True positive     : " + getTruePositive());
+            System.out.println("Accuracy          : " + getOverallAccuracy());
+            System.out.println("Overall Precision : " + getOverallPrecision());
+            System.out.println("Overall Recall    : " + getOverallRecall());
+            System.out.println("Overall FMeasure  : " + getOverallFMeasure());
         }
 
-        printFeatureStatistics(features);
-        confusionMatrix.printConfusionMatrix();
-        System.out.println("\n");
-        System.out.println("True positive     : " + confusionMatrix.getTruePositive());
-        System.out.println("Accuracy          : " + confusionMatrix.getOverallAccuracy());
-        System.out.println("Overall Precision : " + confusionMatrix.getOverallPrecision());
-        System.out.println("Overall Recall    : " + confusionMatrix.getOverallRecall());
-        System.out.println("Overall FMeasure  : " + confusionMatrix.getOverallFMeasure());
+        return classificationProbability;
     }
 
 
-    protected static void classifyTestSet(MultiLayerNetwork model, Problem problem){
-        int batchSize = 40;
+    protected static INDArray classifyTestSet(MultiLayerNetwork model, Problem problem, boolean printResult){
+        int batchSize = 200;
         int labelIndex = 0;
-        int numClasses = 3;
+        int numClasses = labelMappings.size();
 
         List<List<Double>> inputFeature = new ArrayList<>();
         for(int i=0;i<problem.l;i++){
@@ -495,7 +578,6 @@ public class ProblemBuilder {
             Double y = problem.y[i];
             ArrayList<Double> newArray = new ArrayList<>();
             newArray.add(y);
-            System.out.println(y);
             int k = 0;
             for(int j=0;j<problem.n;j++){
                 if(k<array.length){
@@ -509,6 +591,8 @@ public class ProblemBuilder {
             inputFeature.add(newArray);
         }
 
+        INDArray classificationProbability = Nd4j.zeros(inputFeature.size(), numClasses);
+
         RecordReader recordReader = new ListDoubleRecordReader();
         try {
             recordReader.initialize(new ListDoubleSplit(inputFeature));
@@ -520,12 +604,61 @@ public class ProblemBuilder {
         DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex, numClasses);
 
         Evaluation eval = new Evaluation(numClasses);
-        DataSet ds = null;
+        DataSet ds;
+        int j = -1;
         while(iterator.hasNext()){
             ds = iterator.next();
             INDArray output = model.output(ds.getFeatureMatrix());
+            for(int i=0;i<output.size(0);i++){
+                classificationProbability.putRow(++j, output.getRow(i));
+            }
             eval.eval(ds.getLabels(),output);
         }
-        System.out.println(eval.stats());
+        if(printResult){
+            System.out.println(eval.stats());
+        }
+        return classificationProbability;
+    }
+
+    protected static void printConfusionMatrix(){
+        confusionMatrix.printConfusionMatrix();
+    }
+
+    protected static double getRecallForLabel(String label){
+        return confusionMatrix.getRecallForLabel(label);
+    }
+
+    protected static double getPrecisionForLabel(String label){
+        return confusionMatrix.getPrecisionForLabel(label);
+    }
+
+    protected static HashMap<String, Float> getRecallForAll(){
+        return confusionMatrix.getRecallForAllLabels();
+    }
+
+    protected static HashMap<String, Float> getPrecisionForAll(){
+        return confusionMatrix.getPrecisionForAllLabels();
+    }
+
+    protected static HashMap<String, Float> getFMeasureForAll(){
+        return confusionMatrix.getFMeasureForAllLabels();
+    }
+
+    protected static int getTruePositive(){
+        return confusionMatrix.getTruePositive();
+    }
+
+    protected static float getOverallAccuracy(){return confusionMatrix.getOverallAccuracy(); }
+
+    protected static float getOverallRecall(){
+        return confusionMatrix.getOverallRecall();
+    }
+
+    protected static float getOverallPrecision(){
+        return confusionMatrix.getOverallPrecision();
+    }
+
+    protected static float getOverallFMeasure(){
+        return confusionMatrix.getOverallFMeasure()   ;
     }
 }

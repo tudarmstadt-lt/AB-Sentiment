@@ -21,18 +21,9 @@ public class Test extends ProblemBuilder {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("data/models/sentiment_label_mappings.tsv");
+        initialise("configuration.txt");
 
-        modelFile = "data/models/sentiment_model";
-        testFile = "data/new_financial_test.tsv";
-
-        featureOutputFile = "data/sentiment_test.svm";
-        predictionFile = "sentiment_test_predictions.tsv";
-        idfGazeteerFile = "data/features/sentiment_idfterms.tsv";
-        positiveGazeteerFile = "data/dictionaries/positive";
-        negativeGazeteerFile = "data/dictionaries/negative";
-        gloveFile = "data/wordEmbedding/glove_50_dimension.txt";
-        w2vFile = "data/wordEmbedding/w2v_50_dimension.bin";
+        loadLabelMappings(labelMappingsFile);
 
         String modelType = "linear";
 
@@ -47,12 +38,12 @@ public class Test extends ProblemBuilder {
         if(modelType.equals("linear")){
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(modelFile);
-            classifyTestSet(testFile, model, features, predictionFile);
+            classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
         }else if(modelType.equals("lstm")){
             LSTMTesting lstmTesting = new LSTMTesting();
-            Problem problem = buildProblem(testFile, features);
+            Problem problem = buildProblem(testFile, features, false);
             MultiLayerNetwork model = lstmTesting.loadModel(modelFile);
-            classifyTestSet(model, problem);
+            classifyTestSet(model, problem, true);
         }
 
     }

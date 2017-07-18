@@ -38,12 +38,12 @@ public class Test extends ProblemBuilder {
         if(modelType.equals("linear")){
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(modelFile);
-            classifyTestSet(testFile, model, features, predictionFile);
+            classifyTestSet(testFile, model, features, predictionFile, "sentiment", true);
         }else if(modelType.equals("lstm")){
             LSTMTesting lstmTesting = new LSTMTesting();
-            Problem problem = buildProblem(testFile, features);
-            MultiLayerNetwork model = lstmTesting.loadModel(modelFile);
-            classifyTestSet(model, problem);
+            Problem problem = buildProblem(testFile, features, "sentiment", false);
+              MultiLayerNetwork model = lstmTesting.loadModel(modelFile);
+            classifyTestSet(model, problem, true);
         }
 
     }

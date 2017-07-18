@@ -45,24 +45,22 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.CharacterIterator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class LSTMTraining{
 
     public MultiLayerNetwork trainModel(Problem problem){
 
-        int numEpochs = 20;
-        int batchSize = 200;
+        int numEpochs = 50;
+        int batchSize = 100;
         int labelIndex = 0;
-        int numClasses = 3;
+        HashSet<Double> classes = new HashSet<>();
 
         List<List<Double>> inputFeature = new ArrayList<>();
         for(int i=0;i<problem.l;i++){
             Feature[] array = problem.x[i];
             Double y = problem.y[i];
+            classes.add(y);
             ArrayList<Double> newArray = new ArrayList<>();
             newArray.add(y);
             int k = 0;
@@ -77,6 +75,9 @@ public class LSTMTraining{
             }
             inputFeature.add(newArray);
         }
+
+        int numClasses = classes.size();
+
         RecordReader recordReader = new ListDoubleRecordReader();
         try {
             recordReader.initialize(new ListDoubleSplit(inputFeature));
@@ -97,12 +98,12 @@ public class LSTMTraining{
                 .weightInit(WeightInit.XAVIER)
                 .updater(Updater.ADAM)
                 .list()
-                .layer(0, new GravesLSTM.Builder().nIn(problem.n).nOut(600).forgetGateBiasInit(1.0)
+                .layer(0, new GravesLSTM.Builder().nIn(problem.n).nOut(305).forgetGateBiasInit(1.0)
                         .activation(Activation.LEAKYRELU).build())
-                .layer(1, new GravesLSTM.Builder().nIn(600).nOut(600).forgetGateBiasInit(1.0)
+                .layer(1, new GravesLSTM.Builder().nIn(305).nOut(305).forgetGateBiasInit(1.0)
                         .activation(Activation.LEAKYRELU).build())
                 .layer(2, new RnnOutputLayer.Builder(LossFunctions.LossFunction.MCXENT).activation(Activation.SOFTMAX)
-                        .nIn(600).nOut(numClasses).build())
+                        .nIn(305).nOut(numClasses).build())
                 .backpropType(BackpropType.Standard)
                 .pretrain(false).backprop(true)
                 .build();

@@ -27,9 +27,8 @@ public class Train extends ProblemBuilder {
         } else if (args.length == 1) {
             trainFile = args[0];
         }
-
         Vector<FeatureExtractor> features = loadFeatureExtractors();
-        Problem problem = buildProblem(trainFile, features);
+        Problem problem = buildProblem(trainFile, features, "sentiment", true);
 
         if(modelType.equals("linear")){
             LinearTraining linearTraining = new LinearTraining();
