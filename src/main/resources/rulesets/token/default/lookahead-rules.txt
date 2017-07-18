@@ -26,7 +26,7 @@
 +:URI ((https?)|(ftps?)|(doi))://[^\s:]+(([/a-zA-Z0-9?])|((?<=\([^\(/]{0,20})\)))
 
 # websites like amazon.co.uk Fette-henne.info (rough estimate) ... might even be catenated (tagesschau.de-App)
-+:URI (((\w(-\w)?)+\.)+(com|net|org|edu|int|mil|gov|arpa|biz|aero|name|coop|info|pro|museum|asia|[a-z]{2}|[A-Z]{2}))(-((?>\p{L}\p{M}*)|[_\-])+)?
++:URI (((\w(-\w)?)+\.)+(com|net|org|edu|int|mil|gov|arpa|biz|aero|name|coop|info|pro|museum|asia|gl|[a-z]{2}|[A-Z]{2}))(-((?>\p{L}\p{M}*)|[_\-])+)?
 
 # file names (roughly)
 +:URI (?i)(((?>\p{L}\p{M}*)|[0-9\.~_-])+\.(pdf|avi|wmv|mpe?g|mp3|m4v|mp4|ogg|midi|wav|rar|zip|tar|gz|7z|doc|xls|odt|conf|swf|flv|js|css|exe|bat|sh|py|pl|iso|dmg|bmp|gif|jpe?g|png|svg|tiff?|ico))
