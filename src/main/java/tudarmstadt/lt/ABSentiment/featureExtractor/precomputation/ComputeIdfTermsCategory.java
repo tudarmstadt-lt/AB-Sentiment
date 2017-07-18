@@ -5,6 +5,7 @@ import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
+import tudarmstadt.lt.ABSentiment.type.Sentence;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
 import java.io.BufferedWriter;
@@ -20,60 +21,63 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
 
 
     private static TreeMap<Double, HashMap<Integer, Integer>> termFrequencyLabel;
-    private static TfIdfFeature idfScores = new TfIdfFeature(idfFile);
+    private static TfIdfFeature idfScores = new TfIdfFeature("data/de/feature/idfmap.tsv.gz");
 
-    private static Preprocessor preprocessor = new Preprocessor();
+    private static Preprocessor preprocessor = new Preprocessor(true);
 
     private static int maxEntries = 20;
     private static int minLength = 2;
     private static int minCount = 2;
 
-
     public static void computeIdfScores(String inputFile, String outFile) {
+        initialise("configuration.txt");
        computeIdfScores(inputFile, outFile, false);
     }
 
     public static void computeIdfScores(String inputFile, String outFile, boolean useCoarseLabels) {
+        initialise("configuration.txt");
         computeIdfScores(inputFile, outFile, useCoarseLabels, null);
     }
 
     public static void computeIdfScores(String inputFile, String outFile, boolean useCoarseLabels, String type) {
+        initialise("configuration.txt");
         termFrequencyLabel = new TreeMap<>();
         resetLabelMappings();
 
         InputReader in = new TsvReader(inputFile);
-
-        for (Document d: in) {
-            preprocessor.processText(d.getDocumentText());
-            Collection<String> documentText = preprocessor.getTokenStrings(preprocessor.getCas());
-            HashMap<Integer, Integer> tokenCounts = idfScores.getTokenCounts(documentText);
-
-            String[] labels = new String[0];
-            if (type == null){
-                labels = d.getLabels();
-                if (useCoarseLabels) {
-                    labels = d.getLabelsCoarse();
+        String[] labels = null;
+        HashMap<Integer, Integer> tokenCounts = null;
+        for (Document doc: in) {
+            for(Sentence sentence:doc.getSentences()){
+                preprocessor.processText(sentence.getText());
+                Collection<String> documentText = preprocessor.getTokenStrings(preprocessor.getCas());
+                tokenCounts = idfScores.getTokenCounts(documentText);
+                if (type == null){
+                    labels = sentence.getAspectCategories();
+                    if (useCoarseLabels) {
+                        labels = sentence.getAspectCategoriesCoarse();
+                    }
+                } else if (type.compareTo("relevance") == 0) {
+                    labels = sentence.getRelevance();
+                } else if (type.compareTo("sentiment") == 0) {
+                    try {
+                        labels = sentence.getSentiment();
+                    } catch (NoSuchFieldException e) {
+                    }
+                } else if (type.compareTo("aspect") == 0){
+                    labels = sentence.getAspectCategories();
+                    if (useCoarseLabels) {
+                        labels = sentence.getAspectCategoriesCoarse();
+                    }
                 }
-            } else if (type.compareTo("relevance") == 0) {
-                labels = d.getRelevance();
-            } else if (type.compareTo("sentiment") == 0) {
-                labels = d.getDocumentSentiment();
-            } else if (type.compareTo("aspect") == 0){
-                labels = d.getLabels();
-                if (useCoarseLabels) {
-                    labels = d.getLabelsCoarse();
-                }
+
             }
-
             for (String label : labels) {
                 addDocument(tokenCounts, label);
             }
-
         }
-
         saveIdfTerms(outFile);
-
-    }
+}
 
     /**
      * Setter Method for the minimum token length to be considered as candidates, default 2.

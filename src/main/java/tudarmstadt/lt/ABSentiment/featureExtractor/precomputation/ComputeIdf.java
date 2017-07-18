@@ -30,7 +30,7 @@ public class ComputeIdf {
      */
     public ComputeIdf() {
         documentFrequency  = new HashMap<>();
-        preprocessor = new Preprocessor();
+        preprocessor = new Preprocessor(true);
         tokenIds = new HashMap<>();
     }
 
