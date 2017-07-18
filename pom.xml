@@ -117,17 +117,10 @@
             <version>${dkpro.core.version}</version>
         </dependency>
 
-        <!--
         <dependency>
             <groupId>com.github.eugenso</groupId>
             <artifactId>segUIMA</artifactId>
-            <version>-5202819638-1</version>
-        </dependency> -->
-
-        <dependency>
-            <groupId>lt-hamburg</groupId>
-            <artifactId>seg-UIMA</artifactId>
-            <version>1.0-SNAPSHOT</version>
+	        <version>-SNAPSHOT</version>
         </dependency>
 
 
@@ -135,6 +128,8 @@
             <groupId>de.tudarmstadt</groupId>
             <artifactId>lt.seg</artifactId>
             <version>0.7.1a</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/lt.seg-0.7.1a.jar</systemPath>
         </dependency>
 
 

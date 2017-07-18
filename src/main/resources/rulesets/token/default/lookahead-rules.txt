@@ -24,7 +24,6 @@
 
 # url (rough estimate), can end with closing bracket, but only if an opening bracket occured within the url
 +:URI ((https?)|(ftps?)|(doi))://[^\s:]+(([/a-zA-Z0-9?])|((?<=\([^\(/]{0,20})\)))
-+:URI (http[s]?://|www)(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+
 
 # websites like amazon.co.uk Fette-henne.info (rough estimate) ... might even be catenated (tagesschau.de-App)
 +:URI (((\w(-\w)?)+\.)+(com|net|org|edu|int|mil|gov|arpa|biz|aero|name|coop|info|pro|museum|asia|[a-z]{2}|[A-Z]{2}))(-((?>\p{L}\p{M}*)|[_\-])+)?
@@ -34,6 +33,7 @@
 
 # email
 +:EMAIL [\.+\w\-]+@([\w\-]+\.)+[\w]{2,6}\b
+
 
 # german phone numbers (very rough estimate)
 +:PHONE (\+|00)49[^ ]+
@@ -122,7 +122,7 @@
 +:WORD (?>\p{L}\p{M}*)+-
 
 # hashtags and mentions
-+:REF [@#][(?>\p{L}\p{M}*)|\d|_]+
++:REF [@#$][(?>\p{L}\p{M}*)|\d|_]+
 
 # time in HH:MM:SS format
 +:TIME [0-2]?[0-9][:\.][0-5][0-9]([:\.][0-5][0-9])?
