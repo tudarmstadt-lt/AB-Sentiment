@@ -23,7 +23,7 @@ public class TfIdfFeature extends TfidfHelper implements FeatureExtractor {
 
     private int offset = 0;
 
-    private Preprocessor preprocessor = new Preprocessor();
+    private Preprocessor preprocessor = new Preprocessor(true);
 
     /**
      * Constructor; specifies the IDF file. Feature offset is set to '0' by default.

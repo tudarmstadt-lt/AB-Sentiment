@@ -81,7 +81,7 @@ public class WordEmbeddingFeature implements FeatureExtractor {
         this.offset = offset;
     }
 
-    private Preprocessor preprocessor = new Preprocessor();
+    private Preprocessor preprocessor = new Preprocessor(true);
 
     @Override
     public Feature[] extractFeature(JCas cas) {
