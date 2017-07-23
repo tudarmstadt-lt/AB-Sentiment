@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.reader.XMLReader;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.type.AspectExpression;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.type.Result;
@@ -17,7 +18,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
-public class Classify {
+public class Classify extends ProblemBuilder{
 
     static boolean xmlData = false;
 
@@ -31,13 +32,15 @@ public class Classify {
 
     public static void main(String[] args) {
 
-
-
-        String inputFile = "dev.tsv";
-
-        if (args.length > 0) {
-            inputFile = args[0];
+        String configurationFile = "configuration.txt";
+        if(args.length == 1 ){
+            configurationFile = args[0];
         }
+
+        initialise(configurationFile);
+
+        String inputFile = testFile;
+
         if (inputFile.endsWith("xml")) {
             xmlData = true;
         }
@@ -45,7 +48,7 @@ public class Classify {
         outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + "_classified" +
                 inputFile.substring(inputFile.lastIndexOf("."));
 
-        AbSentiment classifier = new AbSentiment();
+        AbSentiment classifier = new AbSentiment(configurationFile);
 
 
         InputReader fr;
@@ -167,7 +170,7 @@ public class Classify {
             try {
                 out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");
                 out.write(res.getRelevance() + "\t" + res.getSentiment() + "\t" + res.getAspect() + ":" + res.getSentiment()+ "\n");
-            } catch (IOException e) {
+               } catch (IOException e) {
                 e.printStackTrace();
             }
         }
