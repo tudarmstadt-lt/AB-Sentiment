@@ -21,7 +21,7 @@ public class LinearTraining {
 
     public Model trainModel(Problem problem){
         SolverType solver = SolverType.L2R_LR;
-        double C = 5.0;
+        double C = 1.0;
         double eps = 0.01;
         Parameter parameter = new Parameter(solver, C, eps);
 

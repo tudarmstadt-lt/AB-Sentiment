@@ -1,6 +1,7 @@
 package tudarmstadt.lt.ABSentiment.training.util;
 
 import org.datavec.api.split.InputSplit;
+import org.datavec.api.writable.WritableType;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -61,6 +62,11 @@ public class ListDoubleSplit implements InputSplit{
 
     public long toLong() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public WritableType getType() {
+        return null;
     }
 
     public List<List<Double>> getData() {

@@ -9,6 +9,7 @@ import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.util.cr.FilesCollectionReader;
 import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
 import tudarmstadt.lt.ABSentiment.reader.ConllReader;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.util.XMLExtractorTarget;
 
 import java.io.File;
@@ -19,7 +20,7 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 /**
  * Aspect Target Identification Model Trainer
  */
-public class Train {
+public class Train extends ProblemBuilder {
 
     /**
      * Trains the model from an input file
@@ -28,15 +29,14 @@ public class Train {
      */
     public static void main(String[] args) {
 
-        File modelDirectory = new File("data/models/");
-        String inputFile = "train.xml";
-
-        if (args.length == 2) {
-            inputFile = args[0];
-            modelDirectory = new File(args[1]);
-        } else if (args.length == 1) {
-            inputFile = args[0];
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
+
+        File modelDirectory = new File(crfModel);
+        String inputFile = trainFile;
+
 
 
         if (inputFile.endsWith("xml")) {
@@ -50,6 +50,8 @@ public class Train {
             XMLExtractorTarget.main(xArgs);
         }
 
+        String modelLocation = crfModel.concat("opennlp-de-pos-maxent.bin");
+
         File trainingFile = new File(inputFile);
         trainingFile.deleteOnExit();
         try {
@@ -58,7 +60,7 @@ public class Train {
                             ConllReader.CONLL_VIEW, inputFile),
                     createEngine(ConllReader.class),
                     createEngine(OpenNlpPosTagger.class,
-                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin"),
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, modelLocation),
 
                     createEngine(ClearNlpLemmatizer.class),
                     createEngine(AspectAnnotator.class,

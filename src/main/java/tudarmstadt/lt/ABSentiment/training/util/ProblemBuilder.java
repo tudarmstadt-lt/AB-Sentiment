@@ -26,14 +26,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Created by abhishek on 19/5/17.
  */
 public class ProblemBuilder {
 
+
+
     protected static InputReader fr;
     protected static Preprocessor preprocessor = new Preprocessor(true);
+
+    protected static String configurationfile = "configuration_de.txt";
 
     private static Integer maxLabelId = -1;
     private static int featureCount = 0;
@@ -42,8 +49,10 @@ public class ProblemBuilder {
     protected static String trainFile;
     protected static String testFile;
     protected static String predictionFile;
-    protected static String modelFile;
-    protected static String labelMappingsFile;
+    protected static String labelMappingsFileSentiment;
+    protected static String labelMappingsFileRelevance;
+    protected static String labelMappingsFileAspect;
+    protected static String labelMappingsFileAspectCoarse;
     protected static String featureOutputFile;
     protected static String featureStatisticsFile;
     protected static String idfGazeteerFile;
@@ -52,6 +61,7 @@ public class ProblemBuilder {
     protected static String aspectModel;
     protected static String aspectCoarseModel;
     protected static String sentimentModel;
+    protected static String crfModel;
 
     protected static String positiveGazeteerFile;
     protected static String negativeGazeteerFile;
@@ -62,6 +72,7 @@ public class ProblemBuilder {
     protected static String DTConfigurationFile;
     protected static String missingWordsFile;
     protected static String DTExpansionFile;
+    protected static String DTfile;
 
     protected static String gloveFile;
     protected static String w2vFile;
@@ -82,7 +93,7 @@ public class ProblemBuilder {
      */
     protected static void initialise(String configurationFile){
 
-        modelFile = null;
+
         idfFile = null;
         idfGazeteerFile = null;
         positiveGazeteerFile = null;
@@ -93,11 +104,15 @@ public class ProblemBuilder {
         testFile = null;
         featureOutputFile = null;
         predictionFile = null;
-        labelMappingsFile = null;
+        labelMappingsFileSentiment = null;
+        labelMappingsFileRelevance = null;
+        labelMappingsFileAspect = null;
+        labelMappingsFileAspectCoarse = null;
         relevanceModel = null;
         aspectModel = null;
         aspectCoarseModel = null;
         sentimentModel = null;
+        crfModel = null;
         missingWordsFile = null;
         DTExpansionFile = null;
         weightedW2vFile = null;
@@ -106,15 +121,14 @@ public class ProblemBuilder {
         polarityLexiconFile = null;
         denseGazeteerFile = null;
         DTConfigurationFile = null;
+        DTfile = null;
 
         Configuration config = new Configuration();
         HashMap<String, String> fileLocation;
         fileLocation = config.readConfigurationFile(configurationFile);
 
         for(HashMap.Entry<String, String> entry: fileLocation.entrySet()){
-            if(entry.getKey().equals("modelFile")){
-                modelFile = entry.getValue();
-            }else if(entry.getKey().equals("idfFile")){
+            if(entry.getKey().equals("idfFile")){
                 idfFile = entry.getValue();
             }else if(entry.getKey().equals("idfGazeteerFile")){
                 idfGazeteerFile = entry.getValue();
@@ -134,17 +148,21 @@ public class ProblemBuilder {
                 featureOutputFile = entry.getValue();
             }else if(entry.getKey().equals("predictionFile")){
                 predictionFile = entry.getValue();
-            }else if(entry.getKey().equals("labelMappingsFile")){
-                labelMappingsFile = entry.getValue();
             }else if(entry.getKey().equals("relevanceModel")){
                 relevanceModel = entry.getValue();
+                labelMappingsFileRelevance = entry.getValue()+"_label_mappings.tsv";
             }else if(entry.getKey().equals("aspectModel")){
                 aspectModel = entry.getValue();
+                labelMappingsFileAspect = entry.getValue()+"_label_mappings.tsv";
             }else if(entry.getKey().equals("aspectCoarseModel")){
                 aspectCoarseModel = entry.getValue();
+                labelMappingsFileAspectCoarse = entry.getValue()+"_label_mappings.tsv";
             }else if(entry.getKey().equals("sentimentModel")) {
                 sentimentModel = entry.getValue();
-            }else if(entry.getKey().equals("missingWordsFile")) {
+                labelMappingsFileSentiment = entry.getValue()+"_label_mappings.tsv";
+            }else if(entry.getKey().equals("crfModel")){
+                crfModel = entry.getValue();
+            } else if(entry.getKey().equals("missingWordsFile")) {
                 missingWordsFile = entry.getValue();
             }else if(entry.getKey().equals("DTExpansionFile")) {
                 DTExpansionFile = entry.getValue();
@@ -162,6 +180,8 @@ public class ProblemBuilder {
                 denseGazeteerFile = entry.getValue();
             }else if(entry.getKey().equals("DTConfigurationFile")){
                 DTConfigurationFile = entry.getValue();
+            }else if(entry.getValue().equals(("DTfile"))){
+                DTfile = entry.getValue();
             }
         }
     }
@@ -241,7 +261,7 @@ public class ProblemBuilder {
         printFeatureStatistics(features);
 
         if (trainingFile.endsWith("xml")) {
-            fr = new XMLReaderSemEval(trainingFile);
+            fr = new XMLReader(trainingFile);
         } else {
             fr = new TsvReader3(trainingFile, "sentiment");
         }
@@ -258,7 +278,10 @@ public class ProblemBuilder {
              instanceFeatures = applyFeatures(preprocessor.getCas(), features);
                 if (type == null) {
                     stringLabel = sentence.getAspectCategories();
-                } else if (type.compareTo("sentiment") == 0) {
+                }else if(type.compareTo("relevance") == 0){
+                    stringLabel = sentence.getRelevance();
+                }
+                else if (type.compareTo("sentiment") == 0) {
                     try {
                         stringLabel = sentence.getSentiment();
                     } catch (NoSuchFieldException e) {            // COMMENT HERE
@@ -438,9 +461,23 @@ public class ProblemBuilder {
 
     protected static INDArray classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile, String type, boolean printResult) {
 
+        Writer out0=null, out1=null;
+        OutputStream predStream0 =null, predStream1 = null;
+        try {
+            predStream0 = new FileOutputStream("0_class.txt");
+            out0 = new OutputStreamWriter(predStream0, "UTF-8");
+            predStream1 = new FileOutputStream("1_class.txt");
+            out1 = new OutputStreamWriter(predStream1, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
         InputReader fr;
         if (inputFile.endsWith("xml")) {
-            fr = new XMLReaderSemEval(inputFile);
+            fr = new XMLReader(inputFile);
         } else {
             fr = new TsvReader3(inputFile, "sentiment");
         }
@@ -473,6 +510,7 @@ public class ProblemBuilder {
 
         ArrayList<double[]> probability = new ArrayList<>();
         confusionMatrix.createMatrix();
+        int we =1;
         for (Document doc : fr) {
             for(Sentence sentence:doc.getSentences()){
                 int i = 0;
@@ -507,7 +545,10 @@ public class ProblemBuilder {
                         goldLabel = StringUtils.join(sentence.getAspectCategories(), " ");
                         confusionMatrix.updateMatrix(predictedLabel, goldLabel);
                     }
-                    out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
+                    out.append("\t").append(labelLookup.get(prediction.intValue())).append("\t"+we+"\t").append("\n");
+                    out1.append(Double.toString((2*prob_estimates[1]) -1 )+"\n");
+                    out0.append(Double.toString((2*prob_estimates[0]) -1)+"\n");
+                    we++;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -537,6 +578,8 @@ public class ProblemBuilder {
 
         try {
             out.close();
+            out0.close();
+            out1.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

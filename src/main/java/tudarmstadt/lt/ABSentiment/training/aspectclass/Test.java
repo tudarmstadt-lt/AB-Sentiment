@@ -21,28 +21,24 @@ public class Test extends ProblemBuilder {
      */
     public static void main(String[] args) {
 
-        initialise("configuration.txt");
-
-        loadLabelMappings(labelMappingsFile);
-
         String modelType = "linear";
-
-        if (args.length == 3) {
-            testFile = args[0];
-            modelFile = args[1];
-            predictionFile = args[2];
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
+
+        loadLabelMappings(labelMappingsFileAspect);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
         if(modelType.equals("linear")){
             LinearTesting linearTesting = new LinearTesting();
-            Model model = linearTesting.loadModel(modelFile);
+            Model model = linearTesting.loadModel(aspectModel);
             classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
         }else if(modelType.equals("lstm")){
             LSTMTesting lstmTesting = new LSTMTesting();
             Problem problem = buildProblem(testFile, features, false);
-            MultiLayerNetwork model = lstmTesting.loadModel(modelFile);
+            MultiLayerNetwork model = lstmTesting.loadModel(aspectModel);
             classifyTestSet(model, problem, true);
         }
 

@@ -51,7 +51,7 @@ public class LSTMTraining{
 
     public MultiLayerNetwork trainModel(Problem problem){
 
-        int numEpochs = 50;
+        int numEpochs = 20;
         int batchSize = 100;
         int labelIndex = 0;
         HashSet<Double> classes = new HashSet<>();
@@ -98,12 +98,12 @@ public class LSTMTraining{
                 .weightInit(WeightInit.XAVIER)
                 .updater(Updater.ADAM)
                 .list()
-                .layer(0, new GravesLSTM.Builder().nIn(problem.n).nOut(305).forgetGateBiasInit(1.0)
+                .layer(0, new GravesLSTM.Builder().nIn(problem.n).nOut(300).forgetGateBiasInit(1.0)
                         .activation(Activation.LEAKYRELU).build())
-                .layer(1, new GravesLSTM.Builder().nIn(305).nOut(305).forgetGateBiasInit(1.0)
+                .layer(1, new GravesLSTM.Builder().nIn(300).nOut(300).forgetGateBiasInit(1.0)
                         .activation(Activation.LEAKYRELU).build())
                 .layer(2, new RnnOutputLayer.Builder(LossFunctions.LossFunction.MCXENT).activation(Activation.SOFTMAX)
-                        .nIn(305).nOut(numClasses).build())
+                        .nIn(300).nOut(numClasses).build())
                 .backpropType(BackpropType.Standard)
                 .pretrain(false).backprop(true)
                 .build();

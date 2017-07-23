@@ -17,29 +17,24 @@ public class Train extends ProblemBuilder {
 
     public static void main(String[] args) {
 
-        initialise("configuration.txt");
-
         String modelType = "linear";
-
-        if (args.length == 2) {
-            trainFile = args[0];
-            modelFile = args[1];
-        } else if (args.length == 1) {
-            trainFile = args[0];
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
-        Problem problem = buildProblem(trainFile, features, true);
+        Problem problem = buildProblem(trainFile, features,"aspect", true);
 
         if(modelType.equals("linear")){
             LinearTraining linearTraining = new LinearTraining();
             Model model = linearTraining.trainModel(problem);
-            linearTraining.saveModel(model, modelFile);
-            saveLabelMappings(labelMappingsFile);
+            linearTraining.saveModel(model, aspectModel);
+            saveLabelMappings(labelMappingsFileAspect);
         }else if(modelType.equals("lstm")){
             LSTMTraining lstmTraining = new LSTMTraining();
             MultiLayerNetwork model = lstmTraining.trainModel(problem);
-            lstmTraining.saveModel(model, modelFile, true);
+            lstmTraining.saveModel(model, aspectModel, true);
         }
     }
 
