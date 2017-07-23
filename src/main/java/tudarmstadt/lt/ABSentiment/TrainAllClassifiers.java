@@ -1,8 +1,5 @@
 package tudarmstadt.lt.ABSentiment;
 
-
-import tudarmstadt.lt.ABSentiment.training.aspectclass.TrainCoarse;
-
 import java.io.File;
 
 public class TrainAllClassifiers {
@@ -11,7 +8,7 @@ public class TrainAllClassifiers {
 
         tudarmstadt.lt.ABSentiment.training.relevance.Train.main(args);
         tudarmstadt.lt.ABSentiment.training.aspectclass.Train.main(args);
-        TrainCoarse.main(args);
+        tudarmstadt.lt.ABSentiment.training.aspectclass.TrainCoarse.main(args);
         tudarmstadt.lt.ABSentiment.training.sentiment.Train.main(args);
 
         if (args.length > 0 && args[0].endsWith(".xml")) {

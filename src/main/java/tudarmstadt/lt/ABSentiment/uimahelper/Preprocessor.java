@@ -11,17 +11,21 @@ import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 /**
  * Preprocessor class that performs NLP operations using UIMA AnalysisEngines.
  */
-public class Preprocessor {
+public class Preprocessor extends ProblemBuilder{
 
     private JCas cas;
     private AnalysisEngine tokenizer;
@@ -33,11 +37,12 @@ public class Preprocessor {
      * Constructor; initializes the UIMA pipeline and the CAS.
      */
     public Preprocessor() {
+
         // build annotation engine
         try {
             tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
             postagger = AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
-                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, "data/models/opennlp-de-pos-maxent.bin");
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, crfModel+"opennlp-de-pos-maxent.bin");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }
