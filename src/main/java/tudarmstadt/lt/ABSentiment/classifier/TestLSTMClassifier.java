@@ -14,7 +14,7 @@ import java.util.Vector;
 /**
  * Created by abhishek on 21/5/17.
  */
-public class TestLSTMClassifier extends LSTMClassifier{
+public class    TestLSTMClassifier extends LSTMClassifier{
 
     public static void main(String args[]){
 
@@ -24,13 +24,13 @@ public class TestLSTMClassifier extends LSTMClassifier{
 
         LSTMTesting lstmTesting = new LSTMTesting();
 
-        lstmClassifier.model = lstmTesting.loadModel(modelFile);
+        lstmClassifier.model = lstmTesting.loadModel(sentimentModel);
         lstmClassifier.features = loadFeatureExtractors();
 
         Preprocessor preprocessor = new Preprocessor();
-        preprocessor.processText("good great epic");
+        preprocessor.processText("Abgott Abhilfe Abhilfemaßnahme Abkomme");
 
-        System.out.println(lstmClassifier.getLabel(preprocessor.getCas()));
+                System.out.println(lstmClassifier.getLabel(preprocessor.getCas()));
         System.out.println(lstmClassifier.getScore());
     }
 }

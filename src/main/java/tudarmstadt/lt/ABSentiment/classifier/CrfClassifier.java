@@ -7,6 +7,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
 import tudarmstadt.lt.ABSentiment.classifier.aspecttarget.AspectAnnotator;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.type.uima.AspectTarget;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
@@ -15,7 +16,7 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 /**
  * The CRF classifier is used for aspect target detection.
  */
-public class CrfClassifier {
+public class CrfClassifier extends ProblemBuilder{
     private AnalysisEngine classifier;
 
     /**
@@ -26,7 +27,7 @@ public class CrfClassifier {
         try {
             classifier = createEngine(AspectAnnotator.class,
                     GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH,
-                    modelDirectory + "model.jar");
+                    crfModel + "model.jar");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }

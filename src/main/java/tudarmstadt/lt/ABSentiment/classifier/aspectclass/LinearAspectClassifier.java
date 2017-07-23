@@ -9,17 +9,13 @@ import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 public class LinearAspectClassifier extends LinearClassifier {
 
     public LinearAspectClassifier(String configurationFile) {
-        this(configurationFile, "data/models/aspect_label_mappings.tsv");
-    }
-
-    public LinearAspectClassifier(String configurationFile, String labelMappingsFile) {
         initialise(configurationFile);
         LinearTesting linearTesting = new LinearTesting();
-        model = linearTesting.loadModel(modelFile);
+        model = linearTesting.loadModel(aspectModel);
         features = loadFeatureExtractors();
 
         //idfGazeteerFile = "data/features/aspect_idfterms.tsv";
-        labelMappings = loadLabelMapping(labelMappingsFile);
+        labelMappings = loadLabelMapping(labelMappingsFileAspect);
     }
 
 }

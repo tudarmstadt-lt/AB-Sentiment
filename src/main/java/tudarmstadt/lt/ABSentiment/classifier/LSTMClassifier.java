@@ -6,6 +6,7 @@ import org.apache.uima.jcas.JCas;
 import org.datavec.api.records.reader.RecordReader;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -33,7 +34,6 @@ public class LSTMClassifier extends ProblemBuilder implements Classifier{
     protected MultiLayerNetwork model;
 
     protected Vector<FeatureExtractor> features;
-    protected HashMap<Double, String> labelMappings;
 
     protected String label;
     protected int labelIndex;
@@ -41,14 +41,19 @@ public class LSTMClassifier extends ProblemBuilder implements Classifier{
 
     @Override
     public String getLabel(JCas cas) {
-        int inputNode, outputNode;
+        int inputNode=0, outputNode=0;
         Vector<Feature[]> instanceFeatures = applyFeatures(cas, features);
         Feature[] instance = combineInstanceFeatures(instanceFeatures);
-        JSONObject jsonInputLayer = new JSONObject(model.conf().toJson());
-        inputNode = Integer.parseInt(jsonInputLayer.getJSONObject("layer").getJSONObject("gravesLSTM").get("nin").toString());
-        JSONObject jsonOutputLayer = new JSONObject(model.getOutputLayer().conf().toJson());
-        outputNode = Integer.parseInt(jsonOutputLayer.getJSONObject("layer").getJSONObject("rnnoutput").get("nout").toString());
-        List<List<Double>> inputFeature = new ArrayList<>();
+        JSONObject jsonInputLayer = null;
+        try {
+            jsonInputLayer = new JSONObject(model.conf().toJson());
+            inputNode = Integer.parseInt(jsonInputLayer.getJSONObject("layer").getJSONObject("gravesLSTM").get("nin").toString());
+            JSONObject jsonOutputLayer = new JSONObject(model.getOutputLayer().conf().toJson());
+            outputNode = Integer.parseInt(jsonOutputLayer.getJSONObject("layer").getJSONObject("rnnoutput").get("nout").toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }List<List<Double>> inputFeature = new ArrayList<>();
             Feature[] array = instance;
             Double y = 0.0;
             ArrayList<Double> newArray = new ArrayList<>();
@@ -78,8 +83,8 @@ public class LSTMClassifier extends ProblemBuilder implements Classifier{
         INDArray output = model.output(ds.getFeatureMatrix());
         score = Double.parseDouble(output.maxNumber().toString());
         labelIndex = (int)Double.parseDouble(Nd4j.argMax(output).toString());
-        HashMap<Integer, String> labelHashMap = new HashMap<>();
-        labelHashMap = loadLabelMapping("data/models/sentiment_label_mappings.tsv");
+        HashMap<Integer, String> labelHashMap;
+        labelHashMap = loadLabelMapping(labelMappingsFileSentiment);
         label = labelHashMap.get(labelIndex);
         return label;
     }

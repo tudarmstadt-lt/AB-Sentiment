@@ -10,15 +10,11 @@ import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 public class LinearSentimentClassifer extends LinearClassifier {
 
     public LinearSentimentClassifer(String configurationFile) {
-        this(configurationFile, "data/models/sentiment_label_mappings.tsv");
-    }
-
-    public LinearSentimentClassifer(String configurationFile, String labelMappingsFile) {
         initialise(configurationFile);
         LinearTesting linearTesting = new LinearTesting();
-        model = linearTesting.loadModel(modelFile);
+        model = linearTesting.loadModel(sentimentModel);
         features = loadFeatureExtractors();
 
-        labelMappings = loadLabelMapping(labelMappingsFile);
+        labelMappings = loadLabelMapping(labelMappingsFileSentiment);
     }
 }

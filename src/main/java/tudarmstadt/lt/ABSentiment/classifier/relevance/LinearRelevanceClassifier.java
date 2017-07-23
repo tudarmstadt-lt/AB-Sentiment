@@ -9,15 +9,10 @@ import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 public class LinearRelevanceClassifier extends LinearClassifier  {
 
     public LinearRelevanceClassifier(String configurationFile) {
-        this(configurationFile, "data/models/relevance_label_mappings.tsv");
-    }
-
-    public LinearRelevanceClassifier(String configurationFile, String labelMappingsFile) {
         initialise(configurationFile);
         LinearTesting linearTesting = new LinearTesting();
-        model = linearTesting.loadModel(modelFile);
+        model = linearTesting.loadModel(relevanceModel);
         features = loadFeatureExtractors();
-
-        labelMappings = loadLabelMapping(labelMappingsFile);
+        labelMappings = loadLabelMapping(labelMappingsFileRelevance);
     }
 }
