@@ -129,7 +129,7 @@ public class WordEmbeddingFeature implements FeatureExtractor {
             }
         }
         Feature[] instance = new Feature[featureCount];
-        if(num!=0){
+        if(VectorMath.sum(wordVector) != 0.0){
             wordVector = VectorMath.normalize(wordVector);
         }
         for(int i=0;i<featureCount;i++){
