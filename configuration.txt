@@ -9,16 +9,16 @@ predictionFile	            sentiment_test_predictions.tsv
 labelMappingsFile	        data/models/sentiment_label_mappings.tsv
 
 #features
-/idfFile     			    data/en/feature/idfmap.tsv.gz		# IDF file, min freq = 100
-/idfGazeteerFile			    data/en/feature/sentiment_idfterms.tsv
-/positiveGazeteerFile	    data/en/dictionary/positive
-/negativeGazeteerFile	    data/en/dictionary/negative
+idfFile     			    data/en/feature/idfmap.tsv.gz		# IDF file, min freq = 100
+idfGazeteerFile			    data/en/feature/sentiment_idfterms.tsv
+positiveGazeteerFile	    data/en/dictionary/positive
+negativeGazeteerFile	    data/en/dictionary/negative
 polarityLexiconFile			data/en/feature/polarityLexicon.tsv.gz
 denseGazeteerFile	        data/en/feature/denseGazeteer.tsv
 w2vFile					    data/en/wordEmbedding/englishWord2Vec-300.bin
 
-/weightedIdfFile				data/en/feature/idfmap.tsv.gz
-/weightedW2vFile				data/en/wordEmbedding/englishWord2Vec-300.bin
+weightedIdfFile				data/en/feature/idfmap.tsv.gz
+weightedW2vFile				data/en/wordEmbedding/englishWord2Vec-300.bin
 
 relevanceModel			    data/models/relevance_model
 aspectModel				    data/models/aspect_model
