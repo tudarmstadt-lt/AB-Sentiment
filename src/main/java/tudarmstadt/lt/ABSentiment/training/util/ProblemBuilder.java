@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Created by abhishek on 19/5/17.
@@ -225,7 +222,7 @@ public class ProblemBuilder {
             features.add(polarityLexicon);
         }
         if(denseGazeteerFile!=null){
-            FeatureExtractor denseGazeteer = new DenseGazeteerFeature(denseGazeteerFile, offset);
+            FeatureExtractor denseGazeteer = new AggregatedGazeteerFeature(denseGazeteerFile, offset);
             offset+=denseGazeteer.getFeatureCount();
             features.add(denseGazeteer);
         }
