@@ -37,7 +37,7 @@ public class ProblemBuilder {
     protected static InputReader fr;
     protected static Preprocessor preprocessor = new Preprocessor(true);
 
-    protected static String configurationfile = "configuration_de.txt";
+    protected static String configurationfile = "configuration.txt";
 
     private static Integer maxLabelId = -1;
     private static int featureCount = 0;
