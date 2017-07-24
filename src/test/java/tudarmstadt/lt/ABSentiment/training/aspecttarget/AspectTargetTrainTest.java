@@ -6,7 +6,7 @@ public class AspectTargetTrainTest {
     @org.junit.Test
     public void Train() throws AnalysisEngineProcessException {
         String[] args = new String[1];
-        args[0] = "/train.xml";
+        args[0] = "/configurationTest.txt";
         Train.main(args);
     }
 

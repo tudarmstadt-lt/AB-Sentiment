@@ -6,6 +6,7 @@ featureStatisticsFile		data/sentiment_feature_stats.tsv
 featureOutputFile			data/sentiment_test.svm
 predictionFile				sentiment_test_predictions.tsv
 labelMappingsFile			data/models/sentiment_label_mappings.tsv
+crfModel			        data/models/
 
 #features
 idfFile     			    data/features/idfmap.tsv.gz		# IDF file, min freq = 100
