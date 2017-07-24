@@ -263,7 +263,7 @@ public class ProblemBuilder {
         if (trainingFile.endsWith("xml")) {
             fr = new XMLReader(trainingFile);
         } else {
-            fr = new TsvReader3(trainingFile, "sentiment");
+            fr = new TsvReader(trainingFile);
         }
 
         int documentCount = 0;
@@ -479,7 +479,7 @@ public class ProblemBuilder {
         if (inputFile.endsWith("xml")) {
             fr = new XMLReader(inputFile);
         } else {
-            fr = new TsvReader3(inputFile, "sentiment");
+            fr = new TsvReader(inputFile);
         }
 
         Writer out = null;

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Documents>
+    <Document id="http://twitter.com/6TownsMart/statuses/718525915534331904">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>@Thirsty_Pilgrim 5mins S-Bahn to Hauptbahnhof Joe, that was an excellent recommendation</text>
+    </Document>
+    <Document id="http://twitter.com/Velomotion\_App/statuses/682564767081435137">
+        <relevance>false</relevance>
+        <sentiment>neutral</sentiment>
+        <text>Mark Cavendish feiert beim Worldcup in Hongkong am 16. Januar sein Comeback auf der Bahn. https://t.co/4XMWBHcr9p</text>
+    </Document>
+    <Document id="http://twitter.com/Klimaatcombi/statuses/733190664402415616">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>@Agent_mob @bahnONLINEch Und so kann die Bahn ständig erneuert werden.</text>
+    </Document>
+    <Document id="http://www.finanznachrichten.de/nachrichten-2016-01/36122879-dobrindt-will-bahn-fahren-attraktiver-machen-die-bundesregierung-will-mehr-wettbewerb-auf-der-schiene-198.htm">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>Dobrindt will Bahn fahren attraktiver machen: Die Bundesregierung will mehr Wettbewerb auf der Schiene ... 13.01.2016 | 11:07 WirtschaftsWoche Online · WirtschaftsWoche Online Die Bundesregierung will mehr Wettbewerb auf der Schiene und so Bahn fahren attraktiver machen. Ein Gesetzesentwurf von Verkehrsminister Dobrindt trifft die Deutsche Bahn an einer</text>
+    </Document>
+    <Document id="http://www.stimme.de/deutschland-welt/newsticker/Tarife-Bahn-Bahn-Streik-beendet\;art305,3379065">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="11" target="Bahn-Streik" polarity="positive"/>
+            <Opinion category="Allgemein#Haupt" from="20" to="31" target="Bahn-Streik" polarity="positive"/>
+            <Opinion category="Allgemein#Haupt" from="171" to="177" target="Streik" polarity="positive"/>
+            <Opinion category="Allgemein#Haupt" from="218" to="229" target="streikenden" polarity="negative"/>
+            <Opinion category="Service_und_Kundenbetreuung#Zugbetreuung" from="230" to="243" target="GDL-Lokführer" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>Bahn-Streik beendet Bahn-Streik beendet Die Lokführergewerkschaft GDL hat sich mit der Deutschen Bahn überraschend auf eine Schlichtung geeinigt und beendet ihren neunten Streik bei dem Konzern noch vor Pfingsten. Die streikenden GDL-Lokführer werden sich laut Gewerks</text>
+    </Document>
+    <Document id="http://www.facebook.com/129349103260/posts/10152957223388261?comment\_id=10152958340128261#129349103260\_10152957223388261\_10152958340128261">
+        <Opinions>
+            <Opinion category="Ticketkauf#Haupt" from="234" to="252" target="zugfahren zu teuer" polarity="negative"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>negative</sentiment>
+        <text>Re: stuttgarter-zeitung.de fahrgemeinschaften bilden, mitfahrzentrale.de, fernbusse - meine güte, ich bin vor zwanzig janren jedes wochenende mit der mitfahrzentrale von stuttgart nach bonn gefahren, schlicht und ergreifend, weil mir zugfahren zu teuer war! wenn man von a nach b will, kommt man da hin - man muss halt in ausnahmesituationen auch mal bereit sein, die komfortzone zu verlassen und damit leben, dass man sich auch mal anstrengen muss!</text>
+    </Document>
+    <Document id="http://twitter.com/TheDravn/statuses/660646759190917120">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>@trivialerweise Das ist es nie... Und wenn es noch irgendwo in der Bahn drin ist, riecht das ja auch noch sehr lecker... Manche können sich</text>
+    </Document>
+    <Document id="http://twitter.com/newsjules/statuses/639692490967252993">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>@DB_Bahn Habe ich gemerkt. Jetzt in der zweiten Fuhre passe ich jetzt auch in den Minibus ;-)</text>
+    </Document>
+    <Document id="http://twitter.com/GoldmanS\_Sux/statuses/674736389548806148">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>#Flüchtlinge Polizei fahndet nach dreister S-Bahn-Bande im Ruhrgebiet https://t.co/tVToNmfhc6 Als BELOHNUNG kriegen sie dann Asyl LOL</text>
+    </Document>
+    <Document id="https://www.instagram.com/p/BD8kcRjphhK/">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>Re: lichtbild_u.schneider #Thale Richtung Bahnhof und Bodetal #thale #heimat #bahn #schrankenhaus #gleise #hexentanzplatz #rosstrappe</text>
+    </Document>
+    <Document id="http://www.facebook.com/152033178165965/posts/845916738777602#152033178165965\_845916738777602">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="20" to="26" target="streik" polarity="positive"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>positive</sentiment>
+        <text>Re: DB Bahn Ist der streik jetzt beendet So das die züge normal fahren</text>
+    </Document>
+    <Document id="http://twitter.com/elba013/statuses/639756093443411968">
+        <Opinions>
+            <Opinion category="Sonstige_Unregelmässigkeiten#Haupt" from="25" to="43" target="technische Störung" polarity="positive"/>
+            <Opinion category="Zugfahrt#Pünktlichkeit" from="81" to="93" target="Verspätungen" polarity="positive"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>positive</sentiment>
+        <text>RT @streckenagent_M: #S1 technische Störung in #Neufahrn behoben. Keine weiteren Verspätungen. #MVV #s- bahn http://t.co/47uWCYXMFZ</text>
+    </Document>
+    <Document id="http://twitter.com/dealdoktor/statuses/718376081221414913">
+        <Opinions>
+            <Opinion category="Allgemein#Haupt" from="0" to="0" target="NULL" polarity="neutral"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>neutral</sentiment>
+        <text>Megabus: Hin- &amp; Rückfahrt ab 2,50€ ► https://t.co/fspb7eKwiF #fernbus #megabus #reise #bahn #sparen #günstig https://t.co/VrwXxMlY3U</text>
+    </Document>
+    <Document id="http://www.facebook.com/152033178165965/posts/1038925659476708?comment\_id=1039750406060900#152033178165965\_1038925659476708\_1039750406060900">
+        <Opinions>
+            <Opinion category="DB_App_und_Website#Störungen_DB_App_und_Website" from="79" to="85" target="Fehler * DB Navigator" polarity="negative"/>
+        </Opinions>
+        <relevance>true</relevance>
+        <sentiment>negative</sentiment>
+        <text>Re: Deutsche Bahn Personenverkehr "Ich fände es toll, wenn endlich der nervige Fehler im DB Navigator ""Abfahrt"" beim Windows Phone behoben wird, der seit WOCHEN existiert. Scheinbar hat die DB kein Interesse daran, diesen Fehler zu beheben."</text>
+    </Document>
+</Documents>

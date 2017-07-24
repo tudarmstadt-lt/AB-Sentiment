@@ -15,6 +15,7 @@ public class TfidfHelper {
     protected static HashMap<Integer, Double> termIdf = new HashMap<>();
     protected static HashMap<String, Integer> tokenIds = new HashMap<>();
     protected static HashMap<Integer, String> tokenStrings = new HashMap<>();
+    protected static HashMap<String, Integer> tokenCorpusFrequency = new HashMap<>();
     protected int maxTokenId = 0;
 
     public void loadIdfList(String fileName) {
@@ -33,11 +34,16 @@ public class TfidfHelper {
                 tokenIds.put(tokenLine[0], tokenId);
                 tokenStrings.put(tokenId, tokenLine[0]);
                 termIdf.put(tokenId, Double.parseDouble(tokenLine[2]));
+                tokenCorpusFrequency.put(tokenLine[0], Integer.parseInt(tokenLine[3]));
             }
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public HashMap<String, Integer> getTokenCorpusFrequency(){
+        return tokenCorpusFrequency;
     }
 
 }

@@ -2,6 +2,7 @@ package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReader;
 import tudarmstadt.lt.ABSentiment.type.Document;
 
 /**
@@ -17,8 +18,14 @@ public class ComputeCorpusIdfScores {
      */
     public static void computeIdfScores(String inputFile, String outputFile, int minFrequency) {
         ComputeIdf idf = new ComputeIdf();
+
         idf.setMinFrequency(minFrequency);
-        InputReader fr = new TsvReader(inputFile);
+        InputReader fr;
+        if (inputFile.endsWith(".xml")) {
+            fr = new XMLReader(inputFile);
+        } else {
+            fr = new TsvReader(inputFile);
+        }
 
         for (Document d: fr) {
             idf.addDocument(d);
