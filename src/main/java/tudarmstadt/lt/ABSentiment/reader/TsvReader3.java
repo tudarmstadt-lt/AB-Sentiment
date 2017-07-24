@@ -1,10 +1,13 @@
 package tudarmstadt.lt.ABSentiment.reader;
 
 import tudarmstadt.lt.ABSentiment.type.Document;
+import tudarmstadt.lt.ABSentiment.type.Opinion;
 import tudarmstadt.lt.ABSentiment.type.Sentence;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -16,6 +19,7 @@ public class TsvReader3 implements InputReader {
     private BufferedReader reader = null;
     private boolean checkedNext = false;
     private boolean hasNext = false;
+    private String type;
 
     private String line;
 
@@ -24,7 +28,8 @@ public class TsvReader3 implements InputReader {
      * Creates a Reader using a file name
      * @param filename the path and filename of the input file
      */
-    public TsvReader3(String filename) {
+    public TsvReader3(String filename, String type) {
+        this.type = type;
         try {
             reader = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
@@ -102,11 +107,22 @@ public class TsvReader3 implements InputReader {
             throw new IllegalArgumentException("The document should at least have 2 fields, with an optional label in the 3rd field!");
         }
         doc.setDocumentId(documentFields[0]);
-        doc.addSentence(new Sentence(documentFields[1]));
+        Sentence sentence = new Sentence(documentFields[1]);
+        sentence.setId(documentFields[0]);
+        if(documentFields.length >= 3){
+            if(type.equals("sentiment")) {
+                sentence.setSentiment(documentFields[2]);
+            }else if(type.equals("relevance")){
+                sentence.setRelevance(documentFields[2]);
+            }else if(type.equals("aspect")){
+                ArrayList<Opinion> opinions = new ArrayList<>();
+                Opinion opinion = new Opinion(documentFields[2]);
+                opinions.add(opinion);
+                sentence.addOpinions(opinions);
 
-        if (documentFields.length >= 3) {
-            doc.setLabels(documentFields[2]);
+            }
         }
+        doc.addSentence(sentence);
         return doc;
     }
 

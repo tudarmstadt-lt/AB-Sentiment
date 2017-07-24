@@ -1,10 +1,13 @@
 package tudarmstadt.lt.ABSentiment.reader;
 
 import tudarmstadt.lt.ABSentiment.type.Document;
+import tudarmstadt.lt.ABSentiment.type.Opinion;
 import tudarmstadt.lt.ABSentiment.type.Sentence;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -102,17 +105,23 @@ public class TsvReader implements InputReader {
             throw new IllegalArgumentException("The document should at least have 2 fields, with optional labels in the following fields!");
         }
         doc.setDocumentId(documentFields[0]);
-        doc.addSentence(new Sentence(documentFields[1]));
+        Sentence sentence = new Sentence(documentFields[1]);
 
+        sentence.setId(documentFields[0]);
         if (documentFields.length >= 3) {
-            doc.setRelevance(documentFields[2]);
+            sentence.setRelevance(documentFields[2]);
         }
         if (documentFields.length >= 4) {
-            doc.setDocumentSentiment(documentFields[3]);
+            sentence.setSentiment(documentFields[3]);
         }
         if (documentFields.length >= 5) {
-            doc.setDocumentAspects(documentFields[4]);
+            ArrayList<Opinion> opinions = new ArrayList<>();
+            Opinion opinion = new Opinion(documentFields[4]);
+            opinion.setPolarity(documentFields[2]);
+            opinions.add(opinion);
+            sentence.addOpinions(opinions);
         }
+        doc.addSentence(sentence);
         return doc;
     }
 
