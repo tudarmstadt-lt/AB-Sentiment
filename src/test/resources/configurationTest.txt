@@ -1,7 +1,7 @@
 ## configuration for sentiment task on financial data
 
 modelFile					data/models/sentiment_model
-trainFile					/feature_test.tsv
+trainFile					/train.xml
 featureStatisticsFile		data/sentiment_feature_stats.tsv
 featureOutputFile			data/sentiment_test.svm
 predictionFile				sentiment_test_predictions.tsv
