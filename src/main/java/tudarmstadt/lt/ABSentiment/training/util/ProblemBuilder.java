@@ -457,21 +457,6 @@ public class ProblemBuilder {
     }
 
     protected static INDArray classifyTestSet(String inputFile, Model model, Vector<FeatureExtractor> features, String predictionFile, String type, boolean printResult) {
-
-        Writer out0=null, out1=null;
-        OutputStream predStream0 =null, predStream1 = null;
-        try {
-            predStream0 = new FileOutputStream("0_class.txt");
-            out0 = new OutputStreamWriter(predStream0, "UTF-8");
-            predStream1 = new FileOutputStream("1_class.txt");
-            out1 = new OutputStreamWriter(predStream1, "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-
         InputReader fr;
         if (inputFile.endsWith("xml")) {
             fr = new XMLReader(inputFile);
@@ -507,7 +492,7 @@ public class ProblemBuilder {
 
         ArrayList<double[]> probability = new ArrayList<>();
         confusionMatrix.createMatrix();
-        int we =1;
+
         for (Document doc : fr) {
             for(Sentence sentence:doc.getSentences()){
                 int i = 0;
@@ -542,10 +527,7 @@ public class ProblemBuilder {
                         goldLabel = StringUtils.join(sentence.getAspectCategories(), " ");
                         confusionMatrix.updateMatrix(predictedLabel, goldLabel);
                     }
-                    out.append("\t").append(labelLookup.get(prediction.intValue())).append("\t"+we+"\t").append("\n");
-                    out1.append(Double.toString((2*prob_estimates[1]) -1 )+"\n");
-                    out0.append(Double.toString((2*prob_estimates[0]) -1)+"\n");
-                    we++;
+                    out.append("\t").append(labelLookup.get(prediction.intValue())).append("\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -575,8 +557,6 @@ public class ProblemBuilder {
 
         try {
             out.close();
-            out0.close();
-            out1.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
