@@ -1,0 +1,11 @@
+## configuration for sentiment task on financial data
+
+modelFile					data/models/sentiment_model
+trainFile					/feature_test.tsv
+featureStatisticsFile		data/sentiment_feature_stats.tsv
+featureOutputFile			data/sentiment_test.svm
+predictionFile				sentiment_test_predictions.tsv
+labelMappingsFile			data/models/sentiment_label_mappings.tsv
+
+#features
+idfFile     			    data/features/idfmap.tsv.gz		# IDF file, min freq = 100
