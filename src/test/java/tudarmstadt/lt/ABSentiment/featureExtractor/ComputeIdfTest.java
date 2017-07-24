@@ -21,7 +21,7 @@ public class ComputeIdfTest extends ProblemBuilder{
 
     @org.junit.Test
     public void checkNodeIDOrder() throws Exception {
-        initialise("/configurationTest.txt");
+        initialise("configuration.txt");
         Vector<FeatureExtractor> features = loadFeatureExtractors();
         Problem problem = buildProblem(trainFile, features, true);
         Feature[][] inputFeature = problem.x;
@@ -42,7 +42,7 @@ public class ComputeIdfTest extends ProblemBuilder{
 
     @org.junit.Test
     public void checkFeatureOffset() {
-        initialise("/configurationTest.txt");
+        initialise("configuration.txt");
         long offset = Math.round(Math.random()*100);
 
         FeatureExtractor tfidf = new TfIdfFeature(idfFile, (int) offset);
