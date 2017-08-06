@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 /**
+ * LexicalExpansion class helps to expand the terms present in lexicon file using distributional thesaurus
  * Created by abhishek on 10/7/17.
  */
 public class LexicalExpansion extends ProblemBuilder{
@@ -23,6 +24,19 @@ public class LexicalExpansion extends ProblemBuilder{
     private HashMap<String, Float[]> expandedLexicon = new HashMap<>();
     private static List<Order2> similarWords;
 
+    /**
+     * Expands the lexicon file and returns a Hashmap containing word vector pair
+     * @param posFile path to the file containing positive words
+     * @param negFile path to the file containing negative words
+     * @param neuFile path to the file containing neutral words
+     * @param DTConfigurationFile path to the distributional thesaurus's configuration file
+     * @param numberOfSimilarWords the maximum number of similar words to be found for each word
+     * @param minimumSeedTermOccurrence the number of minimum occurrence of a word in the expanded list
+     * @param minimumCorpusFrequencyTerms the number of minimum occurence of a word in the corpus
+     * @param TfIdfFileName path to the tf-idf file
+     * @param outputFile path to the output file
+     * @return a HashMap containing word and polarity vector pair
+     */
     public HashMap expandLexicon(String posFile, String negFile, String neuFile, String DTConfigurationFile, int numberOfSimilarWords, int minimumSeedTermOccurrence, int minimumCorpusFrequencyTerms, String TfIdfFileName, String outputFile){
         dt = new WebThesaurusDatastructure(DTConfigurationFile);
         dt.connect();
@@ -38,7 +52,18 @@ public class LexicalExpansion extends ProblemBuilder{
         return expandedLexicon;
     }
 
-    public HashMap expandLexicon(String posFile, String negFile, String neuFile, int numberOfSimilarWords, int minimumSeedTermOccurrence, int minimumCorpusFrequencyTerms, String TfIdfFileName){
+    /**
+     * Expands the lexicon file and returns a Hashmap containing word vector pair
+     * @param posFile path to the file containing positive words
+     * @param negFile path to the file containing negative words
+     * @param neuFile path to the file containing neutral words
+     * @param numberOfSimilarWords the maximum number of similar words to be found for each word
+     * @param minimumSeedTermOccurrence the number of minimum occurrence of a word in the expanded list
+     * @param minimumCorpusFrequencyTerms the number of minimum occurrence of a word in the corpus
+     * @param TfIdfFileName path to the tf-idf file
+     * @return a HashMap containing word and polarity vector pair
+     */
+    public HashMap expandLexicon(String posFile, String negFile, String neuFile, int numberOfSimilarWords, int minimumSeedTermOccurrence, int minimumCorpusFrequencyTerms, String TfIdfFileName, String outputFile){
         dt = new WebThesaurusDatastructure(DTConfigurationFile);
         dt.connect();
         posExpansions = getDTExpansion(posFile, numberOfSimilarWords);
@@ -49,10 +74,16 @@ public class LexicalExpansion extends ProblemBuilder{
         getCandidateTerms(neuExpansions);
         getMinimumCorpusFrequencyTerms(minimumCorpusFrequencyTerms, TfIdfFileName);
         getMinimumSeedTermOccurrences(minimumSeedTermOccurrence);
-        getExpandedLexicon(polarityLexiconFile);
+        getExpandedLexicon(outputFile);
         return expandedLexicon;
     }
 
+    /**
+     * Expands the term using distributional thesaurus and returns a HashMap
+     * @param inputFile path to the input file containing a list of words
+     * @param numberOfSimilarWords the maximum number of similar words to be found for each word
+     * @return a HashMap containing word and it's frequency in the expanded list
+     */
     private HashMap<String, Integer> getDTExpansion(String inputFile, int numberOfSimilarWords){
         HashMap<String, Integer> hashMap = null;
         if(inputFile != null) {
@@ -81,6 +112,10 @@ public class LexicalExpansion extends ProblemBuilder{
         return hashMap;
     }
 
+    /**
+     * Builds a HashMap containing a candidate word and it's frequency
+     * @param hashMap a HashMap containing word and it's frequency
+     */
     private void getCandidateTerms(HashMap<String, Integer> hashMap){
         if(hashMap != null){
             for(Map.Entry<String, Integer> entry:hashMap.entrySet()){
@@ -93,6 +128,10 @@ public class LexicalExpansion extends ProblemBuilder{
         }
     }
 
+    /**
+     * Eliminates all words with frequency below the minimumSeedTermOccurrence
+     * @param minimumSeedTermOccurrence the number of minimum occurrence of a word in the expanded list
+     */
     private void getMinimumSeedTermOccurrences(int minimumSeedTermOccurrence){
         ArrayList<String> removeList = new ArrayList<>();
         for(Map.Entry<String, Integer> entry: candidateTerms.entrySet()){
@@ -105,6 +144,11 @@ public class LexicalExpansion extends ProblemBuilder{
         }
     }
 
+    /**
+     * Eliminates all words with frequency below the minimumCorpusFrequencyTerms
+     * @param minimumCorpusFrequencyTerms the number of minimum occurrence of a word in the corpus
+     * @param fileName  path to the tf-idf file
+     */
     private void getMinimumCorpusFrequencyTerms(int minimumCorpusFrequencyTerms, String fileName){
         TfidfHelper tfidfHelper = new TfidfHelper();
         tfidfHelper.loadIdfList(fileName);
@@ -122,6 +166,10 @@ public class LexicalExpansion extends ProblemBuilder{
         }
     }
 
+    /**
+     * Builds the final HashMap containing the word and polarity vector pair
+     * @param outputFile path to the output file
+     */
     private void getExpandedLexicon(String outputFile){
         int size = 0, index;
         if(posExpansions != null){size++;}

@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * ExpandIdfTerms class helps to expand the tf-idf terms per category using distributional thesaurus
  * Created by abhishek on 3/7/17.
  */
 public class ExpandIdfTerms extends ProblemBuilder{
@@ -23,6 +24,14 @@ public class ExpandIdfTerms extends ProblemBuilder{
     private IThesaurusDatastructure<String, String> dt;
     private static List<Order2> similarWords;
 
+    /**
+     * Constructor; initializes the variables and establishes the connection for distributional thesaurus
+     * @param inputFile the input file containing the words and td-idf category
+     * @param numberOfSimilarWords the minimum cut-off for number of similar words to be present
+     * @param numberOfTermsPerCategory the number of terms to be considered for expansion
+     * @param outputFile the output file path
+     * @param DTConfigurationFile path of the distributional thesaurus's configuration file
+     */
     public ExpandIdfTerms(String inputFile, int numberOfSimilarWords, int numberOfTermsPerCategory, String outputFile, String DTConfigurationFile){
         this.inputFile = inputFile;
         this.numberOfSimilarWords = numberOfSimilarWords;
@@ -33,6 +42,13 @@ public class ExpandIdfTerms extends ProblemBuilder{
         categoryTermMapping = new HashMap<>();
     }
 
+    /**
+     * Constructor; initializes the variables and establishes the connection for distributional thesaurus
+     * @param inputFile the input file containing the words and td-idf category
+     * @param numberOfSimilarWords the maximum number of similar words to be found for each word
+     * @param numberOfTermsPerCategory the number of terms to be considered for expansion per category
+     * @param outputFile the output file path
+     */
     public ExpandIdfTerms(String inputFile, int numberOfSimilarWords, int numberOfTermsPerCategory, String outputFile){
         this.inputFile = inputFile;
         this.numberOfSimilarWords = numberOfSimilarWords;
@@ -43,6 +59,9 @@ public class ExpandIdfTerms extends ProblemBuilder{
         categoryTermMapping = new HashMap<>();
     }
 
+    /**
+     * Extracts and sets the terms per category to be expanded
+     */
     public void setTermsPerCategory(){
         String word = "";
         ArrayList<String> terms;
@@ -74,6 +93,9 @@ public class ExpandIdfTerms extends ProblemBuilder{
         }
     }
 
+    /**
+     * Expands the terms per category using a distributional thesaurus and writes to a file
+     */
     public void getDTExpansions(){
         try {
             Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "utf-8"));
