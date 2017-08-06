@@ -9,21 +9,30 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * DTHelper class takes in a train and/or test file and stores a list of words from these files whose vector representation is absent in the embedding file
  * Created by abhishek on 28/5/17.
  */
 public class DTHelper extends ProblemBuilder{
 
-    protected static W2vSpace w2vSpace = null;
+    protected static GenericWordSpace genericWordSpace = null;
 
     public static void main(String args[]){
         initialise("configuration.txt");
         if(w2vFile != null){
-            w2vSpace = W2vSpace.load(w2vFile, true);
+            genericWordSpace = W2vSpace.load(w2vFile, true);
+        }else if(gloveFile != null){
+            genericWordSpace = GloVeSpace.load(gloveFile, true,true);
         }
         analyseInputFile(trainFile, testFile, missingWordsFile);
 
     }
 
+    /**
+     * Analyses the train and/or test file, builds the list of words whose vector representation does not exists and write them to a file
+     * @param inputTrainFile path to the train file
+     * @param inputTestFile path to the test file
+     * @param outputFile path to the output file containing the list of words
+     */
     public static void analyseInputFile(String inputTrainFile, String inputTestFile, String outputFile){
         Set<String> set = new HashSet<>();
         InputReader inputReader;
@@ -31,8 +40,8 @@ public class DTHelper extends ProblemBuilder{
             inputReader = new TsvReader(inputTrainFile);
             for(Document document: inputReader){
                 for(String term:document.getDocumentText().split(" ")){
-                    if(w2vSpace != null){
-                        if((term != null) && (!w2vSpace.contains(term))){
+                    if(genericWordSpace != null){
+                        if((term != null) && (!genericWordSpace.contains(term))){
                             set.add(term);
                         }
                     }
@@ -43,8 +52,8 @@ public class DTHelper extends ProblemBuilder{
             inputReader = new TsvReader(inputTestFile);
             for(Document document: inputReader){
                 for(String term:document.getDocumentText().split(" ")){
-                    if(w2vSpace != null){
-                        if((term != null) && (!w2vSpace.contains(term))){
+                    if(genericWordSpace != null){
+                        if((term != null) && (!genericWordSpace.contains(term))){
                             set.add(term);
                         }
                     }

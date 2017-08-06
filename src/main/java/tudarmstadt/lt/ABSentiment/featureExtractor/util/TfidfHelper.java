@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 
 /**
+ * TfidfHelper class helps to load the tf-idf file whenever required
  * Created by abhishek on 1/6/17.
  */
 public class TfidfHelper {
@@ -18,6 +19,10 @@ public class TfidfHelper {
     protected static HashMap<String, Integer> tokenCorpusFrequency = new HashMap<>();
     protected int maxTokenId = 0;
 
+    /**
+     * Loads the tf-idf file into four HashMaps
+     * @param fileName path to the tf-idf file
+     */
     public void loadIdfList(String fileName) {
         try {
             BufferedReader br;
@@ -42,6 +47,10 @@ public class TfidfHelper {
         }
     }
 
+    /**
+     * Returns a HashMap containing the word and it's corpus frequency
+     * @return a HashMap containing the word and it's corpus frequency
+     */
     public HashMap<String, Integer> getTokenCorpusFrequency(){
         return tokenCorpusFrequency;
     }
