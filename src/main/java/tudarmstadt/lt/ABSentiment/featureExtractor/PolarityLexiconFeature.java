@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 
 /**
+ * PolarityLexiconFeature class helps to extract polarity lexicon feature based on the polarity score of each token
  * Created by abhishek on 11/7/17.
  */
 public class PolarityLexiconFeature implements FeatureExtractor{
@@ -28,7 +29,7 @@ public class PolarityLexiconFeature implements FeatureExtractor{
     private Preprocessor preprocessor = new Preprocessor(true);
 
     /**
-     * Constructor; specifies the dense gazetteer file. Feature offset is set to '0' by default.
+     * Constructor; specifies the polarity lexicon file. Feature offset is set to '0' by default.
      * @param termPolarityFile path to a file containing word with their polarity vector
      */
     public PolarityLexiconFeature(String termPolarityFile) {
@@ -36,7 +37,7 @@ public class PolarityLexiconFeature implements FeatureExtractor{
     }
 
     /**
-     * Constructor; specifies the dense gazetteer file. Feature offset is specified.
+     * Constructor; specifies the polarity lexicon file. Feature offset is specified.
      * @param termPolarityFile path to a file containing word with their polarity vector
      */
     public PolarityLexiconFeature(String termPolarityFile, int offset) {
@@ -85,7 +86,7 @@ public class PolarityLexiconFeature implements FeatureExtractor{
 
 
     /**
-     * Loads a word list with words with/without their polarity.
+     * Loads a word list with words with their polarity vector.
      * @param fileName path to a file containing word with their polarity vector
      */
     public void loadPolarityFile(String fileName) {

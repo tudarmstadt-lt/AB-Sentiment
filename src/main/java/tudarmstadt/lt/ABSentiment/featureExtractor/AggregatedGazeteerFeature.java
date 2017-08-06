@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
+ * AggregatedGazeteerFeature class helps to extract aggregated lexicon feature based on the number of token occurrences in the input lexicon file
  * Created by abhishek on 20/6/17.
  */
 public class AggregatedGazeteerFeature implements FeatureExtractor {
@@ -28,20 +29,20 @@ public class AggregatedGazeteerFeature implements FeatureExtractor {
     private Preprocessor preprocessor = new Preprocessor(true);
 
     /**
-     * Constructor; specifies the dense gazetteer file. Feature offset is set to '0' by default.
-     * @param denseGazetteer path to a file containing word with/without their polarity
+     * Constructor; specifies the aggregate gazetteer file. Feature offset is set to '0' by default.
+     * @param aggregatedGazeteer path to a file containing word with/without their polarity
      */
-    public AggregatedGazeteerFeature(String denseGazetteer) {
-        loadGazeteerFile(denseGazetteer);
+    public AggregatedGazeteerFeature(String aggregatedGazeteer) {
+        loadGazeteerFile(aggregatedGazeteer);
     }
 
     /**
-     * Constructor; specifies the dense gazetteer file. Feature offset is specified.
-     * @param denseGazetteer path to a file containing word with/without their polarity
+     * Constructor; specifies the aggregate gazetteer file. Feature offset is specified.
+     * @param aggregatedGazeteer path to a file containing word with/without their polarity
      * @param offset the feature offset, all features start from this offset
      */
-    public AggregatedGazeteerFeature(String denseGazetteer, int offset) {
-        this(denseGazetteer);
+    public AggregatedGazeteerFeature(String aggregatedGazeteer, int offset) {
+        this(aggregatedGazeteer);
         this.offset = offset;
     }
 
