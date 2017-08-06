@@ -5,7 +5,7 @@ import de.bwaldvogel.liblinear.Problem;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
-import tudarmstadt.lt.ABSentiment.training.LSTMTraining;
+import tudarmstadt.lt.ABSentiment.training.DNNTraining;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
 import java.util.Vector;
@@ -32,9 +32,9 @@ public class Train extends ProblemBuilder {
             linearTraining.saveModel(model, sentimentModel);
             saveLabelMappings(labelMappingsFileSentiment);
         }else if(modelType.equals("lstm")){
-            LSTMTraining lstmTraining = new LSTMTraining();
-            MultiLayerNetwork model = lstmTraining.trainModel(problem);
-            lstmTraining.saveModel(model, sentimentModel, true);
+            DNNTraining dnnTraining = new DNNTraining();
+            MultiLayerNetwork model = dnnTraining.trainModel(problem);
+            dnnTraining.saveModel(model, sentimentModel, true);
             saveLabelMappings(labelMappingsFileSentiment);
         }
     }
