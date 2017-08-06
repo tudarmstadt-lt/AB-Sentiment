@@ -47,7 +47,7 @@ import java.net.URI;
 import java.text.CharacterIterator;
 import java.util.*;
 
-public class LSTMTraining{
+public class DNNTraining {
 
     public MultiLayerNetwork trainModel(Problem problem){
 

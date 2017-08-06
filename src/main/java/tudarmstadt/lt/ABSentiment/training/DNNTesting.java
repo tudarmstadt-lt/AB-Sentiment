@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by abhishek on 19/5/17.
  */
-public class LSTMTesting {
+public class DNNTesting {
     public MultiLayerNetwork loadModel(String modelFile) {
         MultiLayerNetwork model = null;
         File locationToSave = new File(modelFile+".zip");
