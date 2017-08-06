@@ -29,7 +29,7 @@ import java.util.Vector;
 /**
  * Created by abhishek on 20/5/17.
  */
-public class LSTMClassifier extends ProblemBuilder implements Classifier{
+public class DNNClassifier extends ProblemBuilder implements Classifier{
 
     protected MultiLayerNetwork model;
 
