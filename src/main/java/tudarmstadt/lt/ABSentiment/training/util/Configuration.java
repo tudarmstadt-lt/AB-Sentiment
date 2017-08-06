@@ -7,12 +7,18 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 
 /**
+ * Configuration class helps to read the configuration file and build a HashMap
  * Created by abhishek on 22/5/17.
  */
 public class Configuration {
 
     private BufferedReader reader = null;
 
+    /**
+     * Reads a configuration file and builds a HashMap containing variable and it's initialization
+     * @param fileName path to the configuration file
+     * @return a HashMap containing variable and it's initialization
+     */
     public HashMap<String, String> readConfigurationFile(String fileName){
         HashMap<String, String> config = new HashMap<>();
         String line;
