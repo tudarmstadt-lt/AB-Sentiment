@@ -64,7 +64,7 @@ public class ProblemBuilder {
     protected static String negativeGazeteerFile;
 
     protected static String polarityLexiconFile;
-    protected static String denseGazeteerFile;
+    protected static String aggregateGazeteerFile;
 
     protected static String DTConfigurationFile;
     protected static String missingWordsFile;
@@ -116,7 +116,7 @@ public class ProblemBuilder {
         weightedGloveFile = null;
         weightedIdfFile = null;
         polarityLexiconFile = null;
-        denseGazeteerFile = null;
+        aggregateGazeteerFile = null;
         DTConfigurationFile = null;
         DTfile = null;
 
@@ -173,8 +173,8 @@ public class ProblemBuilder {
                 useCoarseLabels = Boolean.parseBoolean(entry.getValue());
             }else if(entry.getKey().equals("polarityLexiconFile")) {
                 polarityLexiconFile = entry.getValue();
-            }else if(entry.getKey().equals("denseGazeteerFile")) {
-                denseGazeteerFile = entry.getValue();
+            }else if(entry.getKey().equals("aggregateGazeteerFile")) {
+                aggregateGazeteerFile = entry.getValue();
             }else if(entry.getKey().equals("DTConfigurationFile")){
                 DTConfigurationFile = entry.getValue();
             }else if(entry.getValue().equals(("DTfile"))){
@@ -221,10 +221,10 @@ public class ProblemBuilder {
             offset+=polarityLexicon.getFeatureCount();
             features.add(polarityLexicon);
         }
-        if(denseGazeteerFile!=null){
-            FeatureExtractor denseGazeteer = new AggregatedGazeteerFeature(denseGazeteerFile, offset);
-            offset+=denseGazeteer.getFeatureCount();
-            features.add(denseGazeteer);
+        if(aggregateGazeteerFile!=null){
+            FeatureExtractor aggregatedGazeteerFeature = new AggregatedGazeteerFeature(aggregateGazeteerFile, offset);
+            offset+=aggregatedGazeteerFeature.getFeatureCount();
+            features.add(aggregatedGazeteerFeature);
         }
         if(w2vFile!=null){
             FeatureExtractor word2vec = new WordEmbeddingFeature(w2vFile, null, 2, DTExpansionFile,  offset);
