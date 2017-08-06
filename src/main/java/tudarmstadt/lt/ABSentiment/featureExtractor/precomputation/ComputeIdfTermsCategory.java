@@ -21,7 +21,7 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
 
 
     private static TreeMap<Double, HashMap<Integer, Integer>> termFrequencyLabel;
-    private static TfIdfFeature idfScores = new TfIdfFeature("data/de/feature/idfmap.tsv.gz");
+    private static TfIdfFeature idfScores;
 
     private static Preprocessor preprocessor = new Preprocessor(true);
 
@@ -29,18 +29,21 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
     private static int minLength = 2;
     private static int minCount = 2;
 
-    public static void computeIdfScores(String inputFile, String outFile) {
-        initialise("configuration.txt");
-       computeIdfScores(inputFile, outFile, false);
+    public static void computeIdfScores(String configurationFile, String inputFile, String outFile) {
+        computeIdfScores(configurationFile ,inputFile, outFile, false);
     }
 
-    public static void computeIdfScores(String inputFile, String outFile, boolean useCoarseLabels) {
-        initialise("configuration.txt");
-        computeIdfScores(inputFile, outFile, useCoarseLabels, null);
+    public static void computeIdfScores(String configurationFile, String inputFile, String outFile, boolean useCoarseLabels) {
+        computeIdfScores(configurationFile, inputFile, outFile, useCoarseLabels, null);
     }
 
-    public static void computeIdfScores(String inputFile, String outFile, boolean useCoarseLabels, String type) {
-        initialise("configuration.txt");
+    public static void computeIdfScores(String configurationFile,String inputFile, String outFile, boolean useCoarseLabels, String type) {
+        initialise(configurationFile);
+        if(idfScores!=null){
+            idfScores = new TfIdfFeature(idfFile);
+        }else{
+            idfScores = new TfIdfFeature("data/de/feature/idfmap.tsv.gz");
+        }
         termFrequencyLabel = new TreeMap<>();
         resetLabelMappings();
 
@@ -77,7 +80,7 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
             }
         }
         saveIdfTerms(outFile);
-}
+    }
 
     /**
      * Setter Method for the minimum token length to be considered as candidates, default 2.
