@@ -12,7 +12,7 @@ predictionFile	            data/nl/sentiment_test_predictions.tsv
 /positiveGazeteerFile	    data/nl/dictionary/positive
 /negativeGazeteerFile	    data/nl/dictionary/negative
 /polarityLexiconFile			data/nl/feature/polarityLexicon.tsv.gz
-/denseGazeteerFile	        data/nl/feature/denseGazeteer.tsv
+/aggregateGazeteerFile	        data/nl/feature/aggregateGazeteer.tsv
 w2vFile					    data/nl/wordEmbedding/dutchWord2Vec-300.bin
 
 weightedIdfFile				data/nl/feature/idfmap.tsv.gz

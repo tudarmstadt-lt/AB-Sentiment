@@ -14,7 +14,7 @@ idfGazeteerFile			    data/en/feature/sentiment_idfterms.tsv
 positiveGazeteerFile	    data/en/dictionary/positive
 negativeGazeteerFile	    data/en/dictionary/negative
 polarityLexiconFile			data/en/feature/polarityLexicon.tsv.gz
-denseGazeteerFile	        data/en/feature/denseGazeteer.tsv
+aggregateGazeteerFile	        data/en/feature/aggregateGazeteer.tsv
 w2vFile					    data/en/wordEmbedding/englishWord2Vec-300.bin
 
 weightedIdfFile				data/en/feature/idfmap.tsv.gz
