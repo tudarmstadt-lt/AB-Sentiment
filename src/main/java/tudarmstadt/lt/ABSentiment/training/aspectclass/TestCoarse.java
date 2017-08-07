@@ -5,7 +5,7 @@ import de.bwaldvogel.liblinear.Problem;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
-import tudarmstadt.lt.ABSentiment.training.LSTMTesting;
+import tudarmstadt.lt.ABSentiment.training.DNNTesting;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
 import java.util.Vector;
@@ -35,10 +35,10 @@ public class TestCoarse extends ProblemBuilder {
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(aspectCoarseModel);
             classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
-        }else if(modelType.equals("lstm")){
-            LSTMTesting lstmTesting = new LSTMTesting();
+        }else if(modelType.equals("dnn")){
+            DNNTesting dnnTesting = new DNNTesting();
             Problem problem = buildProblem(testFile, features, false);
-            MultiLayerNetwork model = lstmTesting.loadModel(aspectCoarseModel);
+            MultiLayerNetwork model = dnnTesting.loadModel(aspectCoarseModel);
             classifyTestSet(model, problem, true);
         }
 

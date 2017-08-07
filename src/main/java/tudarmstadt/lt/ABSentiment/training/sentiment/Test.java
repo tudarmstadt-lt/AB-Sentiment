@@ -37,7 +37,7 @@ public class Test extends ProblemBuilder {
         }else if(modelType.equals("dnn")){
             DNNTesting dnnTesting = new DNNTesting();
             Problem problem = buildProblem(testFile, features, "sentiment", false);
-              MultiLayerNetwork model = dnnTesting.loadModel(sentimentModel);
+            MultiLayerNetwork model = dnnTesting.loadModel(sentimentModel);
             classifyTestSet(model, problem, true);
         }
 

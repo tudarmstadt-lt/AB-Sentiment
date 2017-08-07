@@ -31,7 +31,7 @@ public class Train extends ProblemBuilder {
             Model model = linearTraining.trainModel(problem);
             linearTraining.saveModel(model, sentimentModel);
             saveLabelMappings(labelMappingsFileSentiment);
-        }else if(modelType.equals("lstm")){
+        }else if(modelType.equals("dnn")){
             DNNTraining dnnTraining = new DNNTraining();
             MultiLayerNetwork model = dnnTraining.trainModel(problem);
             dnnTraining.saveModel(model, sentimentModel, true);

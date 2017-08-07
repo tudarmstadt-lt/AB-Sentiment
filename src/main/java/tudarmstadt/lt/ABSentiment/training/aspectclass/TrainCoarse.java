@@ -5,13 +5,10 @@ import de.bwaldvogel.liblinear.Problem;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
-import tudarmstadt.lt.ABSentiment.training.LSTMTraining;
+import tudarmstadt.lt.ABSentiment.training.DNNTraining;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Aspect Model Trainer (coarse-grained)
@@ -35,10 +32,10 @@ public class TrainCoarse extends ProblemBuilder {
             Model model = linearTraining.trainModel(problem);
             linearTraining.saveModel(model, aspectCoarseModel);
             saveLabelMappings(labelMappingsFileAspectCoarse);
-        }else if(modelType.equals("lstm")){
-            LSTMTraining lstmTraining = new LSTMTraining();
-            MultiLayerNetwork model = lstmTraining.trainModel(problem);
-            lstmTraining.saveModel(model, aspectCoarseModel, true);
+        }else if(modelType.equals("dnn")){
+            DNNTraining dnnTraining = new DNNTraining();
+            MultiLayerNetwork model = dnnTraining.trainModel(problem);
+            dnnTraining.saveModel(model, aspectCoarseModel, true);
         }
     }
 

@@ -5,7 +5,7 @@ import de.bwaldvogel.liblinear.Problem;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
-import tudarmstadt.lt.ABSentiment.training.LSTMTesting;
+import tudarmstadt.lt.ABSentiment.training.DNNTesting;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
 import java.util.Vector;
@@ -34,10 +34,10 @@ public class Test extends ProblemBuilder {
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(relevanceModel);
             classifyTestSet(testFile, model, features, predictionFile, "relevance", true);
-        }else if(modelType.equals("lstm")){
-            LSTMTesting lstmTesting = new LSTMTesting();
+        }else if(modelType.equals("dnn")){
+            DNNTesting dnnTesting = new DNNTesting();
             Problem problem = buildProblem(testFile, features, false);
-            MultiLayerNetwork model = lstmTesting.loadModel(relevanceModel);
+            MultiLayerNetwork model = dnnTesting.loadModel(relevanceModel);
             classifyTestSet(model, problem, true);
         }
 
