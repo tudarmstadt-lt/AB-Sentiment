@@ -2,8 +2,10 @@ package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
 import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Problem;
-import org.apache.uima.UIMAException;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
+import tudarmstadt.lt.ABSentiment.training.DNNTraining;
 import tudarmstadt.lt.ABSentiment.training.LinearTraining;
 
 import java.util.Vector;
@@ -11,38 +13,30 @@ import java.util.Vector;
 /**
  * Aspect Model Trainer (coarse-grained)
  */
-public class TrainCoarse extends LinearTraining {
+public class TrainCoarse extends ProblemBuilder {
 
-    /**
-     * Trains the model from an input file
-     * @param args optional: input file and optional model file
-     */
     public static void main(String[] args) {
 
-        trainingFile = "train.xml";
-        modelFile = "data/models/aspect_coarse_model.svm";
-        featureOutputFile = "data/aspect_coarse_train.svm";
-        featureStatisticsFile = "data/aspect_coarse_feature_stats.tsv";
-        labelMappingsFile = "data/models/aspect_coarse_label_mappings.tsv";
-        idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
 
-        if (args.length == 2) {
-            trainingFile = args[0];
-            modelFile = args[1];
-        } else if (args.length == 1) {
-            trainingFile = args[0];
+        String modelType = "linear";
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Problem problem = buildProblem(trainFile, features, true);
 
-        // enable coarse document labels
-        useCoarseLabels = true;
-
-        Problem problem = buildProblem(trainingFile, features, "aspect");
-        Model model = trainModel(problem);
-        saveModel(model, modelFile);
-
-        saveLabelMappings(labelMappingsFile);
+        if(modelType.equals("linear")){
+            LinearTraining linearTraining = new LinearTraining();
+            Model model = linearTraining.trainModel(problem);
+            linearTraining.saveModel(model, aspectCoarseModel);
+            saveLabelMappings(labelMappingsFileAspectCoarse);
+        }else if(modelType.equals("dnn")){
+            DNNTraining dnnTraining = new DNNTraining();
+            MultiLayerNetwork model = dnnTraining.trainModel(problem);
+            dnnTraining.saveModel(model, aspectCoarseModel, true);
+        }
     }
 
 }

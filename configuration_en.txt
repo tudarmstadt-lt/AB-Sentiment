@@ -1,0 +1,31 @@
+## configuration for sentiment task on financial data
+
+trainFile	                data/financial_train.tsv
+testFile	                data/financial_test.tsv
+featureStatisticsFile	    data/en/sentiment_feature_stats.tsv
+featureOutputFile	        data/en/sentiment_test.svm
+predictionFile	            data/en/sentiment_test_predictions.tsv
+
+#features
+idfFile     			    data/en/feature/idfmap.tsv.gz		# IDF file, min freq = 100
+idfGazeteerFile			    data/en/feature/sentiment_idfterms.tsv
+positiveGazeteerFile	    data/en/dictionary/positive
+negativeGazeteerFile	    data/en/dictionary/negative
+polarityLexiconFile			data/en/feature/polarityLexicon.tsv.gz
+aggregateazeteerFile	        data/en/feature/aggregateGazeteer.tsv
+w2vFile					    data/en/wordEmbedding/englishWord2Vec-300.bin
+
+weightedIdfFile				data/en/feature/idfmap.tsv.gz
+weightedW2vFile				data/en/wordEmbedding/englishWord2Vec-300.bin
+
+relevanceModel			    data/en/models/relevance_model
+aspectModel				    data/en/models/aspect_model
+aspectCoarseModel		    data/en/models/aspect_coarse_model
+sentimentModel			    data/en/models/sentiment_model
+crfModel			        data/en/models/
+
+
+/DTConfigurationFile		    conf_web_wikipedia_trigram.xml
+/missingWordsFile			data/de/expansion/missingWords.txt
+/DTExpansionFile				data/de/expansion/DTExpansionMissingWords.txt
+/DTfile				        ex.tsv

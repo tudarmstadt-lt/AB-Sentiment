@@ -27,7 +27,7 @@ public class ApplicationController {
      */
     private NumberFormat formatter = new DecimalFormat("#0.000");
 
-    private AbSentiment analyzer = new AbSentiment();
+    private AbSentiment analyzer = new AbSentiment("configuration.txt");
     /**
      * Processes input text and outputs the classification results.
      * @param text the input text

@@ -9,8 +9,8 @@ import java.util.HashMap;
  */
 public class ConfusionMatrix {
 
-    private ArrayList<String> labels = new ArrayList<>();
-    private HashMap<Pair<String, String>, Integer> matrix = new HashMap<>();
+    ArrayList<String> labels = new ArrayList<>();
+    HashMap<Pair<String, String>, Integer> matrix = new HashMap<>();
 
     public void addLabel(String label){
         labels.add(label);
@@ -30,22 +30,15 @@ public class ConfusionMatrix {
      * @param goldLabel the actual gold label for the instance
      */
     public void updateMatrix(String predictedLabel, String goldLabel){
-        Pair<String,String> entry = new Pair<>(predictedLabel, goldLabel);
-        if (matrix.get(entry) == null) {
-            for (String label : labels) {
-                matrix.put(new Pair<>(label, goldLabel), 0);
-            }
-        }
-            matrix.put(entry, matrix.get(entry)+1);
-
+        matrix.put(new Pair<>(predictedLabel, goldLabel), matrix.get(new Pair<>(predictedLabel, goldLabel))+1);
     }
 
     /**
      * Prints the confusion matrix
      */
     public void printConfusionMatrix(){
-        System.out.println("Gold labels:\t Left to Right");
-        System.out.println("Predicted labels:\t Top to bottom");
+        System.out.println("\nGold labels      : Left to Right");
+        System.out.println("Predicted labels : Top to bottom");
         for(String label:labels){
             System.out.print("\t"+label);
         }
@@ -62,7 +55,7 @@ public class ConfusionMatrix {
      * @param target the label for which the sum is to be returned
      * @return the total number of a particular gold label
      */
-    private int getGoldSumForLabel(String target){
+    public int getGoldSumForLabel(String target){
         int result = 0;
         for(String label:labels){
             result+=matrix.get(new Pair<>(label, target));
@@ -75,7 +68,7 @@ public class ConfusionMatrix {
      * @param target the label for which the sum is to be returned
      * @return the total number of a particular predicted label
      */
-    private int getPredictedSumForLabel(String target){
+    public int getPredictedSumForLabel(String target){
         int result = 0;
         for(String label:labels){
             result+=matrix.get(new Pair<>(target, label));
@@ -208,6 +201,6 @@ public class ConfusionMatrix {
                 allPrediction+=matrix.get(new Pair<>(label1, label2));
             }
         }
-        return ((float) truePositive / (float) allPrediction);
+        return ((float) truePositive / (float) allPrediction)*100;
     }
 }

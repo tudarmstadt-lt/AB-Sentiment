@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Computes the IDF Scores from a corpus collection of {@link Document}s.
+ * Computes the IDF Scores from a collection of {@link Document}s.
  * Scores can be stored in a file, e.g. to be used by the TF-IDF Feature {@link TfIdfFeature}
  */
 public class ComputeIdf {
@@ -35,7 +35,7 @@ public class ComputeIdf {
     }
 
     /**
-     * Setter Method for the minimum corpus frequency of a term, default 1.
+     * Setter Method for the minimum corpus frequency of a term, default 1-
      * @param minFreq the new minimum corpus frequency for a term
      */
     public void setMinFrequency(int minFreq) {
@@ -43,7 +43,6 @@ public class ComputeIdf {
             this.minFrequency = minFreq;
         }
     }
-
 
     /**
      * Processes a {@link Document}, extracts tokens and increases their document frequency
@@ -56,17 +55,14 @@ public class ComputeIdf {
         HashSet<Integer> containedTokens = new HashSet<>();
 
         for (String token : documentTokens) {
-            if (!token.isEmpty()) {
-
-                Integer tokenId = tokenIds.get(token);
-                if (tokenId == null) {
-                    tokenId = ++maxTokenId;
-                    tokenIds.put(token, tokenId);
-                }
-                if (!containedTokens.contains(tokenId)) {
-                    containedTokens.add(tokenId);
-                    increaseDocumentCount(tokenId);
-                }
+            Integer tokenId = tokenIds.get(token);
+            if (tokenId == null) {
+                tokenId = maxTokenId++;
+                tokenIds.put(token, tokenId);
+            }
+            if (!containedTokens.contains(tokenId)) {
+                containedTokens.add(tokenId);
+                increaseDocumentCount(tokenId);
             }
         }
     }
@@ -88,7 +84,7 @@ public class ComputeIdf {
      * TOKEN  &emsp; TOKEN_ID &emsp; IDF-SCORE &emsp; FREQUENCY
      * @param idfFile path to the output file
      */
-    protected void saveIdfScores(String idfFile) {
+    public void saveIdfScores(String idfFile) {
         try {
             Writer out;
             if (idfFile.endsWith(".gz")) {

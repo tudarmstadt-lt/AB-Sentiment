@@ -1,17 +1,19 @@
 package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
 import de.bwaldvogel.liblinear.Model;
-import org.apache.uima.UIMAException;
+import de.bwaldvogel.liblinear.Problem;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
+import tudarmstadt.lt.ABSentiment.training.DNNTesting;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
-import java.io.IOException;
 import java.util.Vector;
 
 /**
  * Aspect Model Tester (course-grained)
  */
-public class TestCoarse extends LinearTesting {
+public class TestCoarse extends ProblemBuilder {
 
     /**
      * Classifies an input file, given a model
@@ -19,26 +21,27 @@ public class TestCoarse extends LinearTesting {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("data/models/aspect_coarse_label_mappings.tsv");
-
-        testFile = "dev.tsv";
-        modelFile = "data/models/aspect_coarse_model.svm";
-        featureOutputFile = "data/aspect_coarse_test.svm";
-        predictionFile = "aspect_coarse_test_predictions.tsv";
-        idfGazeteerFile = "data/features/aspect_coarse_idfterms.tsv";
-
-        if (args.length == 3) {
-            testFile = args[0];
-            modelFile = args[1];
-            predictionFile = args[2];
+        String modelType = "linear";
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
+
+        loadLabelMappings(labelMappingsFileAspectCoarse);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Model model = loadModel(modelFile);
+        if(modelType.equals("linear")){
+            LinearTesting linearTesting = new LinearTesting();
+            Model model = linearTesting.loadModel(aspectCoarseModel);
+            classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
+        }else if(modelType.equals("dnn")){
+            DNNTesting dnnTesting = new DNNTesting();
+            Problem problem = buildProblem(testFile, features, false);
+            MultiLayerNetwork model = dnnTesting.loadModel(aspectCoarseModel);
+            classifyTestSet(model, problem, true);
+        }
 
-        useCoarseLabels = true;
-        classifyTestSet(testFile, model, features, predictionFile, "aspect");
     }
 
 }

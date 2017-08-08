@@ -9,7 +9,10 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -33,8 +36,10 @@ public class DocumentLengthFeature implements FeatureExtractor {
     }
 
 
+
     @Override
     public Feature[] extractFeature(JCas cas) {
+
         Collection<String> documentText = preprocessor.getTokenStrings(cas);
 
         Feature[] ret = new Feature[1];
@@ -69,7 +74,9 @@ public class DocumentLengthFeature implements FeatureExtractor {
                         new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
             }
             String line;
-            if ((line = br.readLine()) != null) maxDocumentLength = Integer.parseInt(line);
+            if ((line = br.readLine()) != null) {
+                maxDocumentLength = Integer.parseInt(line);
+            }
             br.close();
         } catch (IOException e) {
             e.printStackTrace();

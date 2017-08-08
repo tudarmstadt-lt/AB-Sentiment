@@ -20,7 +20,7 @@ public class GazeteerFeature implements FeatureExtractor {
 
     private ArrayList<String> terms = new ArrayList<>();
 
-    private Preprocessor preprocessor = new Preprocessor();
+    private Preprocessor preprocessor = new Preprocessor(true);
 
     /**
      * Constructor; specifies the gazetteer file. Feature offset is set to '0' by default.

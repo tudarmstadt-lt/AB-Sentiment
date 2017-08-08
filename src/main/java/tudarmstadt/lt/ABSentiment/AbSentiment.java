@@ -11,6 +11,7 @@ import tudarmstadt.lt.ABSentiment.type.Result;
 import tudarmstadt.lt.ABSentiment.type.uima.AspectTarget;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
+import static org.apache.uima.fit.util.JCasUtil.contains;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 /**
@@ -27,16 +28,15 @@ public class AbSentiment {
     private Preprocessor nlpPipeline;
 
     /**
-     * Constructor that utilizes the classiers and the NLP pipeline.
+     * Constructor that utilizes the classifiers and the NLP pipeline.
      */
-    public AbSentiment() {
-        relevanceClassifier = new LinearRelevanceClassifier("data/models/relevance_model.svm");
-        aspectClassifier = new LinearAspectClassifier("data/models/aspect_model.svm");
-        coarseAspectClassifier = new LinearAspectClassifier("data/models/aspect_coarse_model.svm", "data/models/aspect_coarse_label_mappings.tsv");
-        sentimentClassifier = new LinearSentimentClassifer("data/models/sentiment_model.svm");
-        aspectTargetClassifier = new CrfClassifier("data/models/");
-
-        nlpPipeline = new Preprocessor();
+    public AbSentiment(String configurationFile) {
+        relevanceClassifier = new LinearRelevanceClassifier(configurationFile);
+        aspectClassifier = new LinearAspectClassifier(configurationFile);
+        coarseAspectClassifier = new LinearAspectClassifier(configurationFile);
+        sentimentClassifier = new LinearSentimentClassifer(configurationFile);
+        aspectTargetClassifier = new CrfClassifier(configurationFile);
+        nlpPipeline = new Preprocessor(true);
     }
 
     /**

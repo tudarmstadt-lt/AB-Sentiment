@@ -54,10 +54,11 @@ public class XMLReader implements InputReader {
             e.printStackTrace();
         }
         try {
-            doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
-        } catch (FileNotFoundException | IllegalArgumentException e) {
+            System.out.println(filename);
+            doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
+        } catch (FileNotFoundException e) {
             try {
-                doc = dBuilder.parse(new FileInputStream(filename), "UTF-8");
+                doc = dBuilder.parse(this.getClass().getResourceAsStream(filename), "UTF-8");
             } catch (IOException e1) {
                 e1.printStackTrace();
             } catch (SAXException e1) {
@@ -107,18 +108,16 @@ public class XMLReader implements InputReader {
     private Document buildDocument(Element element) {
         Document doc = new Document();
         doc.setDocumentId(element.getAttribute(docAttrId));
-        doc.setRelevance(element.getElementsByTagName(relevanceTag).item(0).getTextContent());
-        doc.setDocumentSentiment(element.getElementsByTagName(sentimentTag).item(0).getTextContent());
         NodeList sList = element.getElementsByTagName(sentenceTag);
-        Sentence s;
-
+        Sentence sentence;
         for (int sI = 0; sI < sList.getLength(); sI++) {
             Node sNode = sList.item(sI);
-
-            s = new Sentence( sNode.getTextContent());
-            s.addOpinions(getOpinions(element));
-
-            doc.addSentence(s);
+            sentence = new Sentence( sNode.getTextContent());
+            sentence.setId(element.getAttribute(docAttrId));
+            sentence.setSentiment(element.getElementsByTagName(sentimentTag).item(0).getTextContent());
+            sentence.setRelevance(element.getElementsByTagName(relevanceTag).item(0).getTextContent());
+            sentence.addOpinions(getOpinions(element));
+            doc.addSentence(sentence);
         }
         reviewPosition++;
         return doc;
@@ -129,9 +128,9 @@ public class XMLReader implements InputReader {
      * @param sNode the sentence Node
      * @return a Vector of opinions for the sentence
      */
-    private Vector<Opinion> getOpinions(Node sNode) {
+    private ArrayList<Opinion> getOpinions(Node sNode) {
         String category,polarity,target;
-        Vector<Opinion> opinions = new Vector<>();
+        ArrayList<Opinion> opinions = new ArrayList<>();
         NodeList oList = ((Element) sNode).getElementsByTagName(opinionTag);
         for (int oI = 0; oI < oList.getLength(); oI++) {
             Element oNode = (Element) oList.item(oI);

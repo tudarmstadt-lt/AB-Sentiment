@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -117,9 +118,9 @@ public class XMLReaderSemEval implements InputReader {
      * @param sNode the sentence Node
      * @return a Vector of opinions for the sentence
      */
-    private Vector<Opinion> getOpinions(Node sNode) {
+    private ArrayList<Opinion> getOpinions(Node sNode) {
         String category,polarity,target;
-        Vector<Opinion> opinions = new Vector<>();
+        ArrayList<Opinion> opinions = new ArrayList<>();
         NodeList oList = ((Element) sNode).getElementsByTagName(opinionTag);
         for (int oI = 0; oI < oList.getLength(); oI++) {
             Node oNode = oList.item(oI);
@@ -127,7 +128,6 @@ public class XMLReaderSemEval implements InputReader {
             category = ((Element) oNode).getAttribute(opinionAttrCategory);
             polarity = ((Element) oNode).getAttribute(opinionAttrPolarity);
             target = ((Element) oNode).getAttribute(opinionAttrTarget);
-
             opinions.add(new Opinion(category, polarity, target));
         }
         return  opinions;

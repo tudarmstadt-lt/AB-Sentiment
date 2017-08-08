@@ -1,7 +1,11 @@
 package tudarmstadt.lt.ABSentiment.training.aspectclass;
 
 import de.bwaldvogel.liblinear.Model;
+import de.bwaldvogel.liblinear.Problem;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
+import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
+import tudarmstadt.lt.ABSentiment.training.DNNTesting;
 import tudarmstadt.lt.ABSentiment.training.LinearTesting;
 
 import java.util.Vector;
@@ -9,7 +13,7 @@ import java.util.Vector;
 /**
  * Aspect Model Tester (fine-grained)
  */
-public class Test extends LinearTesting {
+public class Test extends ProblemBuilder {
 
     /**
      * Classifies an input file, given a model
@@ -17,25 +21,27 @@ public class Test extends LinearTesting {
      */
     public static void main(String[] args) {
 
-        loadLabelMappings("data/models/aspect_label_mappings.tsv");
-
-        modelFile = "data/models/aspect_model.svm";
-        testFile = "dev.xml";
-        predictionFile = "aspect_test_predictions.tsv";
-        idfGazeteerFile = "data/features/aspect_idfterms.tsv";
-
-        if (args.length == 3) {
-            testFile = args[0];
-            modelFile = args[1];
-            predictionFile = args[2];
+        String modelType = "linear";
+        if (args.length == 1) {
+            configurationfile = args[0];
         }
+        initialise(configurationfile);
+
+        loadLabelMappings(labelMappingsFileAspect);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
 
-        Model model = loadModel(modelFile);
+        if(modelType.equals("linear")){
+            LinearTesting linearTesting = new LinearTesting();
+            Model model = linearTesting.loadModel(aspectModel);
+            classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
+        }else if(modelType.equals("dnn")){
+            DNNTesting dnnTesting = new DNNTesting();
+            Problem problem = buildProblem(testFile, features, false);
+            MultiLayerNetwork model = dnnTesting.loadModel(aspectModel);
+            classifyTestSet(model, problem, true);
+        }
 
-        classifyTestSet(testFile, model, features, predictionFile, "aspect");
     }
 
 }
-

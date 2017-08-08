@@ -7,17 +7,19 @@ import java.util.*;
 
 public class Sentence {
 
-    private String text;
-    private String id;
-    private Vector<Opinion> opinions;
+    private String text = null;
+    private String id = null;
+    private String sentiment  = null;
+    private String relevance = null;
+    private ArrayList<Opinion> opinions;
 
     public Sentence() {
-        opinions = new Vector<>();
+        opinions = new ArrayList<>();
     }
 
     public Sentence (String sentence) {
         this.text = sentence.trim();
-        opinions = new Vector<>();
+        opinions = new ArrayList<>();
     }
 
     public String getText() {
@@ -28,6 +30,14 @@ public class Sentence {
         this.text = sentence.trim();
     }
 
+    public void setSentiment(String sentiment) {
+        this.sentiment = sentiment;
+    }
+
+    public void setRelevance(String relevance) {
+        this.relevance = relevance;
+    }
+
     public String getId(){
         return id;
     }
@@ -36,26 +46,14 @@ public class Sentence {
         this.id = id.trim();
     }
 
-    public void addOpinions(Vector<Opinion> opinions) {
+    public void addOpinions(ArrayList<Opinion> opinions) {
         this.opinions.addAll(opinions);
     }
 
-    public String getSentiment() throws NoSuchFieldException {
-        Set<String> polarities = new HashSet<>();
-        for (Opinion o: opinions) {
-            try {
-                polarities.add(o.getPolarity());
-            } catch (NoSuchFieldException e) {
-            }
-        }
-        String r = new String();
-        for (String p : polarities) {
-            r += p + " ";
-        }
-        if (r.compareTo("") == 0) {
-            throw new NoSuchFieldException("No Sentiment present");
-        }
-        return r.trim();
+    public String[] getRelevance() {
+        String[] ret = new String[1];
+        ret[0] = relevance;
+        return ret;
     }
 
     public String[] getAspectCategories() {
@@ -66,6 +64,9 @@ public class Sentence {
                 aspects[i++] = o.getFineCategory();
             } catch (NoSuchFieldException e) {
             }
+        }
+        if(i == 0){
+            aspects = new String[]{"0"};
         }
         return aspects;
     }
@@ -80,15 +81,38 @@ public class Sentence {
             } catch (NoSuchFieldException e) {
             }
         }
+        if(i == 0){
+            aspects = new String[]{"0"};
+        }
         return aspects;
     }
 
     public Set<String> getTargets() {
         Set<String> targets = new HashSet<>();
         for (Opinion o: opinions) {
-           targets.add(o.getTarget());
+            targets.add(o.getTarget());
         }
         return targets;
+    }
+
+
+    public String[] getSentiment() throws NoSuchFieldException {
+        ArrayList<String> sentiments = new ArrayList<>();
+        if (sentiment != null && !sentiment.isEmpty()) {
+            sentiments.add(sentiment);
+        } else {
+            for(Opinion opinion:opinions){
+                try {
+                    sentiments.add(opinion.getPolarity());
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(sentiments.size() == 0){
+            throw new NoSuchFieldException("No Sentiment present");
+        }
+        return sentiments.toArray(new String[sentiments.size()]);
     }
 
     public Collection<? extends Pair<Integer,Integer>> getTargetOffsets() {

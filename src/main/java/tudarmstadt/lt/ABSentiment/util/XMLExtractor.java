@@ -18,20 +18,20 @@ public class XMLExtractor {
 
         //InputReader in = new XMLReader("data/EN_REST_SB1_TEST.xml.gold");
 
-        for (Document d: in) {
-            for (Sentence s : d.getSentences()) {
-                String label = null;
-                try {
-                    label = s.getSentiment();
-                    //label = s.getAspectCategories();
-                } catch (NoSuchFieldException e) {
-                    label = null;
-                }
-                if (label != null) {
-                    System.out.println(s.getId() + "\t" + s.getText() + "\t" + label);
-                }
-
-            }
-        }
+//        for (Document d: in) {
+//            for (Sentence s : d.getSentences()) {
+//                String label = null;
+//                try {
+//                    label = s.getSentiment();
+//                    //label = s.getAspectCategories();
+//                } catch (NoSuchFieldException e) {
+//                    label = null;
+//                }
+//                if (label != null) {
+//                    System.out.println(s.getId() + "\t" + s.getText() + "\t" + label);
+//                }
+//
+//            }
+//        }
     }
 }
