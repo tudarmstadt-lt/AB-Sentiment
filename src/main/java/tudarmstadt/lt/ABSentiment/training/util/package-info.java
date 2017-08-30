@@ -18,6 +18,6 @@
  */
 
 /**
- * Framework for Aspect- and Document-based Sentiment Analysis
+ * Common utility classes that are used for training and testing of classifiers
  */
-package tudarmstadt.lt.ABSentiment;
+package tudarmstadt.lt.ABSentiment.training.util;

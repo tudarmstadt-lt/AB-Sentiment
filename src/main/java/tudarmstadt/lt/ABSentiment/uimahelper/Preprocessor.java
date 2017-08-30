@@ -1,3 +1,22 @@
+/*
+ * ******************************************************************************
+ *  Copyright 2016
+ *  Copyright (c) 2016 Technische Universität Darmstadt
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * ****************************************************************************
+ */
+
 package tudarmstadt.lt.ABSentiment.uimahelper;
 
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -16,9 +35,6 @@ import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
@@ -108,7 +124,7 @@ public class Preprocessor extends ProblemBuilder{
     }
 
     /**
-     * Retrieves a list of tokens as Strings from a provied CAS.
+     * Retrieves a list of tokens as Strings from a provided CAS.
      * @param cas the CAS, from which the tokens are extracted
      * @return a list of Strings
      */
@@ -121,6 +137,7 @@ public class Preprocessor extends ProblemBuilder{
         return tokenStrings;
     }
 
+
     /**
      * Retrieves a list of tokens as Strings from the current CAS.
      * @return a list of Strings
@@ -128,4 +145,28 @@ public class Preprocessor extends ProblemBuilder{
     public List<String> getTokenStrings() {
         return getTokenStrings(this.cas);
     }
+
+    /**
+     * Retrieves a list of tokens as @link{Token}s from a provided CAS.
+     * @param cas the CAS, from which the tokens are extracted
+     * @return a list of @link{Token} Annotations
+     */
+    public List<Token> getTokens(JCas cas) {
+        List<Token> tokenList = new ArrayList<>();
+        Collection<Token> tokens = select(cas, Token.class);
+        for (Annotation token : tokens) {
+            tokenList.add((Token) token);
+        }
+        return tokenList;
+    }
+
+
+    /**
+     * Retrieves a list of tokens as @link{Token}s from the current CAS.
+     * @return a list of @link{Token} Annotations
+     */
+    public List<Token> getTokens() {
+        return getTokens(this.getCas());
+    }
+
 }

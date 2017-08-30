@@ -38,6 +38,7 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
     </repositories>
 
@@ -76,7 +77,6 @@
             <artifactId>json</artifactId>
             <version>20090211</version>
         </dependency>
-
 
         <dependency>
             <groupId>net.sf.json-lib</groupId>
@@ -152,7 +152,6 @@
             <version>${dkpro.core.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
             <artifactId>de.tudarmstadt.ukp.dkpro.core.clearnlp-asl</artifactId>
@@ -162,7 +161,7 @@
         <dependency>
             <groupId>com.github.eugenso</groupId>
             <artifactId>segUIMA</artifactId>
-	        <version>-SNAPSHOT</version>
+	        <version>26f2559cec</version>
         </dependency>
 
 
