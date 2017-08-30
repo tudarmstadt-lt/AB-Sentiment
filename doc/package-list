@@ -13,6 +13,7 @@ tudarmstadt.lt.ABSentiment.training.aspectclass
 tudarmstadt.lt.ABSentiment.training.aspecttarget
 tudarmstadt.lt.ABSentiment.training.relevance
 tudarmstadt.lt.ABSentiment.training.sentiment
+tudarmstadt.lt.ABSentiment.training.util
 tudarmstadt.lt.ABSentiment.type
 tudarmstadt.lt.ABSentiment.type.uima
 tudarmstadt.lt.ABSentiment.uimahelper
