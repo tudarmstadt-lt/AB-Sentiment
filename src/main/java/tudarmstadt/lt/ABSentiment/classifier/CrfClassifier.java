@@ -41,11 +41,13 @@ public class CrfClassifier extends ProblemBuilder{
     /**
      * Constructor, creates an AnalysisEngine with a CRF classifier.
      */
-    public CrfClassifier() {
+    public CrfClassifier(String configurationFile) {
         try {
+            initialise(configurationFile);
             classifier = createEngine(AspectAnnotator.class,
                     GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH,
                     crfModel + "model.jar");
+
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }

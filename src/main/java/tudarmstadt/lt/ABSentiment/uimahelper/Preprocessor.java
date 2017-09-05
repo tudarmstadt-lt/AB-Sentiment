@@ -47,18 +47,18 @@ public class Preprocessor extends ProblemBuilder{
     private AnalysisEngine tokenizer;
     private AnalysisEngine postagger;
     private boolean lightAnalysis = false;
-    private final String language;
 
     /**
      * Constructor; initializes the UIMA pipeline and the CAS.
      */
     public Preprocessor() {
+        initialise("configuration.txt");
 
         // build annotation engine
         try {
             tokenizer = AnalysisEngineFactory.createEngine(TokenAnnotator.class);
             postagger = AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
-                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, crfModel+"opennlp-de-pos-maxent.bin");
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, crfModel+"opennlp-"+language+"-pos-maxent.bin");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }
@@ -68,7 +68,6 @@ public class Preprocessor extends ProblemBuilder{
         } catch (UIMAException e) {
             e.printStackTrace();
         }
-        language = "de";
     }
 
     /**

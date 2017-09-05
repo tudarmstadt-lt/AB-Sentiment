@@ -33,9 +33,9 @@ public class PreComputeFeatures {
      */
     public static void main(String[] args) {
 
-        String idfFile = "data/en/feature/idfmap.tsv.gz";
+        String idfFile = "data/en/features/idfmap.tsv.gz";
         String corpusFile = "data/en/corpus/corpus_en.tsv";
-        String maxLengthFile = "data/en/feature/max_length";
+        String maxLengthFile = "data/en/features/max_length";
         String configurationFile = "configuration.txt";
 
         ComputeCorpusIdfScores.computeIdfScores(corpusFile, idfFile, 100);System.out.println("1******************");

@@ -33,7 +33,7 @@ import java.util.*;
 /**
  * Gazeteer {@link FeatureExtractor}, extracts binary features if words from a word list are found in a document.
  */
-public class GazeteerFeature implements FeatureExtractor {
+public class GazetteerFeature implements FeatureExtractor {
 
     private int offset = 0;
 
@@ -45,7 +45,7 @@ public class GazeteerFeature implements FeatureExtractor {
      * Constructor; specifies the gazetteer file. Feature offset is set to '0' by default.
      * @param gazetteer path to a wordlist
      */
-    public GazeteerFeature(String gazetteer) {
+    public GazetteerFeature(String gazetteer) {
         loadWordList(gazetteer);
     }
 
@@ -54,7 +54,7 @@ public class GazeteerFeature implements FeatureExtractor {
      * @param gazetteer path to a wordlist
      * @param offset the feature offset, all features start from this offset
      */
-    public GazeteerFeature(String gazetteer, int offset) {
+    public GazetteerFeature(String gazetteer, int offset) {
         this(gazetteer);
         this.offset = offset;
     }

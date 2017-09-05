@@ -61,6 +61,7 @@ public class ProblemBuilder {
     private static int featureCount = 0;
     protected static boolean useCoarseLabels = false;
 
+    protected static String language;
     protected static String trainFile;
     protected static String testFile;
     protected static String predictionFile;
@@ -108,7 +109,7 @@ public class ProblemBuilder {
      */
     protected static void initialise(String configurationFile){
 
-
+        language = null;
         idfFile = null;
         idfGazeteerFile = null;
         positiveGazeteerFile = null;
@@ -143,7 +144,9 @@ public class ProblemBuilder {
         fileLocation = config.readConfigurationFile(configurationFile);
 
         for(HashMap.Entry<String, String> entry: fileLocation.entrySet()){
-            if(entry.getKey().equals("idfFile")){
+            if (entry.getKey().equals("language")) {
+                language = entry.getValue();
+            } else if(entry.getKey().equals("idfFile")){
                 idfFile = entry.getValue();
             }else if(entry.getKey().equals("idfGazeteerFile")){
                 idfGazeteerFile = entry.getValue();
@@ -215,17 +218,17 @@ public class ProblemBuilder {
             features.add(tfidf);
         }
         if (idfGazeteerFile != null) {
-            FeatureExtractor gazeteerIdf = new GazeteerFeature(idfGazeteerFile, offset);
+            FeatureExtractor gazeteerIdf = new GazetteerFeature(idfGazeteerFile, offset);
             offset += gazeteerIdf.getFeatureCount();
             features.add(gazeteerIdf);
         }
         if (positiveGazeteerFile!= null) {
-            FeatureExtractor posDict = new GazeteerFeature(positiveGazeteerFile, offset);
+            FeatureExtractor posDict = new GazetteerFeature(positiveGazeteerFile, offset);
             offset += posDict.getFeatureCount();
             features.add(posDict);
         }
         if (negativeGazeteerFile!= null) {
-            FeatureExtractor negDict = new GazeteerFeature(negativeGazeteerFile, offset);
+            FeatureExtractor negDict = new GazetteerFeature(negativeGazeteerFile, offset);
             offset += negDict.getFeatureCount();
             features.add(negDict);
         }
@@ -240,7 +243,7 @@ public class ProblemBuilder {
             features.add(polarityLexicon);
         }
         if(aggregateGazeteerFile!=null){
-            FeatureExtractor aggregatedGazeteerFeature = new AggregatedGazeteerFeature(aggregateGazeteerFile, offset);
+            FeatureExtractor aggregatedGazeteerFeature = new AggregatedGazetteerFeature(aggregateGazeteerFile, offset);
             offset+=aggregatedGazeteerFeature.getFeatureCount();
             features.add(aggregatedGazeteerFeature);
         }

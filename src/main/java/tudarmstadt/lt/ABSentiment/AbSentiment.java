@@ -55,8 +55,8 @@ public class AbSentiment {
         aspectClassifier = new LinearAspectClassifier(configurationFile);
         coarseAspectClassifier = new LinearAspectClassifier(configurationFile);
         sentimentClassifier = new LinearSentimentClassifer(configurationFile);
-        aspectTargetClassifier = new CrfClassifier();
-        nlpPipeline = new Preprocessor(true);
+        aspectTargetClassifier = new CrfClassifier(configurationFile);
+        nlpPipeline = new Preprocessor(false);
     }
 
     /**
