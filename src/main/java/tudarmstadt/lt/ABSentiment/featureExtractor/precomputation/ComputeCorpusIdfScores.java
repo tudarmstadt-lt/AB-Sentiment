@@ -60,4 +60,5 @@ public class ComputeCorpusIdfScores {
     public static void computeIdfScores(String inputFile, String outputFile) {
         computeIdfScores(inputFile, outputFile, 1);
     }
+
 }

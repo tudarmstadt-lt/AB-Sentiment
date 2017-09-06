@@ -47,27 +47,37 @@ public class TsvReader implements InputReader {
      * @param filename the path and filename of the input file
      */
     public TsvReader(String filename) {
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
-        } catch (Exception e) {
-            System.err.println("Stream could not be opened: " + filename + "\nTrying filename...");
+        if (filename.endsWith(".gz")) {
+            try {
+                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename )), "UTF-8"));
+            } catch (IOException e2) {
+                e2.printStackTrace();
+                System.exit(1);
+            }
+        } else {
+
             try {
                 reader = new BufferedReader(
-                        new InputStreamReader(new FileInputStream(filename), "UTF-8"));
-            } catch (FileNotFoundException e1) {
-                System.err.println("File could not be opened: " + filename);
+                        new InputStreamReader(this.getClass().getResourceAsStream(filename), "UTF-8"));
+            } catch (Exception e) {
+                System.err.println("Stream could not be opened: " + filename + "\nTrying filename...");
                 try {
-                    System.err.println("Trying gzipped file: " + filename + ".gz ...");
-                    reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename + ".gz")), "UTF-8"));
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                    System.exit(1);
+                    reader = new BufferedReader(
+                            new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+                } catch (FileNotFoundException e1) {
+                    System.err.println("File could not be opened: " + filename);
+                    try {
+                        System.err.println("Trying gzipped file: " + filename + ".gz ...");
+                        reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename + ".gz")), "UTF-8"));
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                        System.exit(1);
+                    }
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
+                System.err.println("... success.");
             }
-            System.err.println("... success.");
         }
     }
 

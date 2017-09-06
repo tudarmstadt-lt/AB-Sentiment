@@ -51,7 +51,7 @@ public class LexicalExpansion extends ProblemBuilder{
      * @param DTConfigurationFile path to the distributional thesaurus's configuration file
      * @param numberOfSimilarWords the maximum number of similar words to be found for each word
      * @param minimumSeedTermOccurrence the number of minimum occurrence of a word in the expanded list
-     * @param minimumCorpusFrequencyTerms the number of minimum occurence of a word in the corpus
+     * @param minimumCorpusFrequencyTerms the number of minimum occurrence of a word in the corpus
      * @param TfIdfFileName path to the tf-idf file
      * @param outputFile path to the output file
      * @return a HashMap containing word and polarity vector pair

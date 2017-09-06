@@ -36,6 +36,7 @@ import java.util.zip.GZIPOutputStream;
 public class MaxDocumentLength {
 
     private int maxLength = 1;
+    private int limit = 500;
 
     private Preprocessor preprocessor;
 
@@ -77,7 +78,8 @@ public class MaxDocumentLength {
                 out = new BufferedWriter(new OutputStreamWriter(
                         new FileOutputStream(idfFile), "UTF-8"));
             }
-            out.write(maxLength + "\n");
+            out.write(maxLength > limit ? limit : maxLength);
+            out.write("\n");
             out.close();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

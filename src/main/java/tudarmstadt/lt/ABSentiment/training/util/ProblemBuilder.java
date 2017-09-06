@@ -55,7 +55,7 @@ public class ProblemBuilder {
     protected static InputReader fr;
     protected static Preprocessor preprocessor = new Preprocessor(true);
 
-    protected static String configurationfile = "configuration.txt";
+    protected static String configurationfile;
 
     private static Integer maxLabelId = -1;
     private static int featureCount = 0;
@@ -78,6 +78,14 @@ public class ProblemBuilder {
     protected static String aspectCoarseModel;
     protected static String sentimentModel;
     protected static String crfModel;
+
+    protected static String corpusFile;
+    protected static String maxLengthFile;
+
+    protected static String relevanceIdfFile;
+    protected static String sentimentIdfFile;
+    protected static String aspectIdfFile;
+    protected static String aspectCoarseIdfFile;
 
     protected static String positiveGazeteerFile;
     protected static String negativeGazeteerFile;
@@ -138,6 +146,14 @@ public class ProblemBuilder {
         aggregateGazeteerFile = null;
         DTConfigurationFile = null;
         DTfile = null;
+        corpusFile = null;
+        maxLengthFile = null;
+
+        relevanceIdfFile = null;
+        sentimentIdfFile = null;
+        aspectIdfFile = null;
+        aspectCoarseIdfFile = null;
+
 
         Configuration config = new Configuration();
         HashMap<String, String> fileLocation;
@@ -198,8 +214,20 @@ public class ProblemBuilder {
                 aggregateGazeteerFile = entry.getValue();
             }else if(entry.getKey().equals("DTConfigurationFile")){
                 DTConfigurationFile = entry.getValue();
-            }else if(entry.getValue().equals(("DTfile"))){
+            }else if(entry.getKey().equals(("DTfile"))){
                 DTfile = entry.getValue();
+            }else if(entry.getKey().equals(("corpus"))){
+                corpusFile = entry.getValue();
+            }else if(entry.getKey().equals(("maxLengthFile"))){
+                maxLengthFile = entry.getValue();
+            }else if(entry.getKey().equals(("relIdfTerms"))){
+                relevanceIdfFile = entry.getValue();
+            }else if(entry.getKey().equals(("sentIdfTerms"))){
+                sentimentIdfFile = entry.getValue();
+            }else if(entry.getKey().equals(("aspectIdfTerms"))){
+                aspectIdfFile = entry.getValue();
+            }else if(entry.getKey().equals(("aspectCoarseIdfTerms"))){
+                aspectCoarseIdfFile = entry.getValue();
             }
         }
     }

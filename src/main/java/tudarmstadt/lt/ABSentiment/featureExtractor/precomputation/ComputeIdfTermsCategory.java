@@ -44,7 +44,7 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
 
     private static Preprocessor preprocessor = new Preprocessor(true);
 
-    private static int maxEntries = 20;
+    private static int maxEntries = 30;
     private static int minLength = 2;
     private static int minCount = 2;
 
@@ -60,8 +60,6 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
         initialise(configurationFile);
         if(idfScores!=null){
             idfScores = new TfIdfFeature(idfFile);
-        }else{
-            idfScores = new TfIdfFeature("data/de/feature/idfmap.tsv.gz");
         }
         termFrequencyLabel = new TreeMap<>();
         resetLabelMappings();

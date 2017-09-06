@@ -62,7 +62,7 @@ public class DocumentLengthFeature implements FeatureExtractor {
         Collection<String> documentText = preprocessor.getTokenStrings(cas);
 
         Feature[] ret = new Feature[1];
-        Double value = Math.max(1.0, documentText.size() / maxDocumentLength);
+        Double value = Math.min(1.0, documentText.size() / maxDocumentLength);
         ret[0] = new FeatureNode(offset, value);
         return ret;
     }

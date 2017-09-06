@@ -52,7 +52,6 @@ public class Preprocessor extends ProblemBuilder{
      * Constructor; initializes the UIMA pipeline and the CAS.
      */
     public Preprocessor() {
-        initialise("configuration.txt");
 
         // build annotation engine
         try {
