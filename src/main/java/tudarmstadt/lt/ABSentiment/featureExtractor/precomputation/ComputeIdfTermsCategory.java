@@ -21,6 +21,7 @@ package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
 import tudarmstadt.lt.ABSentiment.reader.XMLReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReaderSemEval;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
@@ -65,7 +66,11 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
 
         InputReader in;
         if (inputFile.endsWith(".xml")){
-            in = new XMLReader(inputFile);
+            if (semeval16) {
+                in = new XMLReaderSemEval(inputFile);
+            } else {
+                in = new XMLReader(inputFile);
+            }
         } else {
             in = new TsvReader(inputFile);
         }

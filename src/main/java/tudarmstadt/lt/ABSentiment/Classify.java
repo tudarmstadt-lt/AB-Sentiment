@@ -45,7 +45,6 @@ import java.io.*;
 public class Classify extends ProblemBuilder{
 
     private static boolean xmlData = false;
-    private static boolean semeval16 = false;
 
     private static String outputFile;
 
@@ -70,9 +69,8 @@ public class Classify extends ProblemBuilder{
         if (inputFile.endsWith("xml")) {
             xmlData = true;
         }
-        if (format.compareTo("semeval16") == 0) {
-            semeval16 = true;
-        }
+
+
 
         outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + "_classified" +
                 inputFile.substring(inputFile.lastIndexOf("."));

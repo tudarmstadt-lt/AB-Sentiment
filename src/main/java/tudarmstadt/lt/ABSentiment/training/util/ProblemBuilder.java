@@ -62,7 +62,9 @@ public class ProblemBuilder {
     protected static boolean useCoarseLabels = false;
 
     protected static String language;
-    protected  static String format;
+    private static String format;
+
+    protected static boolean semeval16 = false;
     protected static String trainFile;
     protected static String testFile;
     protected static String predictionFile;
@@ -166,6 +168,9 @@ public class ProblemBuilder {
                 language = entry.getValue();
             } else if(entry.getKey().equals("format")){
                 format = entry.getValue();
+                if (format.compareTo("semeval16") == 0) {
+                    semeval16 = true;
+                }
             }else if(entry.getKey().equals("idfFile")){
                 idfFile = entry.getValue();
             }else if(entry.getKey().equals("idfGazeteerFile")){
@@ -311,8 +316,13 @@ public class ProblemBuilder {
         }
         printFeatureStatistics(features);
 
+
         if (trainingFile.endsWith("xml")) {
-            fr = new XMLReader(trainingFile);
+            if (semeval16) {
+                fr = new XMLReaderSemEval(trainingFile);
+            } else {
+                fr = new XMLReader(trainingFile);
+            }
         } else {
             fr = new TsvReader(trainingFile);
         }

@@ -62,13 +62,14 @@ public class Train extends ProblemBuilder {
         }
 
         if (inputFile.endsWith("xml")) {
-            String[] xArgs = new String[2];
+            String[] xArgs = new String[3];
             xArgs[0] = inputFile;
             inputFile = inputFile.replace(".xml", "") + ".conll";
             if (inputFile.startsWith("/")) {
                 inputFile = "." + inputFile;
             }
             xArgs[1] = inputFile;
+            xArgs[2] = semeval16 ? "1": "0";
             XMLExtractorTarget.main(xArgs);
         }
 

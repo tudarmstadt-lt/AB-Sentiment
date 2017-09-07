@@ -25,7 +25,9 @@ import org.apache.uima.jcas.JCas;
 import tudarmstadt.lt.ABSentiment.featureExtractor.util.Pair;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.XMLReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReaderSemEval;
 import tudarmstadt.lt.ABSentiment.type.Document;
+import tudarmstadt.lt.ABSentiment.type.Sentence;
 import tudarmstadt.lt.ABSentiment.type.uima.GoldAspectTarget;
 import tudarmstadt.lt.ABSentiment.uimahelper.Preprocessor;
 
@@ -56,43 +58,53 @@ public class XMLExtractorTarget {
         }
 
 
-        InputReader in = new XMLReader(inputFile);
+        InputReader in;
+        if (args[2].compareTo("1") == 0) {
+            // semeval check
+            in = new XMLReaderSemEval(inputFile);
+        } else {
+            in =new XMLReader(inputFile);
+        }
 
         Preprocessor preprocessor = new Preprocessor();
 
         for (Document d: in) {
-            preprocessor.processText(d.getDocumentText());
-            JCas cas = preprocessor.getCas();
-            for (Pair<Integer, Integer> o : d.getTargetOffsets()) {
-                GoldAspectTarget t = new GoldAspectTarget(cas, o.getFirst(), o.getSecond());
-                t.addToIndexes();
-            }
-            boolean inTarget = false;
-            for (Token t : JCasUtil.selectCovered(cas, Token.class, 0, cas.getDocumentText().length())) {
-                try {
-                    out.append(t.getCoveredText() + "\t");
-                    if (JCasUtil.selectCovered(GoldAspectTarget.class, t).size() > 0) {
-                        if (inTarget) {
-                            out.append("I\n");
+            for (Sentence s : d.getSentences()) {
+
+                preprocessor.processText(s.getText());
+                JCas cas = preprocessor.getCas();
+                for (Pair<Integer, Integer> o : s.getTargetOffsets()) {
+                    GoldAspectTarget t = new GoldAspectTarget(cas, o.getFirst(), o.getSecond());
+                    t.addToIndexes();
+                }
+                boolean inTarget = false;
+                for (Token t : JCasUtil.selectCovered(cas, Token.class, 0, cas.getDocumentText().length())) {
+                    try {
+                        out.append(t.getCoveredText() + "\t");
+                        if (JCasUtil.selectCovered(GoldAspectTarget.class, t).size() > 0) {
+                            if (inTarget) {
+                                out.append("I\n");
+                            } else {
+                                out.append("B\n");
+                                inTarget = true;
+                            }
                         } else {
-                            out.append("B\n");
-                            inTarget = true;
+                            out.append("O\n");
+                            inTarget = false;
                         }
-                    } else {
-                        out.append("O\n");
-                        inTarget = false;
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+                }
+
+                try {
+                    out.append("\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
 
-            try {
-                out.append("\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         try {
             out.close();
