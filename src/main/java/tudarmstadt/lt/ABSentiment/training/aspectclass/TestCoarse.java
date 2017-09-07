@@ -45,6 +45,7 @@ public class TestCoarse extends ProblemBuilder {
             configurationfile = args[0];
         }
         initialise(configurationfile);
+        useCoarseLabels = true;
 
         loadLabelMappings(labelMappingsFileAspectCoarse);
 

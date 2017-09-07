@@ -20,6 +20,7 @@
 package tudarmstadt.lt.ABSentiment.featureExtractor.precomputation;
 
 import tudarmstadt.lt.ABSentiment.featureExtractor.TfIdfFeature;
+import tudarmstadt.lt.ABSentiment.reader.XMLReader;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
@@ -58,13 +59,17 @@ public class ComputeIdfTermsCategory extends ProblemBuilder {
 
     public static void computeIdfScores(String configurationFile,String inputFile, String outFile, boolean useCoarseLabels, String type) {
         initialise(configurationFile);
-        if(idfScores!=null){
-            idfScores = new TfIdfFeature(idfFile);
-        }
+        idfScores = new TfIdfFeature(idfFile);
         termFrequencyLabel = new TreeMap<>();
         resetLabelMappings();
 
-        InputReader in = new TsvReader(inputFile);
+        InputReader in;
+        if (inputFile.endsWith(".xml")){
+            in = new XMLReader(inputFile);
+        } else {
+            in = new TsvReader(inputFile);
+        }
+
         String[] labels = null;
         HashMap<Integer, Integer> tokenCounts = null;
         for (Document doc: in) {

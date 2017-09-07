@@ -62,6 +62,7 @@ public class ProblemBuilder {
     protected static boolean useCoarseLabels = false;
 
     protected static String language;
+    protected  static String format;
     protected static String trainFile;
     protected static String testFile;
     protected static String predictionFile;
@@ -77,7 +78,7 @@ public class ProblemBuilder {
     protected static String aspectModel;
     protected static String aspectCoarseModel;
     protected static String sentimentModel;
-    protected static String crfModel;
+    protected static String crfModelFolder;
 
     protected static String corpusFile;
     protected static String maxLengthFile;
@@ -118,6 +119,7 @@ public class ProblemBuilder {
     protected static void initialise(String configurationFile){
 
         language = null;
+        format = null;
         idfFile = null;
         idfGazeteerFile = null;
         positiveGazeteerFile = null;
@@ -136,7 +138,7 @@ public class ProblemBuilder {
         aspectModel = null;
         aspectCoarseModel = null;
         sentimentModel = null;
-        crfModel = null;
+        crfModelFolder = null;
         missingWordsFile = null;
         DTExpansionFile = null;
         weightedW2vFile = null;
@@ -162,7 +164,9 @@ public class ProblemBuilder {
         for(HashMap.Entry<String, String> entry: fileLocation.entrySet()){
             if (entry.getKey().equals("language")) {
                 language = entry.getValue();
-            } else if(entry.getKey().equals("idfFile")){
+            } else if(entry.getKey().equals("format")){
+                format = entry.getValue();
+            }else if(entry.getKey().equals("idfFile")){
                 idfFile = entry.getValue();
             }else if(entry.getKey().equals("idfGazeteerFile")){
                 idfGazeteerFile = entry.getValue();
@@ -194,8 +198,11 @@ public class ProblemBuilder {
             }else if(entry.getKey().equals("sentimentModel")) {
                 sentimentModel = entry.getValue();
                 labelMappingsFileSentiment = entry.getValue()+"_label_mappings.tsv";
-            }else if(entry.getKey().equals("crfModel")){
-                crfModel = entry.getValue();
+            }else if(entry.getKey().equals("crfModelFolder")){
+                crfModelFolder = entry.getValue();
+                if (!crfModelFolder.endsWith("/")){
+                    crfModelFolder.concat("/");
+                }
             } else if(entry.getKey().equals("missingWordsFile")) {
                 missingWordsFile = entry.getValue();
             }else if(entry.getKey().equals("DTExpansionFile")) {
@@ -206,8 +213,6 @@ public class ProblemBuilder {
                 weightedGloveFile = entry.getValue();
             }else if(entry.getKey().equals("weightedIdfFile")) {
                 weightedIdfFile = entry.getValue();
-            }else if(entry.getKey().equals("useCoarseLabels")) {
-                useCoarseLabels = Boolean.parseBoolean(entry.getValue());
             }else if(entry.getKey().equals("polarityLexiconFile")) {
                 polarityLexiconFile = entry.getValue();
             }else if(entry.getKey().equals("aggregateGazeteerFile")) {
@@ -251,12 +256,12 @@ public class ProblemBuilder {
             features.add(gazeteerIdf);
         }
         if (positiveGazeteerFile!= null) {
-            FeatureExtractor posDict = new GazetteerFeature(positiveGazeteerFile, offset);
+            FeatureExtractor posDict = new AggregatedGazetteerFeature(positiveGazeteerFile, offset);
             offset += posDict.getFeatureCount();
             features.add(posDict);
         }
         if (negativeGazeteerFile!= null) {
-            FeatureExtractor negDict = new GazetteerFeature(negativeGazeteerFile, offset);
+            FeatureExtractor negDict = new AggregatedGazetteerFeature(negativeGazeteerFile, offset);
             offset += negDict.getFeatureCount();
             features.add(negDict);
         }

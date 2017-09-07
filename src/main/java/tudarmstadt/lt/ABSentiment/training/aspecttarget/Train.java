@@ -53,10 +53,13 @@ public class Train extends ProblemBuilder {
         }
         initialise(configurationfile);
 
-        File modelDirectory = new File(crfModel);
+        File modelDirectory = new File(crfModelFolder);
         String inputFile = trainFile;
 
 
+        if (inputFile.endsWith("tsv")) {
+            return;
+        }
 
         if (inputFile.endsWith("xml")) {
             String[] xArgs = new String[2];
@@ -69,7 +72,7 @@ public class Train extends ProblemBuilder {
             XMLExtractorTarget.main(xArgs);
         }
 
-        String modelLocation = crfModel.concat("opennlp-de-pos-maxent.bin");
+        String modelLocation = crfModelFolder.concat("opennlp-"+language+"-pos-maxent.bin");
 
         File trainingFile = new File(inputFile);
         trainingFile.deleteOnExit();
@@ -93,6 +96,16 @@ public class Train extends ProblemBuilder {
             e.printStackTrace();
             System.exit(1);
         }
+
+        // remove temporary CRF data
+        File model = new File(crfModelFolder +"crfsuite.model");
+        model.deleteOnExit();
+        File trainData = new File(crfModelFolder +"crfsuite.training");
+        trainData.deleteOnExit();
+        File encoders = new File(crfModelFolder +"encoders.ser");
+        encoders.deleteOnExit();
+        File manifest = new File(crfModelFolder +"MANIFEST.MF");
+        manifest.deleteOnExit();
 
     }
 }

@@ -19,19 +19,10 @@
 
 package tudarmstadt.lt.ABSentiment.training;
 
-import de.bwaldvogel.liblinear.Feature;
 import de.bwaldvogel.liblinear.Linear;
 import de.bwaldvogel.liblinear.Model;
-import tudarmstadt.lt.ABSentiment.featureExtractor.util.ConfusionMatrix;
-import tudarmstadt.lt.ABSentiment.featureExtractor.FeatureExtractor;
-import tudarmstadt.lt.ABSentiment.reader.InputReader;
-import tudarmstadt.lt.ABSentiment.reader.TsvReader;
-import tudarmstadt.lt.ABSentiment.type.Document;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Vector;
 import java.util.zip.GZIPInputStream;
 
 /**

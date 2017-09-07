@@ -44,6 +44,7 @@ public class TrainCoarse extends ProblemBuilder {
         initialise(configurationfile);
 
         Vector<FeatureExtractor> features = loadFeatureExtractors();
+        useCoarseLabels = true;
         Problem problem = buildProblem(trainFile, features, true);
 
         if(modelType.equals("linear")){

@@ -37,8 +37,18 @@ public class ComputeMaxDocumentLength {
         MaxDocumentLength ml = new MaxDocumentLength();
         InputReader fr = new TsvReader(inputFile);
 
+        System.out.println("Computing corpus length...\n");
+        int i = 0;
         for (Document d: fr) {
             ml.addDocument(d);
+            i++;
+            if (i % 10000 == 0) {
+                System.out.print("\n" + i + " ");
+            } else if (i % 1000 == 0) {
+                System.out.print(".");
+            } else if (i % 100 == 0) {
+                System.out.print(",");
+            }
         }
         ml.saveMaxLength(outputFile);
     }

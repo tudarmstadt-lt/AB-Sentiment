@@ -19,9 +19,11 @@
 
 package tudarmstadt.lt.ABSentiment.uimahelper;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import lt_hamburg.segmenter.annotator.TokenAnnotator;
-import lt_hamburg.segmenter.type.Token;
+//import lt_hamburg.segmenter.type.Token;
 import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -56,8 +58,9 @@ public class Preprocessor extends ProblemBuilder{
         // build annotation engine
         try {
             tokenizer = AnalysisEngineFactory.createEngine(TokenAnnotator.class);
+            //tokenizer = AnalysisEngineFactory.createEngine(BreakIteratorSegmenter.class);
             postagger = AnalysisEngineFactory.createEngine(OpenNlpPosTagger.class,
-                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, crfModel+"opennlp-"+language+"-pos-maxent.bin");
+                            OpenNlpPosTagger.PARAM_MODEL_LOCATION, crfModelFolder +"opennlp-"+language+"-pos-maxent.bin");
         } catch (ResourceInitializationException e) {
             e.printStackTrace();
         }

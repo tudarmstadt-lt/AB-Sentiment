@@ -44,7 +44,7 @@ public class PreComputeFeatures extends ProblemBuilder {
         initialise(configurationFile);
 
 
-        ComputeCorpusIdfScores.computeIdfScores(corpusFile, idfFile, 100);
+        //ComputeCorpusIdfScores.computeIdfScores(corpusFile, idfFile, 100);
         ComputeMaxDocumentLength.computeMaxDocumentLength(corpusFile, maxLengthFile);
 
 

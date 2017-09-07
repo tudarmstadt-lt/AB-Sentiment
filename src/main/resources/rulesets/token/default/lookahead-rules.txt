@@ -13,7 +13,7 @@
 # Order of rules is important. Rule of thumb: write expected longer matches on the top, first pattern to match wins.
 #
 # Notes:
-# \P{M}\p{M} == unicode replacement for . \P{M} match any non mark comibing character \p{m} match any mark combining character
+# \P{M}\p{M} == unicode replacement for . \P{M} match any non mark comibining character \p{m} match any mark combining character
 # \p{L} match unicode letters
 # \p{Lu} match uppercase unicode letters
 # ((?>\p{L}\p{M}*)|[_\d]) == unicode \w replacement

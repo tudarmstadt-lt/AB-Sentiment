@@ -24,10 +24,12 @@ import org.w3c.dom.Element;
 import tudarmstadt.lt.ABSentiment.reader.InputReader;
 import tudarmstadt.lt.ABSentiment.reader.TsvReader;
 import tudarmstadt.lt.ABSentiment.reader.XMLReader;
+import tudarmstadt.lt.ABSentiment.reader.XMLReaderSemEval;
 import tudarmstadt.lt.ABSentiment.training.util.ProblemBuilder;
 import tudarmstadt.lt.ABSentiment.type.AspectExpression;
 import tudarmstadt.lt.ABSentiment.type.Document;
 import tudarmstadt.lt.ABSentiment.type.Result;
+import tudarmstadt.lt.ABSentiment.type.Sentence;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,15 +44,17 @@ import java.io.*;
  */
 public class Classify extends ProblemBuilder{
 
-    static boolean xmlData = false;
+    private static boolean xmlData = false;
+    private static boolean semeval16 = false;
 
-    static String outputFile;
+    private static String outputFile;
 
-    static Writer out = null;
-    static DocumentBuilder docBuilder;
-    static org.w3c.dom.Document results;
-    static Element documents;
+    private static Writer out;
+    private static DocumentBuilder docBuilder;
+    private static org.w3c.dom.Document results;
+    private static Element documents;
 
+    private static AbSentiment classifier;
 
     public static void main(String[] args) {
 
@@ -66,17 +70,24 @@ public class Classify extends ProblemBuilder{
         if (inputFile.endsWith("xml")) {
             xmlData = true;
         }
+        if (format.compareTo("semeval16") == 0) {
+            semeval16 = true;
+        }
 
         outputFile = inputFile.substring(0, inputFile.lastIndexOf(".")) + "_classified" +
                 inputFile.substring(inputFile.lastIndexOf("."));
 
-        AbSentiment classifier = new AbSentiment(configurationFile);
+        classifier = new AbSentiment(configurationFile);
 
 
         InputReader fr;
 
         if (xmlData){
-            fr = new XMLReader(inputFile);
+            if (semeval16) {
+                fr = new XMLReaderSemEval(inputFile);
+            } else {
+                fr = new XMLReader(inputFile);
+            }
         } else {
             fr = new TsvReader(inputFile);
         }
@@ -98,7 +109,6 @@ public class Classify extends ProblemBuilder{
 
     private static void initializeOutput() {
         if (xmlData) {
-
             DocumentBuilderFactory docFactory;
             docFactory = DocumentBuilderFactory.newInstance();
             try {
@@ -108,8 +118,13 @@ public class Classify extends ProblemBuilder{
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             }
-            documents = results.createElement("Documents");
-            results.appendChild(documents);
+            if (semeval16) {
+                documents = results.createElement("Reviews");
+                results.appendChild(documents);
+            } else {
+                documents = results.createElement("Documents");
+                results.appendChild(documents);
+            }
         } else {
             try {
                 OutputStream predStream = new FileOutputStream(outputFile);
@@ -123,7 +138,7 @@ public class Classify extends ProblemBuilder{
 
     private static void writeDocuments() {
         if (xmlData) {
-            Transformer transformer = null;
+            Transformer transformer;
             try {
                 transformer = TransformerFactory.newInstance().newTransformer();
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -150,44 +165,109 @@ public class Classify extends ProblemBuilder{
 
     private static void addResult(Document d, Result res) {
         if (xmlData) {
-            Element doc = results.createElement("Document");
-            doc.setAttribute("id", d.getDocumentId());
-            documents.appendChild(doc);
+            if (semeval16) {
+                Element rev = results.createElement("Review");
+                rev.setAttribute("rid", d.getDocumentId());
+                documents.appendChild(rev);
 
-            Element text = results.createElement("text");
-            text.setTextContent(d.getDocumentText());
-            doc.appendChild(text);
+                Element sentences = results.createElement("sentences");
+                rev.appendChild(sentences);
 
-            Element relevance = results.createElement("relevance");
-            relevance.setTextContent(res.getRelevance());
-            doc.appendChild(relevance);
-
-            Element sentiment = results.createElement("sentiment");
-            sentiment.setTextContent(res.getSentiment());
-            doc.appendChild(sentiment);
-
-            Element opinions = results.createElement("Opinions");
-            doc.appendChild(opinions);
-            if (res.getAspectExpressions().size() == 0) {
-                Element opinion = results.createElement("Opinion");
-                opinion.setAttribute("from", "0");
-                opinion.setAttribute("to", "0");
-                opinion.setAttribute("target", "NULL");
-                opinion.setAttribute("polarity", res.getSentiment());
-                opinion.setAttribute("category", res.getAspect());
-                opinions.appendChild(opinion);
-            } else {
-                for (AspectExpression aspectExpression : res.getAspectExpressions()) {
+                // global opinions
+                Element opinions = results.createElement("Opinions");
+                rev.appendChild(opinions);
+                if (res.getAspectExpressions().size() == 0) {
                     Element opinion = results.createElement("Opinion");
-                    opinion.setAttribute("from", aspectExpression.getBegin()+"");
-                    opinion.setAttribute("to", aspectExpression.getEnd() +"");
-                    opinion.setAttribute("target", aspectExpression.getAspectExpression());
+                    opinion.setAttribute("from", "0");
+                    opinion.setAttribute("to", "0");
+                    opinion.setAttribute("target", "NULL");
                     opinion.setAttribute("polarity", res.getSentiment());
                     opinion.setAttribute("category", res.getAspect());
                     opinions.appendChild(opinion);
+                } else {
+                    for (AspectExpression aspectExpression : res.getAspectExpressions()) {
+                        Element opinion = results.createElement("Opinion");
+                        opinion.setAttribute("from", aspectExpression.getBegin() + "");
+                        opinion.setAttribute("to", aspectExpression.getEnd() + "");
+                        opinion.setAttribute("target", aspectExpression.getAspectExpression());
+                        opinion.setAttribute("polarity", res.getSentiment());
+                        opinion.setAttribute("category", res.getAspect());
+                        opinions.appendChild(opinion);
+                    }
+                }
+
+                // sentence-wise classification
+                for (Sentence s : d.getSentences()) {
+                    Element sent = results.createElement("sentence");
+                    sent.setAttribute("id", s.getId());
+                    sentences.appendChild(sent);
+
+                    Element text = results.createElement("text");
+                    text.setTextContent(s.getText());
+                    sent.appendChild(text);
+
+                    Element opinionsSent = results.createElement("Opinions");
+                    sent.appendChild(opinionsSent);
+                    Result resSent = classifier.analyzeText(s.getText());
+                    if (resSent.getAspectExpressions().size() == 0) {
+                        Element opinion = results.createElement("Opinion");
+                        opinion.setAttribute("from", "0");
+                        opinion.setAttribute("to", "0");
+                        opinion.setAttribute("target", "NULL");
+                        opinion.setAttribute("polarity", resSent.getSentiment());
+                        opinion.setAttribute("category", resSent.getAspect());
+                        opinionsSent.appendChild(opinion);
+                    } else {
+                        for (AspectExpression aspectExpression : resSent.getAspectExpressions()) {
+                            Element opinion = results.createElement("Opinion");
+                            opinion.setAttribute("from", aspectExpression.getBegin() + "");
+                            opinion.setAttribute("to", aspectExpression.getEnd() + "");
+                            opinion.setAttribute("target", aspectExpression.getAspectExpression());
+                            opinion.setAttribute("polarity", resSent.getSentiment());
+                            opinion.setAttribute("category", resSent.getAspect());
+                            opinionsSent.appendChild(opinion);
+                        }
+                    }
+                }
+            } else {
+                Element doc = results.createElement("Document");
+                doc.setAttribute("id", d.getDocumentId());
+                documents.appendChild(doc);
+
+                Element text = results.createElement("text");
+                text.setTextContent(d.getDocumentText());
+                doc.appendChild(text);
+
+                Element relevance = results.createElement("relevance");
+                relevance.setTextContent(res.getRelevance());
+                doc.appendChild(relevance);
+
+                Element sentiment = results.createElement("sentiment");
+                sentiment.setTextContent(res.getSentiment());
+                doc.appendChild(sentiment);
+
+                Element opinions = results.createElement("Opinions");
+                doc.appendChild(opinions);
+                if (res.getAspectExpressions().size() == 0) {
+                    Element opinion = results.createElement("Opinion");
+                    opinion.setAttribute("from", "0");
+                    opinion.setAttribute("to", "0");
+                    opinion.setAttribute("target", "NULL");
+                    opinion.setAttribute("polarity", res.getSentiment());
+                    opinion.setAttribute("category", res.getAspect());
+                    opinions.appendChild(opinion);
+                } else {
+                    for (AspectExpression aspectExpression : res.getAspectExpressions()) {
+                        Element opinion = results.createElement("Opinion");
+                        opinion.setAttribute("from", aspectExpression.getBegin() + "");
+                        opinion.setAttribute("to", aspectExpression.getEnd() + "");
+                        opinion.setAttribute("target", aspectExpression.getAspectExpression());
+                        opinion.setAttribute("polarity", res.getSentiment());
+                        opinion.setAttribute("category", res.getAspect());
+                        opinions.appendChild(opinion);
+                    }
                 }
             }
-
         } else {
             try {
                 out.write(d.getDocumentId() + "\t" + d.getDocumentText() + "\t");

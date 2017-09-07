@@ -46,8 +46,16 @@ public class ComputeCorpusIdfScores {
             fr = new TsvReader(inputFile);
         }
 
+        System.out.println("Computing tf-idf scores...\n");
+        int i = 0;
         for (Document d: fr) {
             idf.addDocument(d);
+            i++;
+            if (i % 20000 == 0) {
+                System.out.print("\n" + i +" ");
+            } else if (i % 1000 == 0) {
+                System.out.print(".");
+            }
         }
         idf.saveIdfScores(outputFile);
     }
