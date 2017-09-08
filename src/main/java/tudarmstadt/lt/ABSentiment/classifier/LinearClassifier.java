@@ -41,7 +41,7 @@ public class LinearClassifier extends ProblemBuilder implements Classifier {
 
     protected Model model;
 
-    protected Vector<FeatureExtractor> features;
+    protected static Vector<FeatureExtractor> features;
     protected HashMap<Double, String> labelMappings;
 
     protected String label;

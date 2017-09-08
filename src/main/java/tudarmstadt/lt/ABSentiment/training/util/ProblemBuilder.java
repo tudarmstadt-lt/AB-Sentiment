@@ -356,7 +356,7 @@ public class ProblemBuilder {
                     }
                 }
                 for (String l : stringLabel) {
-                    if (l.isEmpty()) {continue;}
+                    if (l == null || l.isEmpty()) {continue;}
                     Double label = getLabelId(l);
                     labels.add(label);
                     featureVector.add(combineInstanceFeatures(instanceFeatures));

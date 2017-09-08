@@ -121,7 +121,14 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
      */
     public static W2vSpace load(String word2vecModel, boolean norm) {
         W2vSpace model = new W2vSpace();
-        try (DataInputStream ds = new DataInputStream(new BufferedInputStream(new FileInputStream(word2vecModel), 131072))) {
+        DataInputStream ds;
+        try {
+            if (word2vecModel.endsWith("bin.gz")) {
+                ds = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(word2vecModel)), 131072));
+
+            } else {
+                ds = new DataInputStream(new BufferedInputStream(new FileInputStream(word2vecModel), 131072));
+            }
             // Read header:
             int numWords = Integer.parseInt(readString(ds));
             int vecSize = Integer.parseInt(readString(ds));

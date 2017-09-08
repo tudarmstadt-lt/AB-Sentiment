@@ -67,16 +67,16 @@ public class MaxDocumentLength {
     /**
      * Saves the IDF scores in a tab-separated format:<br>
      * TOKEN  &emsp; TOKEN_ID &emsp; IDF-SCORE &emsp; FREQUENCY
-     * @param idfFile path to the output file
+     * @param outFile path to the output file
      */
-    protected void saveMaxLength(String idfFile) {
+    protected void saveMaxLength(String outFile) {
         try {
             Writer out;
-            if (idfFile.endsWith(".gz")) {
-                out = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(idfFile)), "UTF-8");
+            if (outFile.endsWith(".gz")) {
+                out = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile)), "UTF-8");
             } else {
                 out = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(idfFile), "UTF-8"));
+                        new FileOutputStream(outFile), "UTF-8"));
             }
             out.write(maxLength > limit ? limit : maxLength);
             out.write("\n");

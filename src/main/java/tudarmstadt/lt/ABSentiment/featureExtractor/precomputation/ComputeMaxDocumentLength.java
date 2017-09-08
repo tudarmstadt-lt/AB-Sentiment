@@ -46,8 +46,8 @@ public class ComputeMaxDocumentLength {
                 System.out.print("\n" + i + " ");
             } else if (i % 1000 == 0) {
                 System.out.print(".");
-            } else if (i % 100 == 0) {
-                System.out.print(",");
+            //} else if (i % 100 == 0) {
+            //    System.out.print(",");
             }
         }
         ml.saveMaxLength(outputFile);

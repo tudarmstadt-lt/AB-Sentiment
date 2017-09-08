@@ -85,7 +85,7 @@ public class Sentence {
             }
         }
         if(i == 0){
-            aspects = new String[]{"0"};
+            aspects = new String[]{null};
         }
         return aspects;
     }
@@ -101,7 +101,7 @@ public class Sentence {
             }
         }
         if(i == 0){
-            aspects = new String[]{"0"};
+            aspects = new String[]{null};
         }
         return aspects;
     }
