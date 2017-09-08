@@ -138,6 +138,7 @@ public class AggregatedGazetteerFeature implements FeatureExtractor {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
 
         try {

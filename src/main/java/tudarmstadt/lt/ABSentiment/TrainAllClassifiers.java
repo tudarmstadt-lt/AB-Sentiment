@@ -19,8 +19,6 @@
 
 package tudarmstadt.lt.ABSentiment;
 
-import java.io.File;
-
 /**
  * General training class. Calls all model trainers to train on the file specified in a @link{Configuration}.
  */

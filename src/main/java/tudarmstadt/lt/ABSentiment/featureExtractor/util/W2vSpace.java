@@ -147,6 +147,7 @@ public class W2vSpace extends GenericWordSpace<FloatMatrix> {
         } catch (IOException e) {
             System.err.println("ERROR: Failed to load model: " + word2vecModel);
             e.printStackTrace();
+            System.exit(1);
         }
         return model;
     }

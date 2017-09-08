@@ -63,6 +63,7 @@ public class TfidfHelper {
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
