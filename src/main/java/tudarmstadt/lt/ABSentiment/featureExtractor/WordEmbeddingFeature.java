@@ -42,9 +42,9 @@ public class WordEmbeddingFeature implements FeatureExtractor {
     private int offset = 0;
     private int featureCount = 0;
     private String weightedIdfFile;
-    private GenericWordSpace<FloatMatrix> model;
-    private TfIdfFeature tfIdfFeature;
-    private HashMap<String, ArrayList<String>> DTExpansion = null;
+    private static GenericWordSpace<FloatMatrix> model;
+    private static TfIdfFeature tfIdfFeature;
+    private static HashMap<String, ArrayList<String>> DTExpansion = null;
 
     /**
      * Constructor; specifies the word embedding file. The type of word embedding. Feature offset is set to '0' by default.

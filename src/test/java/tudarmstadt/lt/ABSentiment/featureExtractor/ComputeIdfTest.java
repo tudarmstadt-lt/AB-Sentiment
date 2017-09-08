@@ -41,7 +41,7 @@ public class ComputeIdfTest extends ProblemBuilder{
     @org.junit.Test
     public void checkNodeIDOrder() throws Exception {
         initialise("/configurationTest.txt");
-        Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Vector<FeatureExtractor> features = loadFeatureExtractors("sentiment");
         Problem problem = buildProblem(trainFile, features, true);
         Feature[][] inputFeature = problem.x;
         int n = inputFeature.length, i, len;
