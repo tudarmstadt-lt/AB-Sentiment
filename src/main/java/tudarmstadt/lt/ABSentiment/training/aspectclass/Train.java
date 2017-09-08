@@ -37,13 +37,14 @@ public class Train extends ProblemBuilder {
     public static void main(String[] args) {
 
         String modelType = "linear";
+        String type = "aspect";
         if (args.length == 1) {
             configurationfile = args[0];
         }
         initialise(configurationfile);
 
-        Vector<FeatureExtractor> features = loadFeatureExtractors();
-        Problem problem = buildProblem(trainFile, features,"aspect", true);
+        Vector<FeatureExtractor> features = loadFeatureExtractors(type);
+        Problem problem = buildProblem(trainFile, features, type, true);
 
         if(modelType.equals("linear")){
             LinearTraining linearTraining = new LinearTraining();

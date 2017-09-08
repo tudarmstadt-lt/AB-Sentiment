@@ -46,6 +46,7 @@ public class GazetteerFeature implements FeatureExtractor {
      * @param gazetteer path to a wordlist
      */
     public GazetteerFeature(String gazetteer) {
+        System.out.println("Gazetteer: loading " + gazetteer + "...");
         loadWordList(gazetteer);
     }
 

@@ -123,7 +123,6 @@ public class ProblemBuilder {
         language = null;
         format = null;
         idfFile = null;
-        idfGazeteerFile = null;
         positiveGazeteerFile = null;
         negativeGazeteerFile = null;
         gloveFile = null;
@@ -246,7 +245,7 @@ public class ProblemBuilder {
      * Computes a feature vector out of all the feature name specified in the configuration file
      * @return a Vector containing all the specified feature
      */
-    protected static Vector<FeatureExtractor> loadFeatureExtractors() {
+    protected static Vector<FeatureExtractor> loadFeatureExtractors(String type) {
         int offset = 1;
         Vector<FeatureExtractor> features = new Vector<>();
 
@@ -255,11 +254,20 @@ public class ProblemBuilder {
             offset += tfidf.getFeatureCount();
             features.add(tfidf);
         }
-        if (idfGazeteerFile != null) {
-            FeatureExtractor gazeteerIdf = new GazetteerFeature(idfGazeteerFile, offset);
+        if (type.compareTo("relevance") == 0 && relevanceIdfFile != null) {
+                FeatureExtractor gazeteerIdf = new GazetteerFeature(relevanceIdfFile, offset);
+                offset += gazeteerIdf.getFeatureCount();
+                features.add(gazeteerIdf);
+        } else if(type.compareTo("sentiment") == 0 && sentimentIdfFile != null) {
+                FeatureExtractor gazeteerIdf = new GazetteerFeature(sentimentIdfFile, offset);
+                offset += gazeteerIdf.getFeatureCount();
+                features.add(gazeteerIdf);
+        } else if(type.compareTo("aspect") == 0 && aspectIdfFile != null) {
+            FeatureExtractor gazeteerIdf = new GazetteerFeature(aspectIdfFile, offset);
             offset += gazeteerIdf.getFeatureCount();
             features.add(gazeteerIdf);
         }
+
         if (positiveGazeteerFile!= null) {
             FeatureExtractor posDict = new AggregatedGazetteerFeature(positiveGazeteerFile, offset);
             offset += posDict.getFeatureCount();
@@ -270,11 +278,6 @@ public class ProblemBuilder {
             offset += negDict.getFeatureCount();
             features.add(negDict);
         }
-        if (gloveFile!=null){
-            FeatureExtractor glove = new WordEmbeddingFeature(gloveFile, null, 1, DTExpansionFile, offset);
-            offset+=glove.getFeatureCount();
-            features.add(glove);
-        }
         if(polarityLexiconFile!=null){
             FeatureExtractor polarityLexicon = new PolarityLexiconFeature(polarityLexiconFile, offset);
             offset+=polarityLexicon.getFeatureCount();
@@ -284,6 +287,11 @@ public class ProblemBuilder {
             FeatureExtractor aggregatedGazeteerFeature = new AggregatedGazetteerFeature(aggregateGazeteerFile, offset);
             offset+=aggregatedGazeteerFeature.getFeatureCount();
             features.add(aggregatedGazeteerFeature);
+        }
+        if (gloveFile!=null){
+            FeatureExtractor glove = new WordEmbeddingFeature(gloveFile, null, 1, DTExpansionFile, offset);
+            offset+=glove.getFeatureCount();
+            features.add(glove);
         }
         if(w2vFile!=null){
             FeatureExtractor word2vec = new WordEmbeddingFeature(w2vFile, null, 2, DTExpansionFile,  offset);

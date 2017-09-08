@@ -38,14 +38,15 @@ public class TrainCoarse extends ProblemBuilder {
 
 
         String modelType = "linear";
+        String type = "aspect";
         if (args.length == 1) {
             configurationfile = args[0];
         }
         initialise(configurationfile);
 
-        Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Vector<FeatureExtractor> features = loadFeatureExtractors(type);
         useCoarseLabels = true;
-        Problem problem = buildProblem(trainFile, features, true);
+        Problem problem = buildProblem(trainFile, features, type, true);
 
         if(modelType.equals("linear")){
             LinearTraining linearTraining = new LinearTraining();

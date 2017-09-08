@@ -29,9 +29,10 @@ public class LinearSentimentClassifer extends LinearClassifier {
 
     public LinearSentimentClassifer(String configurationFile) {
         initialise(configurationFile);
+        String type = "sentiment";
         LinearTesting linearTesting = new LinearTesting();
         model = linearTesting.loadModel(sentimentModel);
-        features = loadFeatureExtractors();
+        features = loadFeatureExtractors(type);
 
         labelMappings = loadLabelMapping(labelMappingsFileSentiment);
     }

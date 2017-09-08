@@ -29,9 +29,10 @@ public class LinearAspectClassifier extends LinearClassifier {
 
     public LinearAspectClassifier(String configurationFile) {
         initialise(configurationFile);
+        String type = "aspect";
         LinearTesting linearTesting = new LinearTesting();
         model = linearTesting.loadModel(aspectModel);
-        features = loadFeatureExtractors();
+        features = loadFeatureExtractors(type);
 
         labelMappings = loadLabelMapping(labelMappingsFileAspect);
     }

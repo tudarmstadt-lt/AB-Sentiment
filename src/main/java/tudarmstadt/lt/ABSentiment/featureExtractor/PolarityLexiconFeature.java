@@ -52,6 +52,7 @@ public class PolarityLexiconFeature implements FeatureExtractor{
      * @param termPolarityFile path to a file containing word with their polarity vector
      */
     public PolarityLexiconFeature(String termPolarityFile) {
+        System.out.println("Polarity Lexicon: loading " + termPolarityFile + "...");
         loadPolarityFile(termPolarityFile);
     }
 
@@ -136,6 +137,7 @@ public class PolarityLexiconFeature implements FeatureExtractor{
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }

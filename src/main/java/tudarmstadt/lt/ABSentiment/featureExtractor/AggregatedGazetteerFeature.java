@@ -49,19 +49,20 @@ public class AggregatedGazetteerFeature implements FeatureExtractor {
 
     /**
      * Constructor; specifies the aggregate gazetteer file. Feature offset is set to '0' by default.
-     * @param aggregatedGazeteer path to a file containing word with/without their polarity
+     * @param aggregatedGazetteer path to a file containing word with/without their polarity
      */
-    public AggregatedGazetteerFeature(String aggregatedGazeteer) {
-        loadGazeteerFile(aggregatedGazeteer);
+    public AggregatedGazetteerFeature(String aggregatedGazetteer) {
+        System.out.println("AggrGazetter: loading " + aggregatedGazetteer + "...");
+        loadGazeteerFile(aggregatedGazetteer);
     }
 
     /**
      * Constructor; specifies the aggregate gazetteer file. Feature offset is specified.
-     * @param aggregatedGazeteer path to a file containing word with/without their polarity
+     * @param aggregatedGazetteer path to a file containing word with/without their polarity
      * @param offset the feature offset, all features start from this offset
      */
-    public AggregatedGazetteerFeature(String aggregatedGazeteer, int offset) {
-        this(aggregatedGazeteer);
+    public AggregatedGazetteerFeature(String aggregatedGazetteer, int offset) {
+        this(aggregatedGazetteer);
         this.offset = offset;
     }
 

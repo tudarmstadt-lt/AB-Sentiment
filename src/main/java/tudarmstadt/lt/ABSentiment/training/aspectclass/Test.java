@@ -41,6 +41,8 @@ public class Test extends ProblemBuilder {
     public static void main(String[] args) {
 
         String modelType = "linear";
+        String type = "aspect";
+
         if (args.length == 1) {
             configurationfile = args[0];
         }
@@ -48,15 +50,15 @@ public class Test extends ProblemBuilder {
 
         loadLabelMappings(labelMappingsFileAspect);
 
-        Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Vector<FeatureExtractor> features = loadFeatureExtractors(type);
 
         if(modelType.equals("linear")){
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(aspectModel);
-            classifyTestSet(testFile, model, features, predictionFile, "aspect", true);
+            classifyTestSet(testFile, model, features, predictionFile, type, true);
         }else if(modelType.equals("dnn")){
             DNNTesting dnnTesting = new DNNTesting();
-            Problem problem = buildProblem(testFile, features, false);
+            Problem problem = buildProblem(testFile, features, type, false);
             MultiLayerNetwork model = dnnTesting.loadModel(aspectModel);
             classifyTestSet(model, problem, true);
         }

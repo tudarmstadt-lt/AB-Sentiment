@@ -29,9 +29,10 @@ public class LinearRelevanceClassifier extends LinearClassifier  {
 
     public LinearRelevanceClassifier(String configurationFile) {
         initialise(configurationFile);
+        String type = "relevance";
         LinearTesting linearTesting = new LinearTesting();
         model = linearTesting.loadModel(relevanceModel);
-        features = loadFeatureExtractors();
+        features = loadFeatureExtractors(type);
         labelMappings = loadLabelMapping(labelMappingsFileRelevance);
     }
 }

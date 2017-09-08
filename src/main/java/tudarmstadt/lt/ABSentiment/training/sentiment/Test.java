@@ -41,21 +41,22 @@ public class Test extends ProblemBuilder {
     public static void main(String[] args) {
 
         String modelType = "linear";
+        String type = "sentiment";
         if (args.length == 1) {
             configurationfile = args[0];
         }
         initialise(configurationfile);
         loadLabelMappings(labelMappingsFileSentiment);
 
-        Vector<FeatureExtractor> features = loadFeatureExtractors();
+        Vector<FeatureExtractor> features = loadFeatureExtractors(type);
 
         if(modelType.equals("linear")){
             LinearTesting linearTesting = new LinearTesting();
             Model model = linearTesting.loadModel(sentimentModel);
-            classifyTestSet(testFile, model, features, predictionFile, "sentiment", true);
+            classifyTestSet(testFile, model, features, predictionFile, type, true);
         }else if(modelType.equals("dnn")){
             DNNTesting dnnTesting = new DNNTesting();
-            Problem problem = buildProblem(testFile, features, "sentiment", false);
+            Problem problem = buildProblem(testFile, features, type, false);
             MultiLayerNetwork model = dnnTesting.loadModel(sentimentModel);
             classifyTestSet(model, problem, true);
         }
